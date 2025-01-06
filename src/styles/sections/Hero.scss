@@ -1,0 +1,64 @@
+.hero-section_container {
+    position: relative;
+    min-height: 200vh; /* Adjust as needed */
+    width: 100vw;
+    // overflow-y: scroll;
+  }
+
+  .hero-section {
+    position: fixed !important; /* Keep fixed */
+    top: 0;
+    left: 0;
+    z-index: 1; /* Below the canvas */
+    height: 100vh;
+    width: 100vw;
+    background-image: url('src/assets/hero_chairs.jpeg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    transform-origin: center;
+    transition: all 0.3s ease;
+
+  }
+  
+  .canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2; /* Canvas above the background */
+    pointer-events: none; /* Prevent interaction */
+  
+  }
+  
+  .additional-content {
+    padding-top: 200vh; /* Create scrollable space */
+  }
+  
+  .no-scroll {
+    overflow: hidden; /* Disable scrolling */
+  }
+
+@media (min-width: 769px) {
+    .hero-section {
+        background-position: center bottom !important;
+        border: 2px solid rgb(145, 22, 169);
+
+        position: fixed !important; /* Keep fixed */
+        top: 0;
+        left: 0;
+        z-index: 1; /* Below the canvas */
+        height: 100vh;
+        width: 100vw;
+        background-image: url('src/assets/hero_chairs.jpeg');
+        
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        transform-origin: center;
+        transition: all 0.3s ease;
+        will-change: transform, scale;
+    }
+}
