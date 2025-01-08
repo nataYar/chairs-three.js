@@ -11,20 +11,16 @@ const Chair7 = forwardRef((props, ref) => {
     const rotation = [-1.3, -25 * Math.PI / 18, -0.6]; // tilt, rotation, twist
     
     const scale = isMobile ? 1 : 1; 
-    const position = [
-        viewport.width * 0.9,
-        -viewport.height * -0.3, 
-        -7
-    ];
-
+    const position = isMobile ? [viewport.width * 0.9, -viewport.height * -0.3, -7 ] :[ viewport.width * 0.9, -viewport.height * -0.3, -7]
+ 
     // Unpredictable rotation animation
     useFrame(({ clock }) => {
         if (localRef.current) {
             const time = clock.getElapsedTime();
 
-            localRef.current.rotation.x = rotation[0] + Math.sin(time * 1.2) * 0.02; 
-            localRef.current.rotation.y = rotation[1] + Math.cos(time * 1.1) * 0.04; 
-            localRef.current.rotation.z = rotation[2] + Math.sin(time * 1.5) * 0.03; 
+            localRef.current.rotation.x = rotation[0] + Math.sin(time * 1.7) * 0.02; 
+            localRef.current.rotation.y = rotation[1] + Math.cos(time * 1.3) * 0.04; 
+            localRef.current.rotation.z = rotation[2] + Math.sin(time * 1.7) * 0.03; 
         }
     });
 

@@ -14,7 +14,7 @@ const Chair6 = forwardRef((props, ref) => {
             -viewport.height * 0.75, 
             -5,
         ];
-
+       
     return <Chair ref={ref}  modelPath="src/assets/victorian_chair.glb" scale={scale} position={position} rotation={rotation}/>;
 })
 

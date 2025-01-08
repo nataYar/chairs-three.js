@@ -18,7 +18,7 @@ const Chair4 = forwardRef((props, ref) => {
         -viewport.height * 0.55,
         -3 // Z-position
     ];
-
+    
     // State to control shaking
     const [isShaking, setIsShaking] = useState(false);
 
@@ -37,7 +37,7 @@ const Chair4 = forwardRef((props, ref) => {
             // Apply rapid side-to-side shaking
             if (isShaking) {
 
-                const shakeFrequency = 35; // How fast the chair shakes
+                const shakeFrequency = 25; // How fast the chair shakes
                 const shakeAmplitude =  0.01;; // How far the chair shakes
 
                 // Apply shaking to the Y-axis rotation

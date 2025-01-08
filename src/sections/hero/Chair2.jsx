@@ -4,6 +4,7 @@ import { useThree } from "@react-three/fiber";
 import Chair from './Chair';
 
 const Chair2 = forwardRef((props, ref) => {
+    
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); // Mobile-first design
     const { viewport } = useThree();
 
@@ -16,6 +17,7 @@ const Chair2 = forwardRef((props, ref) => {
         -viewport.height * -1, // 90% from the top
         -12
     ];
+    
 
     return <Chair ref={ref} modelPath="src/assets/chair_round.glb" scale={scale} position={position} rotation={rotation}/>;
 })

@@ -17,6 +17,7 @@ const Chair3 = forwardRef((props, ref) => {
     ?  [viewport.width * -0.2,  -viewport.height * -0.3, -2 ]
     : [viewport.width * -0.1, -viewport.height * -0.2,  -2 ]
 
+    
     // Add animation for rotation along the Y-axis
     useFrame(({ clock }) => {
         if (localRef.current) {

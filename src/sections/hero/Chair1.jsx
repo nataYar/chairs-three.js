@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from 'react';
+import React, { forwardRef, useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useMediaQuery } from 'react-responsive';
 import { useThree } from '@react-three/fiber';
@@ -7,6 +7,7 @@ import Chair from './Chair';
 const Chair1 = forwardRef((props, ref) => {
     const localRef = useRef();
     const { viewport } = useThree();
+    const initialized = useRef(false); 
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
     // Initial rotation based on device type
@@ -16,9 +17,19 @@ const Chair1 = forwardRef((props, ref) => {
 
     // Device-specific position and scale
     const scale = isMobile ? 3 : 3;
+    // console.log("Viewport:", viewport); 
+
     const position = isMobile
         ? [viewport.width * 0.4, -viewport.height * 0.7, 0]
         : [viewport.width * 0.3, -viewport.height * 0.4, 0];
+
+        // useEffect(() => {
+        //     if (!initialized.current && localRef.current) {
+        //         console.log("Setting initial position for chair:", index, position); // Debugging
+        //         setInitialPosition(index, position); // Use index to update the parent
+        //         initialized.current = true; // Mark as initialized
+        //     }
+        // }, [index, position, setInitialPosition]);
 
     // Rocking animation
     useFrame(({ clock }) => {
@@ -26,8 +37,6 @@ const Chair1 = forwardRef((props, ref) => {
             const time = clock.getElapsedTime();
             const amplitude = 0.06; // How far the chair rocks (in radians)
             const frequency = 1.6; // How fast the chair rocks
-
-           
             const rockingAngle = Math.sin(time * frequency) * amplitude;
 
             localRef.current.rotation.x = initialRotation[0] - rockingAngle * Math.cos(Math.PI / 4); // 25% clockwise adjustment

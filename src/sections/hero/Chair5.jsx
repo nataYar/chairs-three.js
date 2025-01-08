@@ -9,14 +9,13 @@ const Chair5 = forwardRef((props, ref) => {
 
     const rotation = [0, 13 * Math.PI / 18, 0];
     const scale = isMobile ? 4.5 : 4.5; 
-        const position = isMobile
+    const position = isMobile
     ?  [ viewport.width * -0.37, 
         -viewport.height * 0.7, 
         1]
     : [viewport.width * -0.37, 
         -viewport.height * 0.7, 
         1 ]
-
 
     return <Chair ref={ref}  modelPath="src/assets/chair_round.glb" scale={scale} position={position} rotation={rotation}/>;
 })
