@@ -4,7 +4,8 @@ import { SpotLightHelper, DirectionalLightHelper } from 'three';
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { Plane, OrbitControls, Preload } from '@react-three/drei';
 import { useHelper, GizmoHelper, GizmoViewcube, GizmoViewport, } from '@react-three/drei';
-import { useScroll } from "framer-motion";
+import { motion, AnimatePresence, useScroll,  useSpring } from "framer-motion";
+
 // Import Components
 import Loading from "../loading/Loading";
 import Chair1 from "./Chair1";
@@ -210,76 +211,80 @@ const useMediaQuery = (query) => {
 };
 
 
-const CameraAnimation = ({ progress, isMobile }) => {
+const CameraAnimation = ({ progress }) => {
   const { camera } = useThree();
-  const zoomProgress = useRef(0); // Track zoom-in progress
-  const isZoomComplete = useRef(false); // Track if zoom-in is complete
+  const zoomProgress = useRef(0);
+  const isZoomComplete = useRef(false);
 
-  // Use dynamic zoom target and initial camera position
-  const targetZoom = isMobile ? 4 : 3;  // Target zoom position
-  const initialZ = 5; // Initial camera Z position
+  // Initial camera position
+  const initialZ = 5;
+  const targetZoom = 4.5;
 
-  // Disable scrolling during zoom-in
+  // Camera position variants for Framer Motion
+  const cameraVariants = {
+    initial: { z: initialZ, y: 0, rotationX: 0 },
+    zoomIn: { z: targetZoom, transition: { duration: 0.5 } }, // Adjust duration as needed
+    scrollPhase1: { 
+      y: 6 * progress, 
+      z: initialZ - progress * 1, 
+      rotationX: -0.01 * progress, 
+      transition: { duration: 0.5 } 
+    },
+    scrollPhase2: { 
+      y: (progress - 0.5) / 0.2 * 2 + 3, 
+      z: initialZ - 0.5 - (progress - 0.5) / 0.2 * 1.5, 
+      rotationX: (progress - 0.5) / 0.2 * 0.005 - 0.005, 
+      transition: { duration: 0.2 } 
+    },
+    scrollPhase3: { 
+      y: (progress - 0.7) / 0.3 * 5 + 5, 
+      z: initialZ - 0.5 - 1.5 - (progress - 0.7) / 0.3 * 6, 
+      rotationX: 0, 
+      transition: { duration: 0.3 } 
+    },
+    reset: { z: initialZ, y: 0, rotationX: 0, transition: { duration: 0.3 } } // Adjust duration as needed
+  };
+
+  const [currentAnimation, setCurrentAnimation] = useState('initial');
+
   useEffect(() => {
-    document.body.classList.add("no-scroll");
-    return () => document.body.classList.remove("no-scroll");
-  }, []);
+    // Zoom-in effect
+    const zoomIn = () => {
+      if (zoomProgress.current < 1) {
+        zoomProgress.current += 0.02; 
+      } else if (!isZoomComplete.current) {
+        isZoomComplete.current = true;
+        console.log("Zoom complete"); 
+        document.body.classList.remove("no-scroll"); 
+        setCurrentAnimation('scrollPhase1'); // Start scroll animations
+      }
+    };
+
+    const interval = setInterval(zoomIn, 16); 
+    return () => clearInterval(interval);
+  }, []); 
+
   useEffect(() => {
-    console.log(progress)
+    if (progress === 0) {
+      setCurrentAnimation('reset'); 
+    } else if (progress <= 0.5) {
+      setCurrentAnimation('scrollPhase1');
+    } else if (progress <= 0.7) {
+      setCurrentAnimation('scrollPhase2');
+    } else {
+      setCurrentAnimation('scrollPhase3');
+    }
   }, [progress]);
 
-  useFrame((state, delta) => {
-    // Zoom-in effect
-    if (zoomProgress.current < 1) {
-      zoomProgress.current += delta * 1.5; // Control speed of zoom
-      // Interpolate between initial position and target zoom
-      const zoomZ = initialZ + (targetZoom - initialZ) * zoomProgress.current;
-      camera.position.set(0, 0, zoomZ);
-    } else if (!isZoomComplete.current) {
-      isZoomComplete.current = true;
-      document.body.classList.remove("no-scroll"); // Re-enable scrolling
-    }
-
-    // Animation on scroll
-    if (isZoomComplete.current) {
-      // Slow down the progress by a factor of 2
-      const slowedProgress = progress * 1;
-
-      // Smoothly interpolate all values based on slowed progress
-      let finalZ, finalY, finalRotationX;
-
-      // Continuous forward movement
-      finalZ = targetZoom - slowedProgress * 1.1; // Move forward smoothly
-
-      // Phase 1: Move up and tilt downward (progress: 0 to 0.5)
-      if (slowedProgress <= 0.5) {
-        finalY = 4 * slowedProgress; // Move up
-        finalRotationX = -0.01 * slowedProgress; // Tilt downward
-      }
-      // Phase 2: Continue moving forward with slight adjustments (progress: 0.5 to 0.7)
-      else if (slowedProgress <= 0.7) {
-        const phaseProgress = (slowedProgress - 0.5) / 0.2; // Normalize progress for this phase
-        finalY = 4 * 0.5 + phaseProgress * 0.5; // Move up slightly
-        finalRotationX = -0.01 * 0.5 * (1 - phaseProgress); // Gradually reduce tilt
-      }
-      // Phase 3: Move up and forward more aggressively (progress: 0.7 to 1)
-      else {
-        const phaseProgress = (slowedProgress - 0.7) / 0.3; // Normalize progress for this phase
-        finalZ = targetZoom - 0.7 * 2 - phaseProgress * 6; // Move forward more aggressively
-        finalY = 4 * 0.5 + 0.5 + phaseProgress * 4; // Move up more aggressively
-        finalRotationX = 0; // Keep rotation straight
-      }
-       // Update camera position and rotation
-       camera.position.set(0, finalY, finalZ);
-       camera.rotation.x = finalRotationX;
-      }
+  // Update camera position and rotation within useFrame
+  useFrame(() => {
+    camera.position.z = cameraVariants[currentAnimation].z;
+    camera.position.y = cameraVariants[currentAnimation].y;
+    camera.rotation.x = cameraVariants[currentAnimation].rotationX;
   });
 
-  return null;
+  return null; // No need to render a visible element
 };
-
-
-
 
 
 

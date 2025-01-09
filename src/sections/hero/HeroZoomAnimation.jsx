@@ -46,19 +46,16 @@ const HeroAnimation = ({ isDesktop, isMobile, containerHeroRef, isCanvasLoaded, 
             backgroundScale.set(isMobile ? 1.3 : 1);
             backgroundTranslateY.set(isMobile ? viewportHeight * 0.0 : viewportHeight * 0);
         } else if (progress < 0.70) {
-            backgroundScale.set(isMobile ? 1.4 : 1);
-            backgroundTranslateY.set(isMobile ? -viewportHeight * 0.02 : viewportHeight * 0);
+            backgroundScale.set(isMobile ? 1.6 : 1);
+            backgroundTranslateY.set(isMobile ? -viewportHeight * 0.03 : viewportHeight * 0);
         } else if (progress < 0.90) {
             backgroundScale.set(isMobile ? 1.5 : 1);
             backgroundTranslateY.set(isMobile ? -viewportHeight * 0.03 : viewportHeight * 0);
         } else {
-            backgroundScale.set(isMobile ? 2 : 1.2);
-            backgroundTranslateY.set(isMobile ? viewportHeight * 0.2 : viewportHeight * 0);
+            backgroundScale.set(isMobile ? 2.6 : 1.2);
+            backgroundTranslateY.set(isMobile ? viewportHeight * 0.7 : viewportHeight * 0);
         }
-
-
       });
-
       return () => unsubscribe(); // Cleanup the listener
   }, [scrollYProgress, isMobile, isDesktop, isCanvasLoaded, onProgressUpdate]);
 
