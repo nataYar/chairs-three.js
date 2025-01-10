@@ -16,6 +16,7 @@ import Chair5 from "./Chair5";
 import Chair6 from "./Chair6";
 import Chair7 from "./Chair7";
 import HeroChair from "./HeroChair";
+import IntroText from "./IntroText";
 // Animation
 import ChairAnimation from "./ChairAnimation";
 import HeroZoomAnimation from "./HeroZoomAnimation";
@@ -25,6 +26,9 @@ import "../../styles/sections/Hero.scss";
 const Hero = () => {
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
+  const containerHeroRef = useRef(null);
+  const heroChairRef = useRef(null);
   const [chairPositions, setChairPositions] = useState(
     [
       {
@@ -67,12 +71,19 @@ const Hero = () => {
     { index: 5, ref: useRef(null) },
     { index: 6, ref: useRef(null) },
   ]);
-  const containerHeroRef = useRef(null);
-  const heroChairRef = useRef(null);
  
+ 
+  const updateViewportSize = (size) => {
+    setViewportSize(size);
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    console.log(progress)
+  }, [progress]);
  
 //   const setInitialPosition = (index, position) => {
 //     // console.log(index, position);
@@ -84,7 +95,7 @@ const Hero = () => {
 //     });
 // };
 
-useEffect(()=>{console.log(chairPositions)}, [chairPositions])
+// useEffect(()=>{console.log(chairPositions)}, [chairPositions])
 
 // custom hook for mob/laptop window size
 const useMediaQuery = (query) => {
@@ -177,20 +188,21 @@ const useMediaQuery = (query) => {
         zIndex: 2, 
         pointerEvents: 'none',
         }}>
-       <CameraAnimation progress={progress} isMobile={isMobile}/>
+       <CameraAnimation progress={progress} isMobile={isMobile}
+       updateViewportSize={updateViewportSize}/>
         <Preload all />
         <Lighting 
         isDesktop={isDesktop} 
         isMobile={isMobile}
         />
-        <Chair1 ref={chairRefs[0].ref}   isMobile={isMobile} />
-        <Chair2 ref={chairRefs[1].ref}   isMobile={isMobile}  />
-        <Chair3 ref={chairRefs[2].ref}   isMobile={isMobile} />
-        <Chair4 ref={chairRefs[3].ref}   isMobile={isMobile} />
-        <Chair5 ref={chairRefs[4].ref}   isMobile={isMobile} />
-        <Chair6 ref={chairRefs[5].ref}   isMobile={isMobile} />
-        <Chair7 ref={chairRefs[6].ref}   isMobile={isMobile} />
-        <HeroChair ref={heroChairRef} />
+        <Chair1 ref={chairRefs[0].ref}  isMobile={isMobile} />
+        <Chair2 ref={chairRefs[1].ref}  isMobile={isMobile}  />
+        <Chair3 ref={chairRefs[2].ref}  isMobile={isMobile} />
+        <Chair4 ref={chairRefs[3].ref} isMobile={isMobile} />
+        <Chair5 ref={chairRefs[4].ref}  isMobile={isMobile} />
+        <Chair6 ref={chairRefs[5].ref}  isMobile={isMobile} />
+        <Chair7 ref={chairRefs[6].ref}  isMobile={isMobile} />
+        <HeroChair ref={heroChairRef}  progress={progress}   heroChairRef={heroChairRef}/>
         <ShadowPlane />
         {/* <ChairAnimation
           isMobile={isMobile}
@@ -202,6 +214,9 @@ const useMediaQuery = (query) => {
       </Canvas>
     </div>
   </Suspense>
+  {/* INTRO TEXT */}
+  <IntroText progress={progress} isMobile={isMobile} />
+ 
       {/* <div className="additional-content">
         <h2>Scroll down to see the effect!</h2>
         <p>More content goes here...</p>
@@ -213,8 +228,11 @@ const useMediaQuery = (query) => {
 
 const CameraAnimation = ({ progress }) => {
   const { camera } = useThree();
+  const { viewport } = useThree();
   const zoomProgress = useRef(0);
   const isZoomComplete = useRef(false);
+
+ 
 
   // Initial camera position
   const initialZ = 5;
@@ -223,26 +241,26 @@ const CameraAnimation = ({ progress }) => {
   // Camera position variants for Framer Motion
   const cameraVariants = {
     initial: { z: initialZ, y: 0, rotationX: 0 },
-    zoomIn: { z: targetZoom, transition: { duration: 0.5 } }, // Adjust duration as needed
+    zoomIn: { z: targetZoom, transition: { duration: 2, ease: 'easeInOut'  } }, // Adjust duration as needed
     scrollPhase1: { 
       y: 6 * progress, 
-      z: initialZ - progress * 1, 
+      z: initialZ - progress * 0.3, 
       rotationX: -0.01 * progress, 
-      transition: { duration: 0.5 } 
+      transition: { duration: 2, ease: 'easeInOut'  } 
     },
     scrollPhase2: { 
       y: (progress - 0.5) / 0.2 * 2 + 3, 
-      z: initialZ - 0.5 - (progress - 0.5) / 0.2 * 1.5, 
+      z: initialZ - 0.15 - (progress - 0.5) / 0.2 * 0.5, 
       rotationX: (progress - 0.5) / 0.2 * 0.005 - 0.005, 
-      transition: { duration: 0.2 } 
+      transition: { duration: 2, ease: 'easeInOut'  } 
     },
     scrollPhase3: { 
       y: (progress - 0.7) / 0.3 * 5 + 5, 
-      z: initialZ - 0.5 - 1.5 - (progress - 0.7) / 0.3 * 6, 
+      z: initialZ - 0.15 - 0.5 - (progress - 0.7) / 0.3 * 1.5, 
       rotationX: 0, 
-      transition: { duration: 0.3 } 
+      transition: { duration: 3, ease: 'easeInOut'  } 
     },
-    reset: { z: initialZ, y: 0, rotationX: 0, transition: { duration: 0.3 } } // Adjust duration as needed
+    reset: { z: initialZ, y: 0, rotationX: 0, transition: { duration: 3, ease: 'easeInOut'  } } // Adjust duration as needed
   };
 
   const [currentAnimation, setCurrentAnimation] = useState('initial');
@@ -252,6 +270,7 @@ const CameraAnimation = ({ progress }) => {
     const zoomIn = () => {
       if (zoomProgress.current < 1) {
         zoomProgress.current += 0.02; 
+        camera.position.z = initialZ + (targetZoom - initialZ) * zoomProgress.current; 
       } else if (!isZoomComplete.current) {
         isZoomComplete.current = true;
         console.log("Zoom complete"); 

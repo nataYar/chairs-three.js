@@ -1,0 +1,29 @@
+// .intro-text {
+    // position: absolute;
+    // z-index: 30;
+    // bottom: 10%;
+    
+    // height: 100%;
+    // width: 100%;
+    // color: white;
+
+// }
+
+.intro-text {
+    opacity: 0;
+    transition: opacity 1s ease-out; 
+    position: absolute;
+    z-index: 30;
+    color: white;
+    bottom: 20%;
+    left:50%;
+    transform: translateX(-50%);
+
+    // height: 100%;
+    width: 90%;
+    text-align: center;
+  }
+  
+  .intro-text.visible {
+    opacity: 1;
+  }

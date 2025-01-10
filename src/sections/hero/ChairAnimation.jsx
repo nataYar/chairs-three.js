@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSpring } from "framer-motion";
 import { useFrame } from "@react-three/fiber";
 
-const ChairAnimation = ({ chairPositions, chairRefs, isCanvasLoaded, progress, isMobile, viewportHeight }) => {
+const ChairAnimation = ({ chairPositions, chairRefs, isCanvasLoaded, progress, isMobile }) => {
   // Spring configuration
   const springConfig = { mass: 5, stiffness: 400, damping: 80, restDelta: 0.001 };
 
