@@ -1,0 +1,170 @@
+// .intro-text {
+    // position: absolute;
+    // z-index: 30;
+    // bottom: 10%;
+    
+    // height: 100%;
+    // width: 100%;
+    // color: white;
+
+// }
+
+.intro-text {
+    font-size: 20px;
+    z-index: 99;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+    position: absolute;
+    z-index: 99;
+    color: rgb(252, 247, 229);
+    bottom: 12%;
+    left: 50%;
+    transform: translate(-50%);
+    width: 90%;
+    text-align: center;
+    .chair-container {
+      // position: relative;
+      // z-index: 99;
+      display: inline-block;
+      width: 100%;
+      padding: 5px;
+        h2 {
+            display: inline-block;
+            // position: relative;
+            // z-index: 99;
+            &:nth-of-type(1) {
+                padding-right: 40px;
+                font-size: 95px;
+                // position: relative;
+                // z-index: 99;
+              }
+          
+            &:nth-of-type(2) {
+                padding-left: 10px;
+                font-size: 95px;
+                
+              }
+          }
+    }
+   
+  }
+
+  .intro-text.visible {
+    opacity: 1;
+  }
+
+  /* Animation container */
+.animation-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  position: relative;
+  // background-color: aquamarine;
+  height: 60px;
+  width: fit-content; /* Adjust height */
+  // font-size: 100px; /* Font size for r */
+  
+}
+
+.letter-i {
+  color:  rgb(252, 247, 229);
+  position: relative;
+  height: 60px;
+  margin-right: 6px;
+  // left: 0; /* Starting position */
+  // bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: none; /* Default: no animation */
+}
+
+.letter-i.jump {
+  animation: jump 2s ease-in-out forwards;
+}
+
+.dot {
+  width: 20px;
+  height: 23%;
+  background-color:  rgb(252, 247, 229);
+  border-radius: 50%;
+  margin-bottom: 5px;
+}
+
+.body {
+  width: 10px;
+  height: 23%;
+  background-color:  rgb(252, 247, 229);
+  margin-bottom: 5px;
+}
+
+.leg {
+  width: 10px;
+  height: 23%;
+  background-color: rgb(252, 247, 229);
+}
+
+.left-leg {
+  transform-origin: top right;
+}
+
+.right-leg {
+  transform-origin: top left;
+}
+
+.letter-r {
+  display: block;
+  color: rgb(252, 247, 229);
+  font-size: 100px;
+  line-height: 53px;
+  height: 60px;
+  // background-color: blueviolet;
+  // position: absolute;
+  // bottom: 0;
+}
+
+/* Jump animation */
+@keyframes jump {
+  // 0% {
+  //   transform: translate(0, 0);
+  // }
+  // 20% {
+  //   transform: translate(20px, -120px); /* Jump up and forward */
+  // }
+  // 50% {
+  //   transform: translate(20px, -120px); /* Stay at peak */
+  // }
+  // 80% {
+  //   transform: translate(60px, 0); /* Land on "r" */
+  // }
+  // 100% {
+  //   transform: translate(60px, 0); /* Final position */
+  // }
+}
+
+/* Sitting animation for legs */
+.letter-i.jump .left-leg {
+  animation: sit-left-leg 2s ease-in-out forwards;
+}
+
+.letter-i.jump .right-leg {
+  animation: sit-right-leg 2s ease-in-out forwards;
+}
+
+@keyframes sit-left-leg {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-90deg); /* Rotate left leg to make it look like it's sitting */
+  }
+}
+
+@keyframes sit-right-leg {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(90deg); /* Rotate right leg to make it look like it's sitting */
+  }
+}

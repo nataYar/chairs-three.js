@@ -19,7 +19,7 @@ const Chair2 = forwardRef((props, ref) => {
     ];
     
 
-    return <Chair ref={ref} modelPath="src/assets/chair_round.glb" scale={scale} position={position} rotation={rotation}/>;
+    return <Chair ref={ref} modelPath="src/assets/chairs/chair_round.glb" scale={scale} position={position} rotation={rotation}/>;
 })
 
 export default Chair2

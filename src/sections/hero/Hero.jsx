@@ -20,12 +20,15 @@ import IntroText from "./IntroText";
 // Animation
 import ChairAnimation from "./ChairAnimation";
 import HeroZoomAnimation from "./HeroZoomAnimation";
+
 // Styles
-import "../../styles/sections/Hero.scss";
+import "../../styles/Hero.scss";
+
 
 const Hero = () => {
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [isNonFixedDelayed, setIsNonFixedDelayed] = useState(false); 
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const containerHeroRef = useRef(null);
   const heroChairRef = useRef(null);
@@ -73,6 +76,18 @@ const Hero = () => {
   ]);
  
  
+  useEffect(() => {
+    if (progress >= 1) {
+      // Add a 1-second delay before switching position
+      const timer = setTimeout(() => {
+        setIsNonFixedDelayed(true);
+      }, 1000); 
+      return () => clearTimeout(timer); // Cleanup timer on unmount or progress change
+    } else {
+      setIsNonFixedDelayed(false);
+    }
+  }, [progress]);
+
   const updateViewportSize = (size) => {
     setViewportSize(size);
   };
@@ -168,6 +183,8 @@ const useMediaQuery = (query) => {
     <div className="hero-section_container"
       ref={containerHeroRef}>
       <HeroZoomAnimation 
+      progress={progress}
+      isNonFixedDelayed={isNonFixedDelayed}
       onProgressUpdate={setProgress}
       isDesktop={isDesktop} 
       isMobile={isMobile}
@@ -175,7 +192,11 @@ const useMediaQuery = (query) => {
       isCanvasLoaded={isCanvasLoaded} 
       />
       <Suspense fallback={null}>
-      <div className="canvas-container">
+      <div 
+     className={`canvas-container ${
+      progress >= 1 && isNonFixedDelayed ? "non-fixed" : ""
+    }`}
+      >
       <Canvas shadows 
       onCreated={() => setIsCanvasLoaded(true)} 
       // camera={{ position: isMobile ? [0, 0, 5] : [0, 0, 5], fov: 75 }} 
@@ -216,94 +237,64 @@ const useMediaQuery = (query) => {
   </Suspense>
   {/* INTRO TEXT */}
   <IntroText progress={progress} isMobile={isMobile} />
- 
-      {/* <div className="additional-content">
-        <h2>Scroll down to see the effect!</h2>
-        <p>More content goes here...</p>
-      </div> */}
-    </div>
+  </div>
   );
 };
 
 
 const CameraAnimation = ({ progress }) => {
   const { camera } = useThree();
-  const { viewport } = useThree();
-  const zoomProgress = useRef(0);
-  const isZoomComplete = useRef(false);
-
- 
 
   // Initial camera position
   const initialZ = 5;
   const targetZoom = 4.5;
 
+  // Scale progress to fit 0 to 0.8 into 0 to 1
+  const adjustedProgress = Math.min(progress / 0.8, 1); // Scale and cap at 1
+
   // Camera position variants for Framer Motion
   const cameraVariants = {
     initial: { z: initialZ, y: 0, rotationX: 0 },
-    zoomIn: { z: targetZoom, transition: { duration: 2, ease: 'easeInOut'  } }, // Adjust duration as needed
-    scrollPhase1: { 
-      y: 6 * progress, 
-      z: initialZ - progress * 0.3, 
-      rotationX: -0.01 * progress, 
-      transition: { duration: 2, ease: 'easeInOut'  } 
+    scrollPhase1: {
+      y: 6 * adjustedProgress, 
+      z: initialZ - adjustedProgress * 0.3, 
+      rotationX: -0.01 * adjustedProgress, 
     },
-    scrollPhase2: { 
-      y: (progress - 0.5) / 0.2 * 2 + 3, 
-      z: initialZ - 0.15 - (progress - 0.5) / 0.2 * 0.5, 
-      rotationX: (progress - 0.5) / 0.2 * 0.005 - 0.005, 
-      transition: { duration: 2, ease: 'easeInOut'  } 
+    scrollPhase2: {
+      y: (adjustedProgress - 0.5) / 0.2 * 2 + 3,
+      z: initialZ - 0.15 - (adjustedProgress - 0.5) / 0.2 * 0.5,
+      rotationX: (adjustedProgress - 0.5) / 0.2 * 0.005 - 0.005,
     },
-    scrollPhase3: { 
-      y: (progress - 0.7) / 0.3 * 5 + 5, 
-      z: initialZ - 0.15 - 0.5 - (progress - 0.7) / 0.3 * 1.5, 
-      rotationX: 0, 
-      transition: { duration: 3, ease: 'easeInOut'  } 
+    scrollPhase3: {
+      y: (adjustedProgress - 0.7) / 0.3 * 5 + 5,
+      z: initialZ - 0.15 - 0.5 - (adjustedProgress - 0.7) / 0.3 * 1.5,
+      rotationX: 0,
     },
-    reset: { z: initialZ, y: 0, rotationX: 0, transition: { duration: 3, ease: 'easeInOut'  } } // Adjust duration as needed
   };
 
-  const [currentAnimation, setCurrentAnimation] = useState('initial');
-
-  useEffect(() => {
-    // Zoom-in effect
-    const zoomIn = () => {
-      if (zoomProgress.current < 1) {
-        zoomProgress.current += 0.02; 
-        camera.position.z = initialZ + (targetZoom - initialZ) * zoomProgress.current; 
-      } else if (!isZoomComplete.current) {
-        isZoomComplete.current = true;
-        console.log("Zoom complete"); 
-        document.body.classList.remove("no-scroll"); 
-        setCurrentAnimation('scrollPhase1'); // Start scroll animations
-      }
-    };
-
-    const interval = setInterval(zoomIn, 16); 
-    return () => clearInterval(interval);
-  }, []); 
-
-  useEffect(() => {
-    if (progress === 0) {
-      setCurrentAnimation('reset'); 
-    } else if (progress <= 0.5) {
-      setCurrentAnimation('scrollPhase1');
-    } else if (progress <= 0.7) {
-      setCurrentAnimation('scrollPhase2');
-    } else {
-      setCurrentAnimation('scrollPhase3');
-    }
-  }, [progress]);
+  // Determine the current phase of animation
+  let currentAnimation = 'initial';
+  if (adjustedProgress === 0) {
+    currentAnimation = 'initial';
+  } else if (adjustedProgress <= 0.5) {
+    currentAnimation = 'scrollPhase1';
+  } else if (adjustedProgress <= 0.7) {
+    currentAnimation = 'scrollPhase2';
+  } else {
+    currentAnimation = 'scrollPhase3';
+  }
 
   // Update camera position and rotation within useFrame
   useFrame(() => {
-    camera.position.z = cameraVariants[currentAnimation].z;
-    camera.position.y = cameraVariants[currentAnimation].y;
-    camera.rotation.x = cameraVariants[currentAnimation].rotationX;
+    const variant = cameraVariants[currentAnimation];
+    camera.position.z = variant.z;
+    camera.position.y = variant.y;
+    camera.rotation.x = variant.rotationX;
   });
 
   return null; // No need to render a visible element
 };
+
 
 
 

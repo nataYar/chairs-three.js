@@ -18,31 +18,43 @@ const HeroChair = forwardRef((props, ref) => {
         : [ viewport.width * 0, -viewport.height * -4.3, -35 ];
 
     const finalPosition = isMobile
-        ? [ viewport.width * 0.1, -viewport.height * -0.6, -10 ]
+        ? [ viewport.width * 0.12, -viewport.height * -0.6, -10 ]
         : [ viewport.width * 0, -viewport.height * -4.3, -35 ];
 
-    useFrame(({ clock }) => {
-        if (localRef.current) {
-            const time = clock.getElapsedTime();
-            localRef.current.rotation.x = rotation[0] + Math.sin(time * 1.2) * 0.02; 
-            localRef.current.rotation.y = rotation[1] + Math.cos(time * 1.1) * 0.02; 
-            localRef.current.rotation.z = rotation[2] + Math.sin(time * 1.5) * 0.02; 
-        }
+        useFrame(({ clock }) => {
+            const easeInOutCubic = (t) =>
+                t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+            
+            const progressForChair = Math.max(0, Math.min(1, (progress - 0.5) / 0.5));
+            const easedProgress = easeInOutCubic(progressForChair);
+            if (localRef.current) {
+                const time = clock.getElapsedTime();
+                localRef.current.rotation.x = rotation[0] + Math.sin(time * 1.2) * 0.02;
+                localRef.current.rotation.y = rotation[1] + Math.cos(time * 1.1) * 0.02;
+                localRef.current.rotation.z = rotation[2] + Math.sin(time * 1.5) * 0.02;
+            }
+        
+            if (heroChairRef.current) {
+                // Adjust the start and end of the animation
+                const progressForChair = Math.max(0, Math.min(1, (progress - 0.5) / 0.5));
+                // Apply easing
+                const easedProgress = easeInOutCubic(progressForChair);
+        
+                // Interpolate the position smoothly
+                heroChairRef.current.position.x =
+                    initialPosition[0] + (finalPosition[0] - initialPosition[0]) * easedProgress;
+                heroChairRef.current.position.y =
+                    initialPosition[1] + (finalPosition[1] - initialPosition[1]) * easedProgress;
+                heroChairRef.current.position.z =
+                    initialPosition[2] + (finalPosition[2] - initialPosition[2]) * easedProgress;
+            }
+        });
+        
 
-        // Calculate and apply progress-based position if heroChairRef is available
-        if (heroChairRef.current) {
-            const progressForChair = Math.max(0, Math.min(1, (progress - 0.7) / 0.3)); 
-            heroChairRef.current.position.x = 
-                initialPosition[0] + (finalPosition[0] - initialPosition[0]) * progressForChair;
-            heroChairRef.current.position.y = 
-                initialPosition[1] + (finalPosition[1] - initialPosition[1]) * progressForChair;
-            heroChairRef.current.position.z = 
-                initialPosition[2] + (finalPosition[2] - initialPosition[2]) * progressForChair;
-        }
-    });
+    
     useFrame(({ clock }) => {
         if (localRef.current) {
-            const time = (clock.getElapsedTime() - 5) * 0.5; // Start earlier and slow down
+            const time = (clock.getElapsedTime() - 5) * 0.7; // Start earlier and slow down
 
             localRef.current.rotation.x = rotation[0] + Math.sin(time * 1.2) * 0.02;
             localRef.current.rotation.y = rotation[1] + Math.cos(time * 1.1) * 0.02;
@@ -55,7 +67,7 @@ const HeroChair = forwardRef((props, ref) => {
             localRef.current = node; 
             if (ref) ref.current = node; 
         }} 
-        modelPath="src/assets/office_chair.glb" 
+        modelPath="src/assets/chairs/office_chair.glb" 
         scale={scale} 
         position={initialPosition} 
         rotation={rotation}

@@ -1,25 +1,30 @@
 .hero-section_container {
     position: relative;
-    min-height: 200vh; /* Adjust as needed */
+    height: 400vh; 
     width: 100vw;
-    // overflow-y: scroll;
+    overflow: hidden;
+    // overflow-y: auto;
+  }
+
+  .non-fixed {
+    top: -200% !important;
+
+    transition: all 3s ease-in-out;
   }
 
   .hero-section {
-    position: fixed !important; /* Keep fixed */
+    position: fixed; 
     top: 0;
     left: 0;
-    z-index: 1; /* Below the canvas */
+    z-index: 1; 
     height: 100vh;
     width: 100vw;
-    background-image: url('src/assets/hero_chairs.jpeg');
+    background-image: url('src/assets/chairs/hero_chairs.jpeg');
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
     transform-origin: center;
-    transition: all 0.3s ease;
-
   }
   
   .canvas-container {
@@ -28,17 +33,32 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 2; /* Canvas above the background */
-    pointer-events: none; /* Prevent interaction */
-  
+    z-index: 2; 
+    pointer-events: none; 
   }
+
+
+  // .hero-transition_moving{
+  //   transition: all 3s ease-in-out;
+  //   bottom: 0vh !important;
+  // }
   
-  .additional-content {
-    padding-top: 200vh; /* Create scrollable space */
-  }
-  
+  // .hero-transition{
+  //   position: absolute;
+  //   transition: all 3s ease-in-out;
+  //   z-index: 10;
+  //   bottom: -120vh;
+  //   height: 120vh;
+  //   width: 100%;
+  //   background: linear-gradient(
+  //     to top,
+  //     black 77%,
+  //     rgba(0, 0, 0, 0)
+  //   );
+  // }
+
   .no-scroll {
-    overflow: hidden; /* Disable scrolling */
+    overflow: hidden; 
   }
 
 @media (min-width: 769px) {
@@ -52,8 +72,6 @@
         z-index: 1; /* Below the canvas */
         height: 100vh;
         width: 100vw;
-        background-image: url('src/assets/hero_chairs.jpeg');
-        
         background-repeat: no-repeat;
         background-attachment: fixed;
         background-size: cover;

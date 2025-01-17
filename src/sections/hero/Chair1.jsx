@@ -53,7 +53,7 @@ const Chair1 = forwardRef((props, ref) => {
                 localRef.current = node; // Assign local ref
                 if (ref) ref.current = node; // Pass to parent ref if provided
             }}
-            modelPath="src/assets/rocking_chair.glb"
+            modelPath="src/assets/chairs/rocking_chair.glb"
             scale={scale}
             position={position}
             rotation={initialRotation} // Initial rotation as baseline
