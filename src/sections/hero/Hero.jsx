@@ -88,6 +88,8 @@ const Hero = () => {
     }
   }, [progress]);
 
+ 
+
   const updateViewportSize = (size) => {
     setViewportSize(size);
   };
@@ -191,6 +193,7 @@ const useMediaQuery = (query) => {
       containerHeroRef={containerHeroRef}
       isCanvasLoaded={isCanvasLoaded} 
       />
+      {/* <IntroText progress={progress} isMobile={isMobile} /> */}
       <Suspense fallback={null}>
       <div 
      className={`canvas-container ${
@@ -236,7 +239,10 @@ const useMediaQuery = (query) => {
     </div>
   </Suspense>
   {/* INTRO TEXT */}
-  <IntroText progress={progress} isMobile={isMobile} />
+  {/* <div className = {`hero-transition ${
+      progress >= 1 && isNonFixedDelayed ? "hero-transition_moving" : ""
+    }`}>
+    </div> */}
   </div>
   );
 };

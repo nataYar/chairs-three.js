@@ -4,8 +4,7 @@ import "../../styles/Office.scss";
 const Office = () => {
   return (
     <div className='office-section'>
-        <div className="hero-transition">
-        </div>
+     
     </div>
   )
 }

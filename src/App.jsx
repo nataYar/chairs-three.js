@@ -10,10 +10,8 @@ function App() {
     <>
     <div id="smooth-wrapper">
       <div id="smooth-content">
-      <section >
         <Hero />
-      </section>
-      <Office />
+        <Office />
       </div>
      </div>
     </>

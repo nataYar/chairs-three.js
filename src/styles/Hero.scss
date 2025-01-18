@@ -3,13 +3,22 @@
     height: 400vh; 
     width: 100vw;
     overflow: hidden;
-    // overflow-y: auto;
+    // background-color: blue;
   }
 
-  .non-fixed {
-    top: -200% !important;
+  .hero-section_sibling{
+    position: fixed; 
+    top: 0;
+    left: 0;
+    z-index: 99; 
+    height: 100vh;
+    width: 100vw;
+  }
 
-    transition: all 3s ease-in-out;
+
+  div.hero-section.non-fixed {
+    top: -300%;
+    // transition: all 1s ease-in-out;
   }
 
   .hero-section {
@@ -19,12 +28,14 @@
     z-index: 1; 
     height: 100vh;
     width: 100vw;
+    // background-color: aqua;
     background-image: url('src/assets/chairs/hero_chairs.jpeg');
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
     transform-origin: center;
+    // transition: all 0s ease-in-out; //dont change duration!
   }
   
   .canvas-container {
@@ -37,24 +48,55 @@
     pointer-events: none; 
   }
 
-
-  // .hero-transition_moving{
-  //   transition: all 3s ease-in-out;
-  //   bottom: 0vh !important;
+  // div.hero-transition.hero-transition_moving{
+  //   // transition: all 3s ease-in-out;
+  //   // bottom: 100vh !important;
+  //   // transition-delay: 10s;
+  //   bottom: 95vh;
   // }
+
+  .hero-transition {
+    position: absolute;
+    // transition: all 2s ease-in-out;
+    z-index: 10;
+    bottom: -100%; /* Initial position off-screen */
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0) 0%, 
+      black 23%,         
+      black 80%,         
+      rgba(0, 0, 0, 0) 100%
+    );
+    // background-color: hsla(180, 100%, 50%, 1);
+  }
   
+  .hero-transition.hero-transition_moving {
+    /* Initially place it lower on the page to cover the meeting point */
+    bottom: 50vh; /* Adjust this to the desired lower starting point */
+    // transition: all 2s ease-in-out; /* Adjust the duration to make it slower */
+  }
+
   // .hero-transition{
   //   position: absolute;
+    
   //   transition: all 3s ease-in-out;
   //   z-index: 10;
-  //   bottom: -120vh;
-  //   height: 120vh;
+  //   // bottom: -200%;
+  //   bottom: -90vh;
+  //   left: 0;
+  //   height: 100vh;
   //   width: 100%;
-  //   background: linear-gradient(
-  //     to top,
-  //     black 77%,
-  //     rgba(0, 0, 0, 0)
-  //   );
+  //   background-color: hsla(180, 100%, 50%, .5);
+    // background: linear-gradient(
+    //   to top,
+    //   rgba(0, 0, 0, 0) 0%, 
+    //   black 23%,         
+    //   black 80%,         
+    //   rgba(0, 0, 0, 0) 100%
+    // );
   // }
 
   .no-scroll {
