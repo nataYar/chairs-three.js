@@ -1,19 +1,24 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './styles/App.scss';
 import Hero from './sections/hero/Hero';
-import Office from './sections/office/Office';
+import Main from './sections/main/Main';
 
 function App() {
+  const [isHeroAnimatedOut, setIsHeroAnimatedOut] = useState(false);
+
+  function setHeroComplete(){
+    setIsHeroAnimatedOut(prev => !prev)
+  }
   return (
     <>
-    <div id="smooth-wrapper">
-      <div id="smooth-content">
-        <Hero />
-        <Office />
+      <div id="smooth-wrapper">
+        <div id="smooth-content app-container">
+          <Hero 
+          isHeroAnimatedOut={isHeroAnimatedOut} 
+          onHeroAnimationComplete={setHeroComplete}/>
+          {/* <Main isHeroAnimatedOut={isHeroAnimatedOut}/> */}
+        </div>
       </div>
-     </div>
     </>
   )
 }

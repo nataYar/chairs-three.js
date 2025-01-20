@@ -4,7 +4,7 @@ import { SpotLightHelper, DirectionalLightHelper } from 'three';
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { Plane, OrbitControls, Preload } from '@react-three/drei';
 import { useHelper, GizmoHelper, GizmoViewcube, GizmoViewport, } from '@react-three/drei';
-import { motion, AnimatePresence, useScroll,  useSpring } from "framer-motion";
+import { motion, AnimatePresence, useScroll,  useSpring, delay } from "framer-motion";
 
 // Import Components
 import Loading from "../loading/Loading";
@@ -16,16 +16,13 @@ import Chair5 from "./Chair5";
 import Chair6 from "./Chair6";
 import Chair7 from "./Chair7";
 import HeroChair from "./HeroChair";
-import IntroText from "./IntroText";
-// Animation
-import ChairAnimation from "./ChairAnimation";
 import HeroZoomAnimation from "./HeroZoomAnimation";
 
 // Styles
 import "../../styles/Hero.scss";
 
 
-const Hero = () => {
+const Hero = ({ isHeroAnimatedOut, onHeroAnimationComplete }) => {
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isNonFixedDelayed, setIsNonFixedDelayed] = useState(false); 
@@ -88,8 +85,6 @@ const Hero = () => {
     }
   }, [progress]);
 
- 
-
   const updateViewportSize = (size) => {
     setViewportSize(size);
   };
@@ -99,8 +94,18 @@ const Hero = () => {
   }, []);
 
   useEffect(() => {
-    console.log(progress)
-  }, [progress]);
+    if (progress >= 1) {
+        onHeroAnimationComplete(prev=>!prev);
+    }
+  }, [progress]); 
+
+  // useEffect(() => {
+  //     console.log(isHeroAnimatedOut)
+  // }, [isHeroAnimatedOut]); 
+
+  // useEffect(() => {
+  //   console.log("HERO "+ progress)
+  // }, [progress]);
  
 //   const setInitialPosition = (index, position) => {
 //     // console.log(index, position);
@@ -181,6 +186,28 @@ const useMediaQuery = (query) => {
   
   // useEffect(()=>{console.log(initialPositionsRight)}, initialPositionsRight)
   
+  const canvasAnimationVariants = {
+    initial: {
+      opacity: 1, 
+      y: 0, 
+    },
+    animate: {
+      opacity: 0, 
+      y: "-100vh", 
+      transition: {
+        delay: 4, // Delay before the animation starts
+        opacity: {
+          duration: 2, 
+          ease: "easeIn", 
+        },
+        y: {
+          duration: 2, 
+          ease: "easeInOut", 
+        },
+      },
+    },
+  };
+
   return (
     <div className="hero-section_container"
       ref={containerHeroRef}>
@@ -195,10 +222,11 @@ const useMediaQuery = (query) => {
       />
       {/* <IntroText progress={progress} isMobile={isMobile} /> */}
       <Suspense fallback={null}>
-      <div 
-     className={`canvas-container ${
-      progress >= 1 && isNonFixedDelayed ? "non-fixed" : ""
-    }`}
+      <motion.div
+        className="canvas-container"
+        variants={canvasAnimationVariants}
+        initial="initial" 
+        animate={progress >= 1 ? "animate" : "initial"} 
       >
       <Canvas shadows 
       onCreated={() => setIsCanvasLoaded(true)} 
@@ -228,21 +256,11 @@ const useMediaQuery = (query) => {
         <Chair7 ref={chairRefs[6].ref}  isMobile={isMobile} />
         <HeroChair ref={heroChairRef}  progress={progress}   heroChairRef={heroChairRef}/>
         <ShadowPlane />
-        {/* <ChairAnimation
-          isMobile={isMobile}
-          isCanvasLoaded={isCanvasLoaded} 
-          progress={progress}
-          chairPositions={chairPositions}
-          chairRefs={chairRefs}
-          /> */}
       </Canvas>
-    </div>
+    </motion.div>
   </Suspense>
   {/* INTRO TEXT */}
-  {/* <div className = {`hero-transition ${
-      progress >= 1 && isNonFixedDelayed ? "hero-transition_moving" : ""
-    }`}>
-    </div> */}
+ 
   </div>
   );
 };
