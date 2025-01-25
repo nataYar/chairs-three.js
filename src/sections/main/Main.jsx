@@ -1,59 +1,43 @@
 import React, { Suspense, useRef, useEffect, useState } from "react";
-import { motion, useScroll, useSpring,  } from "framer-motion";
+import { motion, useScroll, useMotionValueEvent, useSpring, useTransform  } from "framer-motion";
 
 import "../../styles/Main.scss";
 
-const Main = ({ isHeroAnimatedOut }) => {
-  const [progress, setProgress] = useState(0);
+const Main = ({ progress, isHeroAnimatedOut }) => {
   const [leftVideoSrc, setLeftVideoSrc] = useState("src/assets/office/office party.mp4");
   const [rightVideoSrc, setRightVideoSrc] = useState("src/assets/office/cat.mp4");
-  
-  const officeSectionRef = useRef(null);
- // Track scroll progress within the office-section
- 
- const { scrollYProgress } = useScroll({
-  target: officeSectionRef,
-  offset: ["start start", "end end"]
-});
+  const containerRef = useRef(null);
+  // const y = useTransform(progress, [0, 0.2], [0, -window.innerHeight]);
+  const officeProgress = useTransform(progress, [0.2, 0.4], [0, 1]);
+  const mainY = useSpring(0, { stiffness: 200, damping: 50 }); 
 
-useEffect(() => {
-  const handleScroll = () => {
-    const mainBounds = officeSectionRef.current.getBoundingClientRect();
-    console.log("Main Top:", mainBounds.top);
-    console.log("Main Scroll Progress:", scrollYProgress.get());
-  };
-
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, [scrollYProgress]);
-
-// useEffect(() => {
-//   console.log("isHeroAnimatedOut " + isHeroAnimatedOut)
-// }, [isHeroAnimatedOut]);
-
+  useMotionValueEvent(officeProgress, "change", (scrollProgress) => {
+    console.log(scrollProgress)
+  });
   // useEffect(() => {
-  //   console.log("Office "+ progress)
-  // }, [progress]);
+  //   const handleScroll = () => {
+  //   if (containerRef.current) {
+  //     const viewportHeight = window.innerHeight; // Get the viewport height dynamically
 
-  // const springConfig = { mass: 0.5, stiffness: 150, damping: 40, restDelta: 0.01 };
-  // const backgroundTranslateY = useSpring(0, springConfig);
+  //     if (officeProgress.get() >= 0.2 || officeProgress.get() <= 0.01) {
+  //       mainY.set(-viewportHeight * 2); // Move Main section up by 1 viewport height
+  //     } else {
+  //       mainY.set(0); // Reset Main section to its original position
+  //     }
+  //   }
+  // };
+  
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, [progress, mainY]); 
 
-  // const { scrollY } = useScroll({
-  //   container: officeSectionRef.current,
-  //   layoutEffect: false,
-  // });
 
   useEffect(() => {
-    const handleScroll = () => {
-      // Update progress from scrollYProgress (0 to 1)
-      const scrollProgress = scrollYProgress.get();
-      setProgress(scrollProgress);
-
-      // Change video sources based on scroll progress
-      if (scrollProgress >= 0.4 && scrollProgress < 0.7) {
+    const handleOfficeAnimation = () => {
+      if (officeProgress.get() >= 0.4 && officeProgress.get() < 0.7) {
         setLeftVideoSrc("src/assets/office/glitch.mp4");
         setRightVideoSrc("src/assets/office/glitch.mp4");
-      } else if (scrollProgress >= 0.7) {
+      } else if (officeProgress.get() >= 0.7) {
         setLeftVideoSrc("src/assets/office/chair_pink.mp4");
         setRightVideoSrc("src/assets/office/chair_pink.mp4");
       } else {
@@ -62,41 +46,37 @@ useEffect(() => {
       }
     };
 
-    // Subscribe to scrollYProgress changes
-    const unsubscribe = scrollYProgress.onChange(handleScroll);
+    const unsubscribe = officeProgress.on("change", handleOfficeAnimation);
 
-    // Clean up subscription on unmount
+    // Clean up subscription
     return () => unsubscribe();
-  }, [scrollYProgress]);
+  }, [officeProgress]);
 
   return (
     <motion.div 
-      className='main-section' 
-      ref={officeSectionRef}
-      // variants={officeAnimationVariants} 
-      // initial="initial" 
-      // animate={isHeroAnimatedOut ? "animate" : "initial"} 
+    ref={containerRef} 
+    className='main-section' 
+    style={{ y: mainY }} 
+  >
+    {/* .pc elements are siblings of .office-content */}
+    <div className='pc-left pc'>
+      <video src={leftVideoSrc} autoPlay muted loop></video>
+    </div>
+    <div className='pc-right pc'>
+      <video src={rightVideoSrc} autoPlay muted loop></video>
+    </div>
+    <div className='office-content'>
+      <motion.div
+        className="hero-section_sibling"
+        initial="initial"
+        animate={progress >= 1 ? "animate" : "initial"}
       >
-      <div className="black-transition"></div>
-      {/* <motion.div className="black-screen"></motion.div> */}
-      <div className='office-content'>
-        <motion.div
-          className="hero-section_sibling"
-          initial="initial"
-          animate={progress >= 1 ? "animate" : "initial"}
-        >
-          <div className={`intro-text ${progress >= 0.4 ? "visible" : ""}`}>
-            <h2>The Backbone of Productivity<br />Amidst Chaos.</h2>
-          </div>
-        </motion.div>
-        <div className='pc-left pc'>
-        <video src={leftVideoSrc} autoPlay muted loop></video>
-      </div>
-      <div className='pc-right pc'>
-        <video src={rightVideoSrc} autoPlay muted loop></video>
-      </div>
-      </div>
-    </motion.div>
+        <div className={`intro-text ${progress >= 0.4 ? "visible" : ""}`}>
+          <h2>The Backbone of Productivity<br />Amidst Chaos.</h2>
+        </div>
+      </motion.div>
+    </div>
+  </motion.div>
   );
 };
 

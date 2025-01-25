@@ -4,7 +4,7 @@ import { SpotLightHelper, DirectionalLightHelper } from 'three';
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { Plane, OrbitControls, Preload } from '@react-three/drei';
 import { useHelper, GizmoHelper, GizmoViewcube, GizmoViewport, } from '@react-three/drei';
-import { motion, AnimatePresence, useScroll,  useSpring, delay } from "framer-motion";
+import { motion, animate, useSpring,  useScroll, useTransform, useMotionValue, useMotionValueEvent, useAnimation } from "framer-motion";
 
 // Import Components
 import Loading from "../loading/Loading";
@@ -22,13 +22,22 @@ import HeroZoomAnimation from "./HeroZoomAnimation";
 import "../../styles/Hero.scss";
 
 
-const Hero = ({ isHeroAnimatedOut, onHeroAnimationComplete }) => {
+const Hero = ({ progress, scrollDirection,
+  // onProgressUpdate, 
+  isHeroAnimatedOut, onHeroAnimationComplete }) => {
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false);
-  const [progress, setProgress] = useState(0);
+
   const [isNonFixedDelayed, setIsNonFixedDelayed] = useState(false); 
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const containerHeroRef = useRef(null);
+  const bottomRef = useRef(null);
+  const [isScrolling, setIsScrolling] = useState(false); 
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+  let scrollTimeout = useRef(null); 
   const heroChairRef = useRef(null);
+  const canvasRef = useRef(null);
+  const [hcprogress, setHCPregress] = useState(0);
+  const [heroContainerProgress, setHeroContainerProgress] = useState(0);
   const [chairPositions, setChairPositions] = useState(
     [
       {
@@ -72,40 +81,83 @@ const Hero = ({ isHeroAnimatedOut, onHeroAnimationComplete }) => {
     { index: 6, ref: useRef(null) },
   ]);
  
- 
-  useEffect(() => {
-    if (progress >= 1) {
-      // Add a 1-second delay before switching position
-      const timer = setTimeout(() => {
-        setIsNonFixedDelayed(true);
-      }, 1000); 
-      return () => clearTimeout(timer); // Cleanup timer on unmount or progress change
-    } else {
-      setIsNonFixedDelayed(false);
+  useMotionValueEvent(progress, "change", (latest) => {
+    setHCPregress(latest)
+  })
+
+  // listen to progress changes and trigger scroll
+  useMotionValueEvent(progress, "change", (latest) => {
+    if (latest >= 0.2 && scrollDirection === "down" && !hasScrolledToBottom) {
+      // Clear any existing timeout
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+
+      // Wait for natural scroll to settle, then scroll to .bottom
+      scrollTimeout.current = setTimeout(() => {
+        bottomRef.current.scrollIntoView({
+          behavior: "smooth", // Smooth scrolling
+          block: "start", // Align the element to the top of the viewport
+        });
+        setHasScrolledToBottom(true); // Prevent further scrolling
+      }, 300); // Adjust delay to allow natural scrolling to finish
     }
-  }, [progress]);
 
-  const updateViewportSize = (size) => {
-    setViewportSize(size);
-  };
+    // Reset when scrolling back up (Optional)
+    if (latest < 0.2 && scrollDirection === "up") {
+      setHasScrolledToBottom(false); // Allow the scroll to trigger again
+    }
+  });
 
+  // Cleanup timeout when the component unmounts
   useEffect(() => {
-    window.scrollTo(0, 0);
+    return () => {
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+    };
   }, []);
 
   useEffect(() => {
-    if (progress >= 1) {
-        onHeroAnimationComplete(prev=>!prev);
-    }
-  }, [progress]); 
+    const transformedValue = hcprogress >= 0.2 ? 1 : hcprogress / 0.2;
+    setHeroContainerProgress(transformedValue);
+  }, [hcprogress]);
+
+  useEffect(() => {
+    // Map hcprogress from [0, 0.2] to [0, 1]
+    const transformedValue = hcprogress >= 0.2 ? 1 : hcprogress / 0.2;
+    setHeroContainerProgress(transformedValue);
+  }, [hcprogress]);
+
+// useEffect(() => {
+//      console.log(hcprogress)
+//    }, [hcprogress]);
+
+
+ useEffect(() => {
+     window.scrollTo(0, 0); // Scroll the entire page to the top
+     if (containerHeroRef.current) {
+      containerHeroRef.current.scrollTop = 0; // Scroll the container to the top
+     }
+   }, []);
 
   // useEffect(() => {
-  //     console.log(isHeroAnimatedOut)
-  // }, [isHeroAnimatedOut]); 
-
-  // useEffect(() => {
-  //   console.log("HERO "+ progress)
+  //   if (progress >= 1) {
+  //     // Add a 1-second delay before switching position
+  //     const timer = setTimeout(() => {
+  //       setIsNonFixedDelayed(true);
+  //     }, 1000); 
+  //     return () => clearTimeout(timer); // Cleanup timer on unmount or progress change
+  //   } else {
+  //     setIsNonFixedDelayed(false);
+  //   }
   // }, [progress]);
+
+  // const updateViewportSize = (size) => {
+  //   setViewportSize(size);
+  // };
+
+  // useEffect(() => {
+  //   if (progress >= 1) {
+  //       onHeroAnimationComplete(prev=>!prev);
+  //   }
+  // }, [progress]); 
  
 //   const setInitialPosition = (index, position) => {
 //     // console.log(index, position);
@@ -117,7 +169,6 @@ const Hero = ({ isHeroAnimatedOut, onHeroAnimationComplete }) => {
 //     });
 // };
 
-// useEffect(()=>{console.log(chairPositions)}, [chairPositions])
 
 // custom hook for mob/laptop window size
 const useMediaQuery = (query) => {
@@ -186,6 +237,31 @@ const useMediaQuery = (query) => {
   
   // useEffect(()=>{console.log(initialPositionsRight)}, initialPositionsRight)
   
+  // const canvasAnimationVariants = useAnimation();
+
+  // useMotionValueEvent(progress, "change", 
+  //   (latest) => {
+  //     console.log(latest)
+  //      // Trigger animations at specific points
+  //       if (latest >= 0.2) {
+  //         canvasAnimationVariants.start({
+  //           opacity: 0, 
+  //           // y: "-100vh", 
+  //           transition: { duration: 1, ease: "easeInOut" },
+  //         });
+  //       } 
+  //       else if (latest < 0.2) {
+  //         // setIsJumping(false);
+  //         canvasAnimationVariants.start({
+  //           opacity: 1, 
+  //           // y: 0, 
+  //           transition: { duration: 1, ease: "easeInOut" },
+  //         });
+  //       }
+  //     });
+  
+  
+
   const canvasAnimationVariants = {
     initial: {
       opacity: 1, 
@@ -195,10 +271,10 @@ const useMediaQuery = (query) => {
       opacity: 0, 
       y: "-100vh", 
       transition: {
-        delay: 4, // Delay before the animation starts
+        delay: 1, 
         opacity: {
           duration: 2, 
-          ease: "easeIn", 
+          ease: "easeInOut", 
         },
         y: {
           duration: 2, 
@@ -208,13 +284,58 @@ const useMediaQuery = (query) => {
     },
   };
 
+ 
+  
+  // useEffect(() => {
+  //   console.log(heroContainerProgress.get())
+  // }, [heroContainerProgress])
+
+  // useEffect(() => {
+  //   console.log(progress)
+  // }, [progress]);
+
+  // const { scrollYProgress } = useScroll();
+  // const viewportHeight = window.innerHeight;
+
+  // // Scroll-linked translation of .hero-section_container
+  // const containerTranslateY = useTransform(
+  //   progress,
+  //   [0, 0.2], // Use global scroll progress from 0 to 0.2
+  //   [0, -viewportHeight], // Move the container out of the viewport when progress reaches 0.2
+  //   { clamp: false } // Allow smooth scroll and scrub effect
+  // );
+
+  // const smoothTranslateY = useTransform(containerTranslateY, [0, -window.innerHeight], [0, -window.innerHeight], {
+  //   ease: "easeInOut", // Smooth transition for both forward and backward scrolling
+  // });
+  const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
+
+  // Transform the Y position of .canvas-container based on progress
+  const canvasY = useTransform(
+    progress, // Progress value (global scroll)
+    [0.2, 0.3], // Input range (from progress 0.2 to 0.3)
+    [0, -viewportHeight], // Output range (move from 0 to -100vh in pixels)
+    { clamp: true } // Prevent values outside this range
+  );
+
   return (
-    <div className="hero-section_container"
-      ref={containerHeroRef}>
+    <motion.div className="hero-section_container"
+      ref={containerHeroRef}
+
+      // style={{
+      //   y: hcprogress >= 0.2 ? containerTranslateY : 0,
+      // }} 
+      // transition={{
+      //   type: "spring", // Smooth easing
+      //   stiffness: 80,
+      //   damping: 20,  // Smooth return when scrolling back
+      //   duration: 5, // Set duration for the animation
+      // }}
+      >
       <HeroZoomAnimation 
       progress={progress}
       isNonFixedDelayed={isNonFixedDelayed}
-      onProgressUpdate={setProgress}
+      // onProgressUpdate={onProgressUpdate}
       isDesktop={isDesktop} 
       isMobile={isMobile}
       containerHeroRef={containerHeroRef}
@@ -223,10 +344,19 @@ const useMediaQuery = (query) => {
       {/* <IntroText progress={progress} isMobile={isMobile} /> */}
       <Suspense fallback={null}>
       <motion.div
+        ref={canvasRef}
         className="canvas-container"
         variants={canvasAnimationVariants}
-        initial="initial" 
-        animate={progress >= 1 ? "animate" : "initial"} 
+        style={{
+          y: canvasY, // Apply the calculated transform
+        }}
+        transition={{
+          duration: 1, // Animation duration
+          ease: "easeInOut", // Easing function
+        }}
+          // initial="initial"
+          // animate={true ? "animate" : "initial"} 
+          // animate={heroContainerProgress >= 1 ? "animate" : "initial"} 
       >
       <Canvas shadows 
       onCreated={() => setIsCanvasLoaded(true)} 
@@ -238,10 +368,10 @@ const useMediaQuery = (query) => {
         width: '100%',
         height: '100%',
         zIndex: 2, 
-        pointerEvents: 'none',
+        pointerEvents: 'auto',
         }}>
-       <CameraAnimation progress={progress} isMobile={isMobile}
-       updateViewportSize={updateViewportSize}/>
+            
+       <CameraAnimation progress={progress} isMobile={isMobile} />
         <Preload all />
         <Lighting 
         isDesktop={isDesktop} 
@@ -255,15 +385,101 @@ const useMediaQuery = (query) => {
         <Chair6 ref={chairRefs[5].ref}  isMobile={isMobile} />
         <Chair7 ref={chairRefs[6].ref}  isMobile={isMobile} />
         <HeroChair ref={heroChairRef}  progress={progress}   heroChairRef={heroChairRef}/>
+        {/* <OrbitControls
+          enableZoom={true}
+          enablePan={true}
+          enableRotate={true}
+          maxPolarAngle={Math.PI}
+          minPolarAngle={0}
+        /> */}
         <ShadowPlane />
       </Canvas>
     </motion.div>
   </Suspense>
-  {/* INTRO TEXT */}
- 
-  </div>
+  <div className="bottom" ref={bottomRef}>bottom</div>
+  </motion.div>
   );
 };
+
+
+
+
+
+// const CameraAnimation = ({ progress }) => {
+//   const { camera } = useThree();
+
+//   // Initial camera position
+//   const initialZ = 5;
+
+//   // Normalize progress for the Hero section (0 to 0.2 => 0 to 1)
+//   const adjustedProgress = useTransform(progress, [0, 0.2], [0, 1]);
+
+//   // State to lock the camera when Stage 3 is reached
+//   const [isStage3Locked, setIsStage3Locked] = useState(false);
+
+//   useEffect(() => {
+//     // Lock camera to Stage 3 when progress >= 0.7
+//     const unsubscribe = adjustedProgress.on("change", (currentProgress) => {
+//       if (currentProgress >= 1 && !isStage3Locked) {
+//         setIsStage3Locked(true);
+
+//         // Animate the camera to the final stage (Stage 3)
+//         animate(camera.position, { y: 9, z: 6 }, { duration: 1, ease: "easeOut" });
+//         animate(camera.rotation, { x: 0.01 }, { duration: 1, ease: "easeOut" });
+//       } else if (currentProgress < 0.7 && isStage3Locked) {
+//         setIsStage3Locked(false); // Unlock camera when scrolling back up
+//       }
+//     });
+
+//     return () => unsubscribe();
+//   }, [adjustedProgress, isStage3Locked, camera]);
+
+//   // Update camera position dynamically (during scrolling)
+//   useFrame(() => {
+//     if (!isStage3Locked) {
+//       const currentProgress = adjustedProgress.get();
+
+//       // Determine the current phase of animation
+//       let variant;
+//       if (currentProgress <= 0.5) {
+//         // Phase 1: Initial zoom and tilt
+//         variant = {
+//           y: 6 * currentProgress,
+//           z: initialZ - currentProgress * 0.3,
+//           rotationX: -0.01 * currentProgress,
+//         };
+//       } else if (currentProgress <= 0.7) {
+//         // Phase 2: Smooth transition
+//         const phaseProgress = (currentProgress - 0.5) / 0.2;
+//         variant = {
+//           y: phaseProgress * 2 + 3,
+//           z: initialZ - 0.15 - phaseProgress * 0.5,
+//           rotationX: phaseProgress * 0.005 - 0.005,
+//         };
+//       } else {
+//         // Phase 3: Final zoom out
+//         const phaseProgress = (currentProgress - 0.7) / 0.3;
+//         variant = {
+//           y: 5 + phaseProgress * 4,
+//           z: initialZ + phaseProgress,
+//           rotationX: 0.01,
+//         };
+//       }
+
+//       // Apply the variant to the camera
+//       camera.position.y = variant.y;
+//       camera.position.z = variant.z;
+//       camera.rotation.x = variant.rotationX;
+//     }
+//   });
+
+//   return null; // No visible elements to render
+// };
+
+
+
+
+
 
 
 const CameraAnimation = ({ progress }) => {
@@ -271,57 +487,49 @@ const CameraAnimation = ({ progress }) => {
 
   // Initial camera position
   const initialZ = 5;
-  const targetZoom = 4.5;
 
-  // Scale progress to fit 0 to 0.8 into 0 to 1
-  const adjustedProgress = Math.min(progress / 0.8, 1); // Scale and cap at 1
-
-  // Camera position variants for Framer Motion
-  const cameraVariants = {
-    initial: { z: initialZ, y: 0, rotationX: 0 },
-    scrollPhase1: {
-      y: 6 * adjustedProgress, 
-      z: initialZ - adjustedProgress * 0.3, 
-      rotationX: -0.01 * adjustedProgress, 
-    },
-    scrollPhase2: {
-      y: (adjustedProgress - 0.5) / 0.2 * 2 + 3,
-      z: initialZ - 0.15 - (adjustedProgress - 0.5) / 0.2 * 0.5,
-      rotationX: (adjustedProgress - 0.5) / 0.2 * 0.005 - 0.005,
-    },
-    scrollPhase3: {
-      y: (adjustedProgress - 0.7) / 0.3 * 5 + 5,
-      z: initialZ - 0.15 - 0.5 - (adjustedProgress - 0.7) / 0.3 * 1.5,
-      rotationX: 0,
-    },
-  };
-
-  // Determine the current phase of animation
-  let currentAnimation = 'initial';
-  if (adjustedProgress === 0) {
-    currentAnimation = 'initial';
-  } else if (adjustedProgress <= 0.5) {
-    currentAnimation = 'scrollPhase1';
-  } else if (adjustedProgress <= 0.7) {
-    currentAnimation = 'scrollPhase2';
-  } else {
-    currentAnimation = 'scrollPhase3';
-  }
+  // Normalize progress for the Hero section (0 to 0.2 => 0 to 1)
+  const adjustedProgress = useTransform(progress, [0, 0.2], [0, 1]);
 
   // Update camera position and rotation within useFrame
   useFrame(() => {
-    const variant = cameraVariants[currentAnimation];
-    camera.position.z = variant.z;
+    const currentProgress = adjustedProgress.get(); // Get the current progress value
+   
+    // Determine the current phase of animation
+    let variant;
+    if (currentProgress <= 0.5) {
+      // Phase 1: Initial zoom and tilt
+      variant = {
+        y: 6 * currentProgress, // Smooth rise
+        z: initialZ - currentProgress * 0.3, // Smooth zoom in
+        rotationX: -0.01 * currentProgress, // Smooth tilt
+      };
+    } else if (currentProgress <= 0.7) {
+      // Phase 2: Smooth transition
+      const phaseProgress = (currentProgress - 0.5) / 0.2;
+      variant = {
+        y: 3 + phaseProgress * 2, // Continue rising smoothly
+        z: initialZ - 0.15 - phaseProgress * 0.5, // Continue zooming in smoothly
+        rotationX: -0.005 + phaseProgress * 0.01, // Smoothly reduce tilt
+      };
+    } else {
+      // Phase 3: Final zoom out, higher and completely level
+      const phaseProgress = (currentProgress - 0.7) / 0.3;
+      variant = {
+        y: 5 + phaseProgress * 6, // Higher y position at the end
+        z: initialZ - 0.65 + phaseProgress * 1.5, // Move back further
+        rotationX: 0, // No tilt for a straight view
+      };
+    }
+
+    // Apply the variant to the camera
     camera.position.y = variant.y;
+    camera.position.z = variant.z;
     camera.rotation.x = variant.rotationX;
   });
 
   return null; // No need to render a visible element
 };
-
-
-
-
 
 
 const Lighting = ({ isMobile, isDesktop }) => {

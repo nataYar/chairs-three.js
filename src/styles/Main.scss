@@ -1,27 +1,24 @@
 .main-section {
-  position: relative;
-  // z-index: 2;
-  // margin-top: 300vh; 
-  height: 400vh;
+  position: absolute;
+  top:300vh;
+  height: 300vh;
   width: 100vw;
-  overflow: hidden;
-  background-color: #d73eb6;
+  background-color: #000000;
 }
 
 .black-transition{
-  height: 100vh;
+  height: 10vh;
   width: 100vw;
   background-color: #000000;
 }
 .black-screen {
-  // position: fixed;
-  // background-color: #1f1e23;
-  // top: 0;
-  // left: 0;
-  // z-index: 4;
-  // height: 100vh;
-  // width: 100vw;
-  // opacity: 0.3;
+  background-color: #1f1e23;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  height: 100vh;
+  width: 100vw;
+  opacity: 0.3;
 }
 
 .black-screen_transparency{
@@ -30,30 +27,43 @@
 
 .office-content {
   position: relative;
-  // top: 0;
-  // left: 0;
-  z-index: 5;
+  top: 0;
+  left: 0;
+  z-index: 2; // Higher z-index to ensure it's on top
   height: 100vh;
   width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
   background-image: url('src/assets/office/office_cutout.png');
-  background-position-x: 15% ;
+  background-position-x: 15%;
   background-repeat: no-repeat;
-  // background-attachment: fixed;
   background-size: cover;
   transform-origin: center;
 }
 
-.pc { position: absolute; }
+.pc {
+  z-index: 1; // Lower z-index to ensure it's behind .office-content
+}
 
 .pc-left {
-  bottom: 25vh;
+  position: absolute;
+  top: 62vh;
   left: 5px;
-  z-index: 1;
   height: auto;
-  width: 47vw;
+  width: 38vw;
+  background-color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pc-right {
+  position: absolute;
+  top: 58vh;
+  right: 11vw;
+  height: auto;
+  width: 21vw;
   background-color: #000000;
   display: flex;
   align-items: center;
@@ -63,22 +73,10 @@
 .pc-right video, 
 .pc-left video {
   border-radius: 10%;
-  // height: auto;
   width: 100%;
   object-fit: contain;
 }
 
-.pc-right {
-  bottom: 35vh;
-  right: 15px;
-  z-index: 1;
-  height: auto;
-  width: 25vw;
-  background-color: #000000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 
 .second-section {
