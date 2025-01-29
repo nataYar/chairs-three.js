@@ -22,7 +22,7 @@ import HeroZoomAnimation from "./HeroZoomAnimation";
 import "../../styles/Hero.scss";
 
 
-const Hero = ({ progress, scrollDirection,
+const Hero = ({ progress, updateRange, heroRange, scrollDirection,
   // onProgressUpdate, 
   isHeroAnimatedOut, onHeroAnimationComplete }) => {
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false);
@@ -81,13 +81,41 @@ const Hero = ({ progress, scrollDirection,
     { index: 6, ref: useRef(null) },
   ]);
  
-  useMotionValueEvent(progress, "change", (latest) => {
-    setHCPregress(latest)
-  })
+  useEffect(() => {
+    if (containerHeroRef.current) {
+      const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
+
+      // Get the Hero section's offset and height
+      const heroOffsetTop = containerHeroRef.current.offsetTop;
+      const heroHeight = containerHeroRef.current.offsetHeight;
+
+      // Calculate the dynamic range for Hero
+      const heroStart = heroOffsetTop / totalScrollHeight;
+      const heroEnd = (heroOffsetTop + heroHeight) / totalScrollHeight;
+
+      // Pass the range to App.js through the updateRange function
+      updateRange(heroStart, heroEnd);
+    }
+  }, []);
+
+  const heroProgress = useTransform(progress, heroRange, [0, 1]); 
+  // const heroProgress = useTransform(progress, [0, 0.7], [0, 1]); 
+
+  // console.log(heroRange[1])
+
+  // useEffect(()=>{heroProgress},[heroProgress])
+
+  // useMotionValueEvent(progress, "change", (latest) => {
+  //   setHCPregress(latest)
+  // })
 
   // listen to progress changes and trigger scroll
   useMotionValueEvent(progress, "change", (latest) => {
-    if (latest >= 0.2 && scrollDirection === "down" && !hasScrolledToBottom) {
+    // console.log("bottomRef.current "+bottomRef.current)
+    // console.log("progress "+latest)
+    console.log("heroRange[1] "+ heroRange[1])
+    if (latest >= 0.3 && scrollDirection === "down" && hasScrolledToBottom) {
+      console.log("scroll must have triggered")
       // Clear any existing timeout
       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
 
@@ -102,7 +130,7 @@ const Hero = ({ progress, scrollDirection,
     }
 
     // Reset when scrolling back up (Optional)
-    if (latest < 0.2 && scrollDirection === "up") {
+    if (latest < heroRange[1] && scrollDirection === "up") {
       setHasScrolledToBottom(false); // Allow the scroll to trigger again
     }
   });
@@ -114,16 +142,16 @@ const Hero = ({ progress, scrollDirection,
     };
   }, []);
 
-  useEffect(() => {
-    const transformedValue = hcprogress >= 0.2 ? 1 : hcprogress / 0.2;
-    setHeroContainerProgress(transformedValue);
-  }, [hcprogress]);
+//   useEffect(() => {
+//     const transformedValue = hcprogress >= 0.2 ? 1 : hcprogress / 0.2;
+//     setHeroContainerProgress(transformedValue);
+//   }, [hcprogress]);
 
-  useEffect(() => {
-    // Map hcprogress from [0, 0.2] to [0, 1]
-    const transformedValue = hcprogress >= 0.2 ? 1 : hcprogress / 0.2;
-    setHeroContainerProgress(transformedValue);
-  }, [hcprogress]);
+//   useEffect(() => {
+//     // Map hcprogress from [0, 0.2] to [0, 1]
+//     const transformedValue = hcprogress >= 0.2 ? 1 : hcprogress / 0.2;
+//     setHeroContainerProgress(transformedValue);
+//   }, [hcprogress]);
 
 // useEffect(() => {
 //      console.log(hcprogress)
@@ -313,7 +341,7 @@ const useMediaQuery = (query) => {
   // Transform the Y position of .canvas-container based on progress
   const canvasY = useTransform(
     progress, // Progress value (global scroll)
-    [0.2, 0.3], // Input range (from progress 0.2 to 0.3)
+    [heroRange[1]-0.2, heroRange[1]], 
     [0, -viewportHeight], // Output range (move from 0 to -100vh in pixels)
     { clamp: true } // Prevent values outside this range
   );
@@ -335,6 +363,7 @@ const useMediaQuery = (query) => {
       <HeroZoomAnimation 
       progress={progress}
       isNonFixedDelayed={isNonFixedDelayed}
+      heroProgress={heroProgress}
       // onProgressUpdate={onProgressUpdate}
       isDesktop={isDesktop} 
       isMobile={isMobile}
@@ -371,7 +400,7 @@ const useMediaQuery = (query) => {
         pointerEvents: 'auto',
         }}>
             
-       <CameraAnimation progress={progress} isMobile={isMobile} />
+       <CameraAnimation progress={progress} heroRange={heroRange} isMobile={isMobile} />
         <Preload all />
         <Lighting 
         isDesktop={isDesktop} 
@@ -396,7 +425,7 @@ const useMediaQuery = (query) => {
       </Canvas>
     </motion.div>
   </Suspense>
-  <div className="bottom" ref={bottomRef}>bottom</div>
+  <div className="bottom" ref={bottomRef}></div>
   </motion.div>
   );
 };
@@ -482,14 +511,14 @@ const useMediaQuery = (query) => {
 
 
 
-const CameraAnimation = ({ progress }) => {
+const CameraAnimation = ({ progress, heroRange }) => {
   const { camera } = useThree();
 
   // Initial camera position
   const initialZ = 5;
 
   // Normalize progress for the Hero section (0 to 0.2 => 0 to 1)
-  const adjustedProgress = useTransform(progress, [0, 0.2], [0, 1]);
+  const adjustedProgress =  useTransform(progress, heroRange, [0, 1]);
 
   // Update camera position and rotation within useFrame
   useFrame(() => {

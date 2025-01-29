@@ -4,11 +4,12 @@ import "../../styles/Hero.scss";
 import "../../styles/IntroText.scss";
 
 const HeroAnimation = ({
-  progress, 
+  progress,
+  heroProgress, 
   isCanvasLoaded,
   // onProgressUpdate,
 }) => {
-  const springConfig = { mass: 0.5, stiffness: 100, damping: 40, restDelta: 0.001 };
+  const springConfig = { mass: 0.5, stiffness: 150, damping: 30, restDelta: 0.001 };
   const backgroundScale = useSpring(1, springConfig);
   const backgroundTranslateY = useSpring(0, springConfig);
 
@@ -18,12 +19,6 @@ const HeroAnimation = ({
   const [gradientVisible, setGradientVisible] = useState(false);
   const animationControls = useAnimation();
   const heroRef = useRef(null);
-  let previousProgress = useRef(0);
-
-  // Normalize scroll progress for the Hero section (0 to 0.2 => 0 to 1)
-  const heroProgress = useTransform(progress, [0, 0.2], [0, 1]);
-
-  // useEffect(()=>{console.log(heroProgress.get())},[heroProgress])
   
     useEffect(() => {
       window.scrollTo(0, 0); // Scroll the entire page to the top
@@ -39,10 +34,6 @@ const HeroAnimation = ({
         }
       }
     });
-
-    // useEffect(() => {
-    //   console.log(introTextVisible);
-    // }, [introTextVisible]);
 
     // Handle animations based on scroll progress
     useEffect(() => {

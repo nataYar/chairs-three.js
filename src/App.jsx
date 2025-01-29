@@ -6,9 +6,17 @@ import './styles/App.scss';
 
 const App = () => {
   const [isScrollDisabled, setIsScrollDisabled] = useState(false); 
+  const [hasScrolledToMain, setHasScrolledToMain] = useState(false); 
   const [scrollDirection, setScrollDirection] = useState("down")
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll();
+  const [heroRange, setHeroRange] = useState([0, 1]);
+  const [mainRange, setMainRange] = useState([0, 1]);
+
+  useEffect(()=> {
+    // console.log(heroRange)
+    // console.log(mainRange)
+  }, [heroRange, mainRange])
 
   useEffect(() => {
     window.scrollTo(0, 0); 
@@ -17,31 +25,65 @@ const App = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) { 
+      const heroHeight = container.firstChild.offsetHeight; 
+      const mainStart = heroHeight; 
+      const mainEnd = mainStart + container.lastChild.offsetHeight; 
+
+      setHeroRange([0, mainStart / container.scrollHeight]);
+      setMainRange([mainStart / container.scrollHeight, mainEnd / container.scrollHeight]);
+    }
+  }, [containerRef.current]); // Depend on containerRef.current
+
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const container = containerRef.current;
-    const heroHeight = container.firstChild.offsetHeight; // Height of Hero component
-    const mainStart = heroHeight; // Scroll position where Main starts
+    if (container) { 
+      const heroHeight = container.firstChild.offsetHeight; // Height of Hero component
+      const mainStart = heroHeight; // Scroll position where Main starts
+      const mainEnd = mainStart + container.lastChild.offsetHeight; 
 
-    const diff = latest - scrollYProgress.getPrevious()
-    setScrollDirection(diff > 0 ? "down" : "up")
+      const diff = latest - scrollYProgress.getPrevious()
+      setScrollDirection(diff > 0 ? "down" : "up")
 
-    // console.log(heroHeight)
-    // console.log(mainStart)
-    // If scroll progress passes 0.2, enforce the scroll position
-    // if (latest >= 0.2) {
-      // console.log("latest > 0.2")
-      // container.scrollTo({
-      //   top: mainStart,
-      //   behavior: "smooth",
-      // });
-    // }
+      // Dynamically calculate scroll ranges (already done in useEffect)
+
+    //   // Calculate scroll progress relative to Main section
+    //   const progressRelativeToMain = 
+    //     (latest - heroRange[1]) / (mainRange[1] - heroRange[1]);
+
+    //   // Trigger scroll-to when progressRelativeToMain exceeds a threshold (e.g., 0.1)
+    //   if (progressRelativeToMain >= 0.1 && !hasScrolledToMain) {
+    //     console.log("Scrolling to Main section...");
+    //     container.scrollTo({
+    //       top: mainStart, // Scroll to the top of the Main section
+    //       behavior: "smooth",
+    //     });
+    //     setHasScrolledToMain(true); 
+    //   }
+
+    //   // Reset scroll-to flag when scrolling back up
+    //   if (latest < heroRange[1] && hasScrolledToMain) {
+    //     setHasScrolledToMain(false); 
+    //   }
+    }
   });
+
+  // Function to update Hero and Main scroll ranges dynamically
+  const updateHeroRange = (start, end) => {
+    setHeroRange([start, end]);
+  };
+
+  const updateMainRange = (start, end) => {
+    setMainRange([start, end]);
+  };
 
   // useMotionValueEvent(scrollYProgress, "change", 
   //   (latest) => {
-
   //     console.log("Global progress "+latest)
   //   })
+
 
   // useEffect(() => {
   //   // Subscribe to `scrollYProgress` updates
@@ -53,23 +95,13 @@ const App = () => {
   // }, [scrollYProgress]);
 
   return (
-    // <div id="smooth-wrapper" className={isScrollDisabled ? 'no-scroll' : ''}> 
-    //   <div id="smooth-content" className="app-container" ref={containerRef}>
-    //     <Hero progress={scrollYProgress} />
-    //     <Main progress={scrollYProgress}  />
-    //   </div>
-    // </div>
-    <div id="smooth-wrapper"> 
+    <div id="smooth-wrapper" style={{ overflow: "hidden"}} > 
       <div
       ref={containerRef}
-      className="app-container"
-     >
-      {/* <div style={{ scrollSnapAlign: "start", height: "100vh" }}> */}
-        <Hero progress={scrollYProgress} scrollDirection={scrollDirection}/>
-      {/* </div> */}
-      {/* <div style={{ scrollSnapAlign: "start", height: "100vh" }}> */}
-        <Main progress={scrollYProgress} />
-      {/* </div> */}
+      className="app-container" >
+      <Hero progress={scrollYProgress} updateRange={updateHeroRange} heroRange={heroRange}/>
+      <Main progress={scrollYProgress} updateRange={updateMainRange} mainRange={mainRange}/>
+     <div style={{height:"500vh", backgroundColor:"red"}}></div>
     </div>
   </div>
   );
