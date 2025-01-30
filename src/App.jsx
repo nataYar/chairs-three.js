@@ -14,7 +14,7 @@ const App = () => {
   const [mainRange, setMainRange] = useState([0, 1]);
 
   useEffect(()=> {
-    // console.log(heroRange)
+    console.log(heroRange)
     // console.log(mainRange)
   }, [heroRange, mainRange])
 
@@ -99,8 +99,8 @@ const App = () => {
       <div
       ref={containerRef}
       className="app-container" >
-      <Hero progress={scrollYProgress} updateRange={updateHeroRange} heroRange={heroRange}/>
-      <Main progress={scrollYProgress} updateRange={updateMainRange} mainRange={mainRange}/>
+      <Hero progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateHeroRange} heroRange={heroRange}/>
+      <Main progress={scrollYProgress} scrollDirection={scrollDirection}  updateRange={updateMainRange} mainRange={mainRange}/>
      <div style={{height:"500vh", backgroundColor:"red"}}></div>
     </div>
   </div>

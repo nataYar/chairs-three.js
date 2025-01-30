@@ -17,6 +17,7 @@ const HeroAnimation = ({
   const [introTextVisible, setIntroTextVisible] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
   const [gradientVisible, setGradientVisible] = useState(false);
+  const [isAnimatingUp, setIsAnimatingUp] = useState(false); 
   const animationControls = useAnimation();
   const heroRef = useRef(null);
   
@@ -67,7 +68,7 @@ const HeroAnimation = ({
         if (scrollProgress >= 1) {
           animationControls.start({
             y: -viewportHeight * 2,
-            transition: { duration: 1, ease: "easeInOut" },
+            transition: { duration: 2, ease: "easeInOut" },
           });
         } 
         else if (scrollProgress < 1) {

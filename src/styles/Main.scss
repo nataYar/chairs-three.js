@@ -1,6 +1,5 @@
 .main-section {
-  position: fixed;
-  top: 0vh;
+  position: relative;
   height: 100vh;
   width: 100vw;
   background-color: #4451b5;
@@ -8,7 +7,7 @@
 }
 
 .black-transition{
-  height: 0vh;
+  height: 50vh;
   width: 100vw;
   background-color: #000000;
 }
@@ -29,7 +28,7 @@
 /* Container for videos */
 .pc-container {
   position: absolute; /* Positioned relative to .main-section */
-  top: 0;
+  top: 0vh;
   left: 0;
   height: 100%;
   width: 100%;

@@ -82,6 +82,13 @@ const Hero = ({ progress, updateRange, heroRange, scrollDirection,
   ]);
  
   useEffect(() => {
+    window.scrollTo(0, 0); // Scroll the entire page to the top
+    if (containerHeroRef.current) {
+     containerHeroRef.current.scrollTop = 0; // Scroll the container to the top
+    }
+  }, []);
+
+  useEffect(() => {
     if (containerHeroRef.current) {
       const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
 
@@ -113,8 +120,8 @@ const Hero = ({ progress, updateRange, heroRange, scrollDirection,
   useMotionValueEvent(progress, "change", (latest) => {
     // console.log("bottomRef.current "+bottomRef.current)
     // console.log("progress "+latest)
-    console.log("heroRange[1] "+ heroRange[1])
-    if (latest >= 0.3 && scrollDirection === "down" && hasScrolledToBottom) {
+    // console.log("heroRange[1] "+ heroRange[1])
+    if (latest >= heroRange[1] && scrollDirection === "down" && !hasScrolledToBottom) {
       console.log("scroll must have triggered")
       // Clear any existing timeout
       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
@@ -158,12 +165,7 @@ const Hero = ({ progress, updateRange, heroRange, scrollDirection,
 //    }, [hcprogress]);
 
 
- useEffect(() => {
-     window.scrollTo(0, 0); // Scroll the entire page to the top
-     if (containerHeroRef.current) {
-      containerHeroRef.current.scrollTop = 0; // Scroll the container to the top
-     }
-   }, []);
+
 
   // useEffect(() => {
   //   if (progress >= 1) {
@@ -290,27 +292,27 @@ const useMediaQuery = (query) => {
   
   
 
-  const canvasAnimationVariants = {
-    initial: {
-      opacity: 1, 
-      y: 0, 
-    },
-    animate: {
-      opacity: 0, 
-      y: "-100vh", 
-      transition: {
-        delay: 1, 
-        opacity: {
-          duration: 2, 
-          ease: "easeInOut", 
-        },
-        y: {
-          duration: 2, 
-          ease: "easeInOut", 
-        },
-      },
-    },
-  };
+  // const canvasAnimationVariants = {
+  //   initial: {
+  //     opacity: 1, 
+  //     y: 0, 
+  //   },
+  //   animate: {
+  //     opacity: 0, 
+  //     y: "-100vh", 
+  //     transition: {
+  //       delay: 1, 
+  //       opacity: {
+  //         duration: 2, 
+  //         ease: "easeInOut", 
+  //       },
+  //       y: {
+  //         duration: 2, 
+  //         ease: "easeInOut", 
+  //       },
+  //     },
+  //   },
+  // };
 
  
   
@@ -337,14 +339,30 @@ const useMediaQuery = (query) => {
   //   ease: "easeInOut", // Smooth transition for both forward and backward scrolling
   // });
   const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
-
+ 
+const canvasAnimationVariants = useAnimation();
+    useMotionValueEvent(heroProgress, "change", (scrollProgress) => {
+      if (scrollProgress >= 1) {
+        canvasAnimationVariants.start({
+          y: -viewportHeight * 2,
+          // transition: { duration: 2, ease: "easeInOut" },
+        });
+      } 
+      else if (scrollProgress < 1) {
+        canvasAnimationVariants.start({
+          y: 0,
+          // transition: { duration: 2, ease: "easeInOut" },
+        });
+      }
+    });
   // Transform the Y position of .canvas-container based on progress
-  const canvasY = useTransform(
-    progress, // Progress value (global scroll)
-    [heroRange[1]-0.2, heroRange[1]], 
-    [0, -viewportHeight], // Output range (move from 0 to -100vh in pixels)
-    { clamp: true } // Prevent values outside this range
-  );
+  // const canvasY = useTransform(
+  //   progress, // Progress value (global scroll)
+  //   [heroRange[1] - 0.1, heroRange[1]], 
+  //   [0, -viewportHeight], // Output range (move from 0 to -100vh in pixels)
+  //   { clamp: true } // Prevent values outside this range
+  // );
+
 
   return (
     <motion.div className="hero-section_container"
@@ -361,7 +379,7 @@ const useMediaQuery = (query) => {
       // }}
       >
       <HeroZoomAnimation 
-      progress={progress}
+      scrollDirection={scrollDirection}
       isNonFixedDelayed={isNonFixedDelayed}
       heroProgress={heroProgress}
       // onProgressUpdate={onProgressUpdate}
@@ -375,17 +393,11 @@ const useMediaQuery = (query) => {
       <motion.div
         ref={canvasRef}
         className="canvas-container"
-        variants={canvasAnimationVariants}
-        style={{
-          y: canvasY, // Apply the calculated transform
-        }}
+        animate={canvasAnimationVariants}
         transition={{
-          duration: 1, // Animation duration
+          duration: 0.1, 
           ease: "easeInOut", // Easing function
         }}
-          // initial="initial"
-          // animate={true ? "animate" : "initial"} 
-          // animate={heroContainerProgress >= 1 ? "animate" : "initial"} 
       >
       <Canvas shadows 
       onCreated={() => setIsCanvasLoaded(true)} 
@@ -523,7 +535,7 @@ const CameraAnimation = ({ progress, heroRange }) => {
   // Update camera position and rotation within useFrame
   useFrame(() => {
     const currentProgress = adjustedProgress.get(); // Get the current progress value
-   
+   console.log(currentProgress)
     // Determine the current phase of animation
     let variant;
     if (currentProgress <= 0.5) {

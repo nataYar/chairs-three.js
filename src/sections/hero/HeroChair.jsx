@@ -46,17 +46,17 @@ const HeroChair = forwardRef((props, ref) => {
     }
 
     // Animate position (smooth interpolation)
-    if (heroChairRef.current) {
-      heroChairRef.current.position.x =
-        initialPosition[0] +
-        (finalPosition[0] - initialPosition[0]) * easedProgress;
-      heroChairRef.current.position.y =
-        initialPosition[1] +
-        (finalPosition[1] - initialPosition[1]) * easedProgress;
-      heroChairRef.current.position.z =
-        initialPosition[2] +
-        (finalPosition[2] - initialPosition[2]) * easedProgress;
-    }
+    // if (heroChairRef.current) {
+    //   heroChairRef.current.position.x =
+    //     initialPosition[0] +
+    //     (finalPosition[0] - initialPosition[0]) * easedProgress;
+    //   heroChairRef.current.position.y =
+    //     initialPosition[1] +
+    //     (finalPosition[1] - initialPosition[1]) * easedProgress;
+    //   heroChairRef.current.position.z =
+    //     initialPosition[2] +
+    //     (finalPosition[2] - initialPosition[2]) * easedProgress;
+    // }
   });
 
   return (
