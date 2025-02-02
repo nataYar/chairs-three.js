@@ -1,5 +1,5 @@
 .hero-section_container {
-    background-color: rgb(6, 9, 9);
+    background-color: rgb(64, 238, 238);
     position: relative;
     height: 300vh; 
     width: 100vw;
@@ -7,7 +7,7 @@
     overflow: hidden; 
     .bottom{
       background-color: rgb(240, 32, 32);
-      // opacity: 0;
+      opacity: 1;
         position: absolute;
         bottom: 0;
         height: 5px; 
@@ -27,6 +27,16 @@
     transition: all 2s ease-in-out;
   }
 
+  // .hero-section_overflow{
+  //   position: fixed; 
+  //   border: 3px rgb(255, 0, 208) solid;
+  //   height: 100vh;
+  //   width: 100vw;
+  //   top: 0;
+  //   left: 0;
+  //   z-index: 99;
+  //   overflow: hidden;
+  // }
   .hero-section {
     position: fixed; 
     top: 0;
@@ -40,6 +50,7 @@
     // background-attachment: fixed;
     background-size: cover;
     transform-origin: center;
+    // transition: all 2s ease-in-out; //can't apply, slows 
   }
 
   .hero-section::after {

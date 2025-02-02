@@ -21,9 +21,9 @@ const HeroAnimation = ({
   const animationControls = useAnimation();
   const heroRef = useRef(null);
   
-    useEffect(() => {
-      window.scrollTo(0, 0); // Scroll the entire page to the top
-    }, []);
+    // useEffect(() => {
+    //   window.scrollTo(0, 0); // Scroll the entire page to the top
+    // }, []);
 
     useMotionValueEvent(heroProgress, "change", (scrollProgress) => {
       const chaElement = document.querySelector(".cha");

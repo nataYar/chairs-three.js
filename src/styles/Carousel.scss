@@ -1,0 +1,88 @@
+  
+  .carousel-container {
+        position: relative;
+        height: 100vh;
+        width: 100vw;
+        background-color: #0ce6ba;
+        // overflow: hidden;
+  }
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    height: 100%;
+}
+
+#root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.scroll-container {
+    display: flex;
+    overflow-x: scroll;
+    width: 100%;
+    height: 100vh;
+    scroll-snap-type: x mandatory;
+}
+
+.background {
+    flex: none;
+    width: 100vw;
+    height: 100vh;
+    scroll-snap-align: start;
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-chair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+  
+//   // Hero Chair Overlay
+//   .hero-chair {
+//     position: absolute;
+//     bottom: 50px;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     z-index: 10;
+  
+//     img {
+//       width: 100%;
+//       height: auto;
+//     }
+//   }
+  
+//   // Slider Styles
+//   .slider {
+//     display: flex;
+//     height: 100vh;
+//     width: 500vw; // 5 sections, each full screen
+//     overflow-x: scroll;
+//     scroll-snap-type: x mandatory;
+//     -webkit-overflow-scrolling: touch;
+//   white-space: nowrap;
+  
+//     .slides {
+//       display: flex;
+//       height: 100%;
+//       width: 100%;
+//     }
+  
+//     .slide {
+//       flex: 0 0 100vw;
+//       height: 100vh;
+//       width: 100vw;
+//       background-size: cover;
+//       background-position: center;
+//       scroll-snap-align: start;
+//     }
+//   }
+  

@@ -81,12 +81,12 @@ const Hero = ({ progress, updateRange, heroRange, scrollDirection,
     { index: 6, ref: useRef(null) },
   ]);
  
-  useEffect(() => {
-    window.scrollTo(0, 0); // Scroll the entire page to the top
-    if (containerHeroRef.current) {
-     containerHeroRef.current.scrollTop = 0; // Scroll the container to the top
-    }
-  }, []);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0); // Scroll the entire page to the top
+  //   if (containerHeroRef.current) {
+  //    containerHeroRef.current.scrollTop = 0; // Scroll the container to the top
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (containerHeroRef.current) {
@@ -118,12 +118,8 @@ const Hero = ({ progress, updateRange, heroRange, scrollDirection,
 
   // listen to progress changes and trigger scroll
   useMotionValueEvent(progress, "change", (latest) => {
-    // console.log("bottomRef.current "+bottomRef.current)
-    // console.log("progress "+latest)
-    // console.log("heroRange[1] "+ heroRange[1])
+ 
     if (latest >= heroRange[1] && scrollDirection === "down" && !hasScrolledToBottom) {
-      console.log("scroll must have triggered")
-      // Clear any existing timeout
       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
 
       // Wait for natural scroll to settle, then scroll to .bottom
@@ -388,7 +384,6 @@ const canvasAnimationVariants = useAnimation();
       containerHeroRef={containerHeroRef}
       isCanvasLoaded={isCanvasLoaded} 
       />
-      {/* <IntroText progress={progress} isMobile={isMobile} /> */}
       <Suspense fallback={null}>
       <motion.div
         ref={canvasRef}
@@ -518,59 +513,90 @@ const canvasAnimationVariants = useAnimation();
 // };
 
 
-
-
-
-
-
 const CameraAnimation = ({ progress, heroRange }) => {
   const { camera } = useThree();
 
-  // Initial camera position
-  const initialZ = 5;
+  // Initial camera position and rotation
+  const initialPosition = new THREE.Vector3(0, 0, 5);
+  const initialRotation = new THREE.Euler(0, 0, 0);
 
   // Normalize progress for the Hero section (0 to 0.2 => 0 to 1)
-  const adjustedProgress =  useTransform(progress, heroRange, [0, 1]);
+  const adjustedProgress = useTransform(progress, heroRange, [0, 1]);
 
-  // Update camera position and rotation within useFrame
+  // Keyframes for camera position and rotation
+  const keyframes = [
+    {
+      progress: 0, // Start
+      position: new THREE.Vector3(0, 0, 5),
+      rotation: new THREE.Euler(0, 0, 0),
+    },
+    {
+      progress: 0.5, // Midway
+      position: new THREE.Vector3(0, 3, 4.7),
+      rotation: new THREE.Euler(-0.005, 0, 0),
+    },
+    {
+      progress: 0.7, // Transition
+      position: new THREE.Vector3(0, 5, 3.5),
+      rotation: new THREE.Euler(-0.01, 0, 0),
+    },
+    {
+      progress: 1, // End
+      position: new THREE.Vector3(0, 10, 2),
+      rotation: new THREE.Euler(0, 0, 0),
+    },
+  ];
+
+  const easeOutQuad = (t) => t * (2 - t);
+
   useFrame(() => {
-    const currentProgress = adjustedProgress.get(); // Get the current progress value
-   console.log(currentProgress)
-    // Determine the current phase of animation
-    let variant;
-    if (currentProgress <= 0.5) {
-      // Phase 1: Initial zoom and tilt
-      variant = {
-        y: 6 * currentProgress, // Smooth rise
-        z: initialZ - currentProgress * 0.3, // Smooth zoom in
-        rotationX: -0.01 * currentProgress, // Smooth tilt
-      };
-    } else if (currentProgress <= 0.7) {
-      // Phase 2: Smooth transition
-      const phaseProgress = (currentProgress - 0.5) / 0.2;
-      variant = {
-        y: 3 + phaseProgress * 2, // Continue rising smoothly
-        z: initialZ - 0.15 - phaseProgress * 0.5, // Continue zooming in smoothly
-        rotationX: -0.005 + phaseProgress * 0.01, // Smoothly reduce tilt
-      };
-    } else {
-      // Phase 3: Final zoom out, higher and completely level
-      const phaseProgress = (currentProgress - 0.7) / 0.3;
-      variant = {
-        y: 5 + phaseProgress * 6, // Higher y position at the end
-        z: initialZ - 0.65 + phaseProgress * 1.5, // Move back further
-        rotationX: 0, // No tilt for a straight view
-      };
+    const currentProgress = adjustedProgress.get();
+  
+    // Ensure smooth transition back to initial state
+    if (currentProgress <= 0.01) {
+      camera.position.lerp(initialPosition, 0.2);
+      camera.quaternion.slerp(new THREE.Quaternion().setFromEuler(initialRotation), 0.2);
+      return;
     }
-
-    // Apply the variant to the camera
-    camera.position.y = variant.y;
-    camera.position.z = variant.z;
-    camera.rotation.x = variant.rotationX;
+  
+    // Prevent jump at progress = 1
+    if (currentProgress >= 0.99) {
+      camera.position.copy(keyframes[keyframes.length - 1].position);
+      camera.quaternion.copy(new THREE.Quaternion().setFromEuler(keyframes[keyframes.length - 1].rotation));
+      return;
+    }
+  
+    // Find the two keyframes to interpolate between
+    let startKeyframe, endKeyframe;
+    for (let i = 0; i < keyframes.length - 1; i++) {
+      if (currentProgress >= keyframes[i].progress && currentProgress <= keyframes[i + 1].progress) {
+        startKeyframe = keyframes[i];
+        endKeyframe = keyframes[i + 1];
+        break;
+      }
+    }
+  
+    if (!startKeyframe || !endKeyframe) return;
+  
+    // Compute interpolation factor
+    const t = (currentProgress - startKeyframe.progress) / (endKeyframe.progress - startKeyframe.progress);
+    const easedT = easeOutQuad(t);
+  
+    // Interpolate position and rotation
+    camera.position.lerpVectors(startKeyframe.position, endKeyframe.position, easedT);
+    camera.quaternion.slerpQuaternions(
+      new THREE.Quaternion().setFromEuler(startKeyframe.rotation),
+      new THREE.Quaternion().setFromEuler(endKeyframe.rotation),
+      easedT
+    );
   });
+  
+  
 
   return null; // No need to render a visible element
 };
+
+
 
 
 const Lighting = ({ isMobile, isDesktop }) => {

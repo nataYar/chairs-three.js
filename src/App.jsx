@@ -1,89 +1,93 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useScroll, useMotionValueEvent } from "framer-motion";
 import Hero from "./sections/hero/Hero";
-import Main from "./sections/main/Main";
+import Office from "./sections/office/office";
+import Carousel from "./sections/carousel/Carousel";
+import Transition from "./sections/Transition";
 import './styles/App.scss';
 
 const App = () => {
   const [isScrollDisabled, setIsScrollDisabled] = useState(false); 
-  const [hasScrolledToMain, setHasScrolledToMain] = useState(false); 
+  const [hasScrolledTooffice, setHasScrolledTooffice] = useState(false); 
   const [scrollDirection, setScrollDirection] = useState("down")
   const containerRef = useRef(null);
+  const officeRef = useRef(null);
   const { scrollYProgress } = useScroll();
   const [heroRange, setHeroRange] = useState([0, 1]);
-  const [mainRange, setMainRange] = useState([0, 1]);
+  const [officeRange, setOfficeRange] = useState([0, 1]);
 
   useEffect(()=> {
-    console.log(heroRange)
-    // console.log(mainRange)
-  }, [heroRange, mainRange])
+    // console.log(heroRange)
+    console.log(officeRange)
+  }, [heroRange, officeRange])
 
-  useEffect(() => {
-    window.scrollTo(0, 0); 
-    if (containerRef.current) {
-      containerRef.current.scrollTop = 0; 
-    }
-  }, []);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (container) { 
-      const heroHeight = container.firstChild.offsetHeight; 
-      const mainStart = heroHeight; 
-      const mainEnd = mainStart + container.lastChild.offsetHeight; 
-
-      setHeroRange([0, mainStart / container.scrollHeight]);
-      setMainRange([mainStart / container.scrollHeight, mainEnd / container.scrollHeight]);
-    }
-  }, [containerRef.current]); // Depend on containerRef.current
+  // useEffect(() => {
+  //   window.scrollTo(0, 0); 
+  //   if (containerRef.current) {
+  //     containerRef.current.scrollTop = 0; 
+  //   }
+  // }, []);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const container = containerRef.current;
     if (container) { 
-      const heroHeight = container.firstChild.offsetHeight; // Height of Hero component
-      const mainStart = heroHeight; // Scroll position where Main starts
-      const mainEnd = mainStart + container.lastChild.offsetHeight; 
-
       const diff = latest - scrollYProgress.getPrevious()
       setScrollDirection(diff > 0 ? "down" : "up")
-
-      // Dynamically calculate scroll ranges (already done in useEffect)
-
-    //   // Calculate scroll progress relative to Main section
-    //   const progressRelativeToMain = 
-    //     (latest - heroRange[1]) / (mainRange[1] - heroRange[1]);
-
-    //   // Trigger scroll-to when progressRelativeToMain exceeds a threshold (e.g., 0.1)
-    //   if (progressRelativeToMain >= 0.1 && !hasScrolledToMain) {
-    //     console.log("Scrolling to Main section...");
-    //     container.scrollTo({
-    //       top: mainStart, // Scroll to the top of the Main section
-    //       behavior: "smooth",
-    //     });
-    //     setHasScrolledToMain(true); 
-    //   }
-
-    //   // Reset scroll-to flag when scrolling back up
-    //   if (latest < heroRange[1] && hasScrolledToMain) {
-    //     setHasScrolledToMain(false); 
-    //   }
     }
   });
 
-  // Function to update Hero and Main scroll ranges dynamically
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) { 
+      const heroHeight = container.firstChild?.offsetHeight || 0;
+      console.log("heroHeight "+heroHeight) 
+      const officeStart = heroHeight; 
+      setHeroRange([0, officeStart / container.scrollHeight]);
+    }
+  }, [containerRef.current?.scrollHeight]);
+
+  // Function to update Hero and office scroll ranges dynamically
   const updateHeroRange = (start, end) => {
     setHeroRange([start, end]);
   };
 
-  const updateMainRange = (start, end) => {
-    setMainRange([start, end]);
+  const updateOfficeRange = (start, end) => {
+    setOfficeRange([start, end]);
   };
+
+  useEffect(() => {
+    if (officeRef.current) {
+      const handleResize = () => {
+        // const totalScrollHeight = document.documentElement.scrollHeight;
+        // const officeOffsetTop = officeRef.current.offsetTop;
+        // const officeHeight = officeRef.current.offsetHeight;
+    
+        // const officeStart = officeOffsetTop / totalScrollHeight;
+        // const officeEnd = (officeOffsetTop + officeHeight) / totalScrollHeight;
+        const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
+        const officeOffsetTop = officeRef.current.offsetTop;
+        console.log("officeOffsetTop "+officeOffsetTop)
+        const officeHeight = officeRef.current.offsetHeight;
+        console.log("office Height "+officeHeight)
+        const officeStart = officeOffsetTop / totalScrollHeight;
+        const officeEnd = (officeOffsetTop + officeHeight) / totalScrollHeight;
+        console.log("start "+officeStart +" end "+ officeEnd)
+        updateOfficeRange(officeStart, officeEnd);
+      };
+
+      // Initial calculation
+      handleResize();
+
+      // Recalculate on window resize
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, [officeRef]);
 
   // useMotionValueEvent(scrollYProgress, "change", 
   //   (latest) => {
   //     console.log("Global progress "+latest)
   //   })
-
 
   // useEffect(() => {
   //   // Subscribe to `scrollYProgress` updates
@@ -100,7 +104,13 @@ const App = () => {
       ref={containerRef}
       className="app-container" >
       <Hero progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateHeroRange} heroRange={heroRange}/>
-      <Main progress={scrollYProgress} scrollDirection={scrollDirection}  updateRange={updateMainRange} mainRange={mainRange}/>
+      <div ref={officeRef}>
+        <Office progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateOfficeRange} officeRange={officeRange}/>
+      </div>
+      
+      <Transition color="black" height={"80vh"}/>
+      <Carousel />
+      <Transition color="black" height={"80vh"}/>
      <div style={{height:"500vh", backgroundColor:"red"}}></div>
     </div>
   </div>
