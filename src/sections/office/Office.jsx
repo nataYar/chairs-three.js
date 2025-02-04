@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
-import { motion, useScroll, useMotionValueEvent, useSpring, useTransform  } from "framer-motion";
+import React, { useRef, useEffect, useState } from "react";
+import { motion, useMotionValueEvent, useSpring, useTransform  } from "framer-motion";
 
 import "../../styles/Office.scss";
 

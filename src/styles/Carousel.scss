@@ -3,30 +3,17 @@
         position: relative;
         height: 100vh;
         width: 100vw;
-        background-color: #0ce6ba;
+        background-color: #000000;
         // overflow: hidden;
   }
 
-  body, html {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    height: 100%;
-}
-
-#root {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
-
 .scroll-container {
+    position: relative;
     display: flex;
-    overflow-x: scroll;
+    overflow: hidden;
     width: 100%;
     height: 100vh;
-    scroll-snap-type: x mandatory;
+    // scroll-snap-type: x mandatory;
 }
 
 .background {
@@ -38,12 +25,50 @@
     background-position: center;
 }
 
-.hero-chair {
+.overlay-image {
     position: absolute;
-    top: 50%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 3; // Higher z-index to appear on top of the background
+  }
+
+  @keyframes shake {
+    0% { transform: translateX(0) rotate(0); }
+    25% { transform: translateX(-2px) ; }
+    50% { transform: translateX(1px) ; }
+    75% { transform: translateX(-2px) ; }
+    100% { transform: translateX(0); }
+  }
+  
+  .shake {
+    animation: shake 0.3s infinite; // Fast and high-frequency shaking
+  }
+
+  .move {
+    animation: starsMove 5s infinite; 
+    transform-origin: bottom center;
+    transform: scale(1) rotate(-50deg) translate(-100px, 0px);
+  }
+
+  @keyframes starsMove {
+    0% {
+        transform: scale(0.9)  translate(-30px, 60px) rotate(2deg) ;
+      }
+      100% {
+        transform: scale(1) translate(50px, 70px) rotate(-7deg) ;
+      }
+  }
+
+.chair {
+    position: absolute;
+    height: 50%;
+    bottom: 10px;
     left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
+    transform: translateX(-50%) scaleX(-1);
+    z-index: 2;
 }
   
 //   // Hero Chair Overlay

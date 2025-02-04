@@ -4,11 +4,10 @@ import Hero from "./sections/hero/Hero";
 import Office from "./sections/office/office";
 import Carousel from "./sections/carousel/Carousel";
 import Transition from "./sections/Transition";
+import Afterhero from "./sections/warhol/Afterhero";
 import './styles/App.scss';
 
 const App = () => {
-  const [isScrollDisabled, setIsScrollDisabled] = useState(false); 
-  const [hasScrolledTooffice, setHasScrolledTooffice] = useState(false); 
   const [scrollDirection, setScrollDirection] = useState("down")
   const containerRef = useRef(null);
   const officeRef = useRef(null);
@@ -16,17 +15,22 @@ const App = () => {
   const [heroRange, setHeroRange] = useState([0, 1]);
   const [officeRange, setOfficeRange] = useState([0, 1]);
 
+  const [isAfterheroVisible, setIsAfterheroVisible] = useState(false);
+  const [isAfterheroSticky, setIsAfterheroSticky] = useState(false);
+  const [hasShownAfterhero, setHasShownAfterhero] = useState(false); // to make it show just once
+  
+  useEffect(() => {
+    window.scrollTo(0, 0); 
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0; 
+    }
+  }, []);
+
   useEffect(()=> {
-    // console.log(heroRange)
-    console.log(officeRange)
+    console.log("heroRange " + heroRange)
+    console.log("officeRange "+ officeRange)
   }, [heroRange, officeRange])
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0); 
-  //   if (containerRef.current) {
-  //     containerRef.current.scrollTop = 0; 
-  //   }
-  // }, []);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const container = containerRef.current;
@@ -58,12 +62,6 @@ const App = () => {
   useEffect(() => {
     if (officeRef.current) {
       const handleResize = () => {
-        // const totalScrollHeight = document.documentElement.scrollHeight;
-        // const officeOffsetTop = officeRef.current.offsetTop;
-        // const officeHeight = officeRef.current.offsetHeight;
-    
-        // const officeStart = officeOffsetTop / totalScrollHeight;
-        // const officeEnd = (officeOffsetTop + officeHeight) / totalScrollHeight;
         const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
         const officeOffsetTop = officeRef.current.offsetTop;
         console.log("officeOffsetTop "+officeOffsetTop)
@@ -98,12 +96,43 @@ const App = () => {
   //   return () => unsubscribe(); // Clean up the listener
   // }, [scrollYProgress]);
 
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    const container = containerRef.current;
+    if (container) { 
+      const diff = latest - scrollYProgress.getPrevious();
+      setScrollDirection(diff > 0 ? "down" : "up");
+  
+      // Reset hasShownAfterhero when scrolling back up past heroRange[1]
+      if (latest < heroRange[1] && scrollDirection === "up") {
+        setHasShownAfterhero(false);
+      }
+  
+      // Trigger Afterhero visibility only once when scrolling down past heroRange[1]
+      if (latest >= heroRange[1] && scrollDirection === "down" && !isAfterheroSticky && !hasShownAfterhero) {
+        setIsAfterheroSticky(true); // Mark as sticky immediately
+        setHasShownAfterhero(true); // Mark as shown
+  
+        // Delay the appearance of Afterhero by 1 second
+        setTimeout(() => {
+          setIsAfterheroVisible(true); // Make Afterhero visible after 1 second
+        }, 300); // 300ms delay
+  
+        // Set a timeout to hide the Afterhero after 1.5 seconds of being visible
+        setTimeout(() => {
+          setIsAfterheroVisible(false);
+          setIsAfterheroSticky(false); // Reset sticky state
+        }, 1800); // 300ms delay + 1.5 seconds visible = 1.8 seconds total
+      }
+    }
+  });
+
   return (
     <div id="smooth-wrapper" style={{ overflow: "hidden"}} > 
       <div
       ref={containerRef}
       className="app-container" >
       <Hero progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateHeroRange} heroRange={heroRange}/>
+      <Afterhero progress={scrollYProgress} isVisible={isAfterheroVisible}/>
       <div ref={officeRef}>
         <Office progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateOfficeRange} officeRange={officeRange}/>
       </div>
