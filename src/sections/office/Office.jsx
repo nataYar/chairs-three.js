@@ -54,9 +54,9 @@ const Office = ({ progress, updateRange, officeRange, isHeroAnimatedOut }) => {
   // // Transform global scroll progress into local progress for .office-section
   // const officeProgress = useTransform(progress, officeScrollRange, [0, 1]);
 
-  useMotionValueEvent(officeProgress, "change", (latest) => {
-    console.log("Office progress  " +latest)
-  });
+  // useMotionValueEvent(officeProgress, "change", (latest) => {
+  //   console.log("Office progress  " +latest)
+  // });
 
   useEffect(() => {
     const handleOfficeAnimation = () => {
@@ -86,7 +86,7 @@ const Office = ({ progress, updateRange, officeRange, isHeroAnimatedOut }) => {
     setGlobalProgress(latest)
   });
 // useEffect(()=>{console.log(progress)},[progress])
-useEffect(()=>{console.log(""+globalProgress)},[globalProgress])
+// useEffect(()=>{console.log(""+globalProgress)},[globalProgress])
 
 useEffect(()=>{setGlobalProgress(progress.get())},[progress])
 
@@ -101,6 +101,7 @@ useEffect(()=>{setGlobalProgress(progress.get())},[progress])
 //       });
 //     }
 //   });
+
   return (
     <motion.div 
     ref={containerRef} 
@@ -121,8 +122,8 @@ useEffect(()=>{setGlobalProgress(progress.get())},[progress])
         initial={{ opacity: 0, y: -30 }}
         animate={textControls}
         style={{
-          opacity: useTransform(officeProgress, [0.01, 0.9], [1, 0]),
-          y: useTransform(officeProgress, [0.01, 0.9], [ 0, 300]),
+          opacity: useTransform(officeProgress, [0.01, 0.8], [1, 0]),
+          y: useTransform(officeProgress, [0.01, 0.9], [ "0vh", "70vh"]),
         }}
       >
         <div className="text">

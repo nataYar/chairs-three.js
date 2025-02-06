@@ -7,7 +7,7 @@ const Transition = ({ color, height }) => {
         height: height,
         width: '100%',
         position: 'relative',
-        zIndex: 10
+        zIndex: 5
 
 
     }

@@ -12,27 +12,44 @@ const carouselProgress = useTransform(progress, carouselRange, [0, 1]);
    console.log("global " +latest)
   });
 
+  useMotionValueEvent(carouselProgress, "change", (latest) => {
+    console.log("carousel Progress " +carouselProgress)
+   });
+
   useEffect(() => {
-    // console.log(carouselProgress)
     console.log("carouselRange "+ carouselRange)
   }, [carouselProgress]);
 
- useEffect(() => {
-    if (containerRef.current) {
-      const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
+//  useEffect(() => {
+//     if (containerRef.current) {
+//       const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
 
-      // Get the carousel section's offset and height
-      const carouselOffsetTop = containerRef.current.offsetTop;
-      const carouselHeight = containerRef.current.offsetHeight;
+//       // Get the carousel section's offset and height
+//       const carouselOffsetTop = containerRef.current.offsetTop;
+//       const carouselHeight = containerRef.current.offsetHeight;
 
-      // Calculate the dynamic range for carousel
-      const carouselStart = carouselOffsetTop / totalScrollHeight;
-      const carouselEnd = (carouselOffsetTop + carouselHeight) / totalScrollHeight;
+//       // Calculate the dynamic range for carousel
+//       const carouselStart = carouselOffsetTop / totalScrollHeight;
+//       const carouselEnd = (carouselOffsetTop + carouselHeight) / totalScrollHeight;
 
-      // Pass the range to App.js through the updateRange function
-      updateRange(carouselStart, carouselEnd);
+//       // Pass the range to App.js through the updateRange function
+//       updateRange(carouselStart, carouselEnd);
+//     }
+//   }, []);
+
+  useMotionValueEvent(carouselProgress, "change", (latest) => {
+    if (latest >= 0) {
+        console.log("started CAROUSEL")
+      // Start the one-time animation (if not already started)
+    //   textControls.start({
+    //     opacity: 1,
+    //     y: 0,
+    //     transition: { duration: 1, ease: "easeInOut", delay: 1 }
+
+    //   });
     }
-  }, []);
+  });
+
 
     const backgrounds = [
         {
@@ -119,7 +136,7 @@ const carouselProgress = useTransform(progress, carouselRange, [0, 1]);
             src: "src/assets/carousel/space-red.jpg",
             overlays: [
                 { src: "src/assets/carousel/sparks-bottom.png", 
-                    zIndex: 10, 
+                    zIndex: 2, 
                     className: "stars-move" 
                 },
             ],
@@ -167,11 +184,11 @@ const carouselProgress = useTransform(progress, carouselRange, [0, 1]);
         
         <motion.div
             className="carousel-text-container"
-            initial={{ opacity: 0, y: 0 }}
+            initial={{ opacity: 0, y: "-60vh" }}
             style={{
-                opacity: useTransform(carouselProgress, [0.01, 0.2], [1, 0]),
-                y: useTransform(carouselProgress, [0.01, 0.2], [ 0, 300]),
-            }}
+                opacity: useTransform(carouselProgress, [-0.1, 0], [0, 1]),
+                y: useTransform(carouselProgress, [0, 0.3], ["-60vh", "0vh"]),
+              }}
             >
         <div className="carousel-text">
             <h2 className='first'>

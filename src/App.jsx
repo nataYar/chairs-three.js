@@ -4,8 +4,9 @@ import Hero from "./sections/hero/Hero";
 import Office from "./sections/office/office";
 import Carousel from "./sections/carousel/Carousel";
 import Transition from "./sections/Transition";
-import Afterhero from "./sections/warhol/Afterhero";
+import AfterHero from "./sections/Afterhero";
 import './styles/App.scss';
+import AfterOffice from "./sections/AfterOffice";
 
 const App = () => {
   const [scrollDirection, setScrollDirection] = useState("down")
@@ -21,6 +22,10 @@ const App = () => {
   const [isAfterheroVisible, setIsAfterheroVisible] = useState(false);
   const [isAfterheroSticky, setIsAfterheroSticky] = useState(false);
   const [hasShownAfterhero, setHasShownAfterhero] = useState(false); // to make it show just once
+  
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
   
   useEffect(() => {
     window.scrollTo(0, 0); 
@@ -141,7 +146,7 @@ useEffect(() => {
       const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
       const carouselOffsetTop = carouselRef.current.offsetTop;
       const carouselHeight = carouselRef.current.offsetHeight;
-      const carouselStart = carouselOffsetTop / totalScrollHeight;
+      const carouselStart = (carouselOffsetTop - window.innerHeight) / totalScrollHeight;
       const carouselEnd = (carouselOffsetTop + carouselHeight) / totalScrollHeight;
       updateCarouselRange(carouselStart, carouselEnd);
     };
@@ -163,12 +168,13 @@ useEffect(() => {
       className="app-container" >
       <Hero progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateHeroRange} heroRange={heroRange}/>
       
-      <Afterhero progress={scrollYProgress} isVisible={isAfterheroVisible}/>
+      <AfterHero progress={scrollYProgress} isVisible={isAfterheroVisible}/>
       
       <div ref={officeRef}>
         <Office progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateOfficeRange} officeRange={officeRange}/>
       </div>
       
+      <AfterOffice />
       <Transition color="black" height={"100vh"}/>
       <div ref={carouselRef}>
 
