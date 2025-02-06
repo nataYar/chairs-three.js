@@ -5,7 +5,11 @@ const Transition = ({ color, height }) => {
     const styles={
         backgroundColor: color,
         height: height,
-        width: '100%'
+        width: '100%',
+        position: 'relative',
+        zIndex: 10
+
+
     }
 
   return (

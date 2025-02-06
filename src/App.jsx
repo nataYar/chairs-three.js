@@ -11,9 +11,12 @@ const App = () => {
   const [scrollDirection, setScrollDirection] = useState("down")
   const containerRef = useRef(null);
   const officeRef = useRef(null);
+  const carouselRef = useRef(null);
+  
   const { scrollYProgress } = useScroll();
   const [heroRange, setHeroRange] = useState([0, 1]);
   const [officeRange, setOfficeRange] = useState([0, 1]);
+  const [carouselRange, setCarouselRange] = useState([0, 1]);
 
   const [isAfterheroVisible, setIsAfterheroVisible] = useState(false);
   const [isAfterheroSticky, setIsAfterheroSticky] = useState(false);
@@ -29,7 +32,8 @@ const App = () => {
   useEffect(()=> {
     console.log("heroRange " + heroRange)
     console.log("officeRange "+ officeRange)
-  }, [heroRange, officeRange])
+    console.log("carouselRange "+ carouselRange)
+  }, [heroRange, officeRange, carouselRange])
 
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
@@ -44,7 +48,7 @@ const App = () => {
     const container = containerRef.current;
     if (container) { 
       const heroHeight = container.firstChild?.offsetHeight || 0;
-      console.log("heroHeight "+heroHeight) 
+      // console.log("heroHeight "+heroHeight) 
       const officeStart = heroHeight; 
       setHeroRange([0, officeStart / container.scrollHeight]);
     }
@@ -115,16 +119,42 @@ const App = () => {
         // Delay the appearance of Afterhero by 1 second
         setTimeout(() => {
           setIsAfterheroVisible(true); // Make Afterhero visible after 1 second
-        }, 300); // 300ms delay
+        }, 500); // 300ms delay
   
         // Set a timeout to hide the Afterhero after 1.5 seconds of being visible
         setTimeout(() => {
           setIsAfterheroVisible(false);
           setIsAfterheroSticky(false); // Reset sticky state
-        }, 1800); // 300ms delay + 1.5 seconds visible = 1.8 seconds total
+        }, 1500); // 300ms delay + 1.5 seconds visible = 1.8 seconds total
       }
     }
   });
+
+  // In App.jsx
+const updateCarouselRange = (start, end) => {
+  setCarouselRange([start, end]);
+};
+
+useEffect(() => {
+  if (carouselRef.current) {
+    const handleResize = () => {
+      const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
+      const carouselOffsetTop = carouselRef.current.offsetTop;
+      const carouselHeight = carouselRef.current.offsetHeight;
+      const carouselStart = carouselOffsetTop / totalScrollHeight;
+      const carouselEnd = (carouselOffsetTop + carouselHeight) / totalScrollHeight;
+      updateCarouselRange(carouselStart, carouselEnd);
+    };
+
+    // Initial calculation
+    handleResize();
+
+    // Recalculate on window resize
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }
+}, [carouselRef]);
+
 
   return (
     <div id="smooth-wrapper" style={{ overflow: "hidden"}} > 
@@ -132,14 +162,20 @@ const App = () => {
       ref={containerRef}
       className="app-container" >
       <Hero progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateHeroRange} heroRange={heroRange}/>
+      
       <Afterhero progress={scrollYProgress} isVisible={isAfterheroVisible}/>
+      
       <div ref={officeRef}>
         <Office progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateOfficeRange} officeRange={officeRange}/>
       </div>
       
-      <Transition color="black" height={"80vh"}/>
-      <Carousel />
-      <Transition color="black" height={"80vh"}/>
+      <Transition color="black" height={"100vh"}/>
+      <div ref={carouselRef}>
+
+      <Carousel progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateCarouselRange} carouselRange={carouselRange} />
+      </div>
+     
+      <Transition color="black" height={"100vh"}/>
      <div style={{height:"500vh", backgroundColor:"red"}}></div>
     </div>
   </div>

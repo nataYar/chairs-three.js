@@ -1,32 +1,131 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import BackgroundSlider from './BackgroundSlider'
-import { motion,  AnimatePresence, useTransform   } from "framer-motion";
+import { motion, AnimatePresence, useMotionValueEvent, useSpring, useTransform, useAnimation  } from "framer-motion";
 import "../../styles/Carousel.scss";
 import '../../styles/Carousel.scss'
 
-const Carousel = () => {
+const Carousel = ({ progress, updateRange, carouselRange,  }) => {
+const containerRef = useRef(null);
+const carouselProgress = useTransform(progress, carouselRange, [0, 1]);
+
+  useMotionValueEvent(progress, "change", (latest) => {
+   console.log("global " +latest)
+  });
+
+  useEffect(() => {
+    // console.log(carouselProgress)
+    console.log("carouselRange "+ carouselRange)
+  }, [carouselProgress]);
+
+ useEffect(() => {
+    if (containerRef.current) {
+      const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
+
+      // Get the carousel section's offset and height
+      const carouselOffsetTop = containerRef.current.offsetTop;
+      const carouselHeight = containerRef.current.offsetHeight;
+
+      // Calculate the dynamic range for carousel
+      const carouselStart = carouselOffsetTop / totalScrollHeight;
+      const carouselEnd = (carouselOffsetTop + carouselHeight) / totalScrollHeight;
+
+      // Pass the range to App.js through the updateRange function
+      updateRange(carouselStart, carouselEnd);
+    }
+  }, []);
+
     const backgrounds = [
-        // "src/assets/carousel/office-min.jpg",
-        // "src/assets/carousel/art-studio-min.jpg",
-        // "src/assets/carousel/underwater-min.jpg",
-        // "src/assets/carousel/photo-studio.jpg",
-        "src/assets/carousel/space-red.jpg",
-        // "src/assets/carousel/car.jpg",
-        // "src/assets/carousel/jungle-min.jpg",
-        // "src/assets/carousel/library-min.jpg",
+        {
+          src: "src/assets/carousel/office.jpg",
+          overlays: [
+            { src: "src/assets/carousel/office-top.png", 
+                zIndex: 3, 
+                className: "" 
+            },
+          ],
+        },
+
+        {
+            src: "src/assets/carousel/art-studio.jpg",
+            overlays: []
+        },
+        {
+            src: "src/assets/carousel/underwater-min.jpg",
+            overlays: [
+                 { src: "src/assets/carousel/underwater-bush.png", 
+                  zIndex: 5, 
+                  className: ""
+                },
+                // { src: "src/assets/carousel/reef-left.png", 
+                //     zIndex: 4, 
+                //     className: "" 
+                // },
+                { src: "src/assets/carousel/fish-single.png", 
+                    zIndex: 4, 
+                    className: "fish-single" 
+                },
+                { src: "src/assets/carousel/fish-right.png", 
+                    zIndex: 20, 
+                    className: "fish-right" 
+                },
+                { src: "src/assets/carousel/fish-left.png", 
+                    zIndex: 2, 
+                    className: "fish-left" 
+                },
+            ],
+        },
+        {
+            src: "src/assets/carousel/photo-studio.jpg",
+            overlays: [
+                { src: "src/assets/carousel/photo-studio-overlay.png", 
+                    zIndex: 10, 
+                    className: null
+                },
+            ],
+        },
+        {
+            src: "src/assets/carousel/car.jpg",
+            overlays: [
+                
+            ],
+        },
+        {
+            src: "src/assets/carousel/jungle-min.jpg",
+            overlays: [
+                { src: "src/assets/carousel/jungle-overlay.png",
+                    zIndex: 10, 
+                    className: "shake" 
+                },
+            ],
+        },
+        {
+            src: "src/assets/carousel/library.jpg",
+            overlays: [
+              { src: "src/assets/carousel/library-gates.png", 
+                  zIndex: 3, 
+                  className: "" 
+              },
+              { src: "src/assets/carousel/books-back-layer.png", 
+                zIndex: 2, 
+                className: "books-back" 
+                },
+                { src: "src/assets/carousel/books-front.png", 
+                    zIndex: 4, 
+                    className: "books-front" 
+                },
+            ],
+        },
+        {
+            src: "src/assets/carousel/space-red.jpg",
+            overlays: [
+                { src: "src/assets/carousel/sparks-bottom.png", 
+                    zIndex: 10, 
+                    className: "stars-move" 
+                },
+            ],
+        },
       ];
 
-
-      const overlayImages = [
-        // "src/assets/carousel/office-top-min.png",
-        // null, // No overlay for art-studio.jpg
-        // "src/assets/carousel/underwater-bush.png", // Overlay for underwater.jpg
-        // "src/assets/carousel/photo-studio-overlay.png",
-        "src/assets/carousel/sparks-bottom.png",
-        // null, // No overlay for car.jpg
-        // "src/assets/carousel/jungle-overlay.png",
-        // null, // No overlay for library.jpg
-      ];
       const [currentIndex, setCurrentIndex] = useState(0);
       const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
     
@@ -36,44 +135,62 @@ const Carousel = () => {
           setCurrentIndex((prevIndex) =>
             prevIndex === backgrounds.length - 1 ? 0 : prevIndex + 1
           );
-        }, 1500); // Change image every 2 seconds
+        }, 2000); // Change image every 2 seconds
     
         return () => clearInterval(interval);
       }, []);
 
   return (
-    <div className='carousel-container'>
+    <div  ref={containerRef} 
+    className='carousel-container'
+    >
       <div className="scroll-container">
         <AnimatePresence custom={direction}>
           <motion.div
             key={currentIndex}
             className="background"
-            style={{ backgroundImage: `url(${backgrounds[currentIndex]})` }}
-            // initial={{ opacity: 0, x: direction > 0 ? 100 : -100 }}
-            // animate={{ opacity: 1, x: 0 }}
-            // exit={{ opacity: 0, x: direction > 0 ? -100 : 100 }}
-            // transition={{ duration: 1 }}
+            style={{ backgroundImage: `url(${backgrounds[currentIndex].src})` }}
           >
-            {overlayImages[currentIndex] && (
-              <img
-                src={overlayImages[currentIndex]}
-                alt="Overlay"
-                className={`overlay-image ${overlayImages[currentIndex].includes('jungle-overlay.png') ? 'shake' : overlayImages[currentIndex].includes('sparks-bottom.png') ? 'move' : ''}`}
-               
+            {
+            (backgrounds[currentIndex].overlays || []).map((overlay, index) => (
+              <img 
+                key={index} 
+                src={overlay.src} 
+                alt="Overlay" 
+                style={{zIndex: overlay.zIndex}}
+                className={`overlay-image ${overlay.className || ''}`} 
               />
-            )}
+            ))}
           </motion.div>
         </AnimatePresence>
         <img src="src/assets/carousel/chair.png" alt="Hero Chair" className="chair" />
+        
         <motion.div
-            className="text-container"
-            // style={{
-            // opacity: useTransform(officeProgress, [0, 0.05, 0.6], [0, 1, 0]),
-            // y: useTransform(officeProgress, [0, 0.05, 0.6], [-30, 0, 30]),
-            // }}
-        >
-        <div className="text">
-          <h2>One <br/>Chair,<br/><span>Infinite Contexts</span></h2>
+            className="carousel-text-container"
+            initial={{ opacity: 0, y: 0 }}
+            style={{
+                opacity: useTransform(carouselProgress, [0.01, 0.2], [1, 0]),
+                y: useTransform(carouselProgress, [0.01, 0.2], [ 0, 300]),
+            }}
+            >
+        <div className="carousel-text">
+            <h2 className='first'>
+                <span>One</span> 
+                <br/>
+            Chair,
+            </h2>
+            <h2
+            className={`${
+                (backgrounds[currentIndex].overlays || []).some(overlay =>
+                  overlay.src .includes('photo-studio-overlay.png')
+                ) ? 'text-black' : 'text-white'
+              }`}
+             >
+                <br/>
+                    <span>Infinite </span> 
+                    <br/>
+                Contexts
+            </h2>
         </div>
       </motion.div>
       </div>

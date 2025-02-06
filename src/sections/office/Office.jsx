@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { motion, useMotionValueEvent, useSpring, useTransform  } from "framer-motion";
+import { motion, useMotionValueEvent, useSpring, useTransform, useAnimation  } from "framer-motion";
 
 import "../../styles/Office.scss";
 
@@ -11,6 +11,7 @@ const Office = ({ progress, updateRange, officeRange, isHeroAnimatedOut }) => {
   // const y = useTransform(progress, [0, 0.2], [0, -window.innerHeight]);
   // const officeProgress = useTransform(progress, [0.46, 0.84], [0, 1]);
   const officeY = useSpring(0, { stiffness: 200, damping: 50 }); 
+  const textControls = useAnimation();
 
   useEffect(() => {
     if (containerRef.current) {
@@ -59,12 +60,12 @@ const Office = ({ progress, updateRange, officeRange, isHeroAnimatedOut }) => {
 
   useEffect(() => {
     const handleOfficeAnimation = () => {
-      if (officeProgress.get() <= 0.1 ) {
+      if (officeProgress.get() <= 0.05 ) {
         setLeftVideoSrc("src/assets/office/glitch.mp4");
         setRightVideoSrc("src/assets/office/glitch.mp4");
         
       } 
-      else if (officeProgress.get() > 0.1 && officeProgress.get() <= 0.6 ){
+      else if (officeProgress.get() > 0.05 && officeProgress.get() <= 0.6 ){
         setLeftVideoSrc("src/assets/office/office party.mp4");
         setRightVideoSrc("src/assets/office/cat.mp4");
         
@@ -89,6 +90,17 @@ useEffect(()=>{console.log(""+globalProgress)},[globalProgress])
 
 useEffect(()=>{setGlobalProgress(progress.get())},[progress])
 
+// useMotionValueEvent(officeProgress, "change", (latest) => {
+//     if (latest >= 0.1) {
+//       // Start the one-time animation (if not already started)
+//       textControls.start({
+//         opacity: 1,
+//         y: 0,
+//         transition: { duration: 1, ease: "easeInOut", delay: 1 }
+
+//       });
+//     }
+//   });
   return (
     <motion.div 
     ref={containerRef} 
@@ -106,9 +118,11 @@ useEffect(()=>{setGlobalProgress(progress.get())},[progress])
     <div className='office-content'></div> 
     <motion.div
         className="text-container"
+        initial={{ opacity: 0, y: -30 }}
+        animate={textControls}
         style={{
-          opacity: useTransform(officeProgress, [0, 0.05, 0.6], [0, 1, 0]),
-          y: useTransform(officeProgress, [0, 0.05, 0.6], [-30, 0, 30]),
+          opacity: useTransform(officeProgress, [0.01, 0.9], [1, 0]),
+          y: useTransform(officeProgress, [0.01, 0.9], [ 0, 300]),
         }}
       >
         <div className="text">
