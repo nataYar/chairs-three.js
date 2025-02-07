@@ -8,17 +8,17 @@ const Carousel = ({ progress, updateRange, carouselRange,  }) => {
 const containerRef = useRef(null);
 const carouselProgress = useTransform(progress, carouselRange, [0, 1]);
 
-  useMotionValueEvent(progress, "change", (latest) => {
-   console.log("global " +latest)
-  });
+//   useMotionValueEvent(progress, "change", (latest) => {
+//    console.log("global " +latest)
+//   });
 
-  useMotionValueEvent(carouselProgress, "change", (latest) => {
-    console.log("carousel Progress " +carouselProgress)
-   });
+//   useMotionValueEvent(carouselProgress, "change", (latest) => {
+//     console.log("carousel Progress " +carouselProgress)
+//    });
 
-  useEffect(() => {
-    console.log("carouselRange "+ carouselRange)
-  }, [carouselProgress]);
+//   useEffect(() => {
+//     console.log("carouselRange "+ carouselRange)
+//   }, [carouselProgress]);
 
 //  useEffect(() => {
 //     if (containerRef.current) {
@@ -37,18 +37,11 @@ const carouselProgress = useTransform(progress, carouselRange, [0, 1]);
 //     }
 //   }, []);
 
-  useMotionValueEvent(carouselProgress, "change", (latest) => {
-    if (latest >= 0) {
-        console.log("started CAROUSEL")
-      // Start the one-time animation (if not already started)
-    //   textControls.start({
-    //     opacity: 1,
-    //     y: 0,
-    //     transition: { duration: 1, ease: "easeInOut", delay: 1 }
-
-    //   });
-    }
-  });
+//   useMotionValueEvent(carouselProgress, "change", (latest) => {
+//     if (latest >= 0) {
+//         console.log("started CAROUSEL")
+//     }
+//   });
 
 
     const backgrounds = [
@@ -181,35 +174,6 @@ const carouselProgress = useTransform(progress, carouselRange, [0, 1]);
           </motion.div>
         </AnimatePresence>
         <img src="src/assets/carousel/chair.png" alt="Hero Chair" className="chair" />
-        
-        <motion.div
-            className="carousel-text-container"
-            initial={{ opacity: 0, y: "-60vh" }}
-            style={{
-                opacity: useTransform(carouselProgress, [-0.1, 0], [0, 1]),
-                y: useTransform(carouselProgress, [0, 0.3], ["-60vh", "0vh"]),
-              }}
-            >
-        <div className="carousel-text">
-            <h2 className='first'>
-                <span>One</span> 
-                <br/>
-            Chair,
-            </h2>
-            <h2
-            className={`${
-                (backgrounds[currentIndex].overlays || []).some(overlay =>
-                  overlay.src .includes('photo-studio-overlay.png')
-                ) ? 'text-black' : 'text-white'
-              }`}
-             >
-                <br/>
-                    <span>Infinite </span> 
-                    <br/>
-                Contexts
-            </h2>
-        </div>
-      </motion.div>
       </div>
     </div>
   );

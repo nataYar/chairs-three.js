@@ -13,11 +13,14 @@ const App = () => {
   const containerRef = useRef(null);
   const officeRef = useRef(null);
   const carouselRef = useRef(null);
-  
+  const afterOfficeRef = useRef(null)
+
   const { scrollYProgress } = useScroll();
+
   const [heroRange, setHeroRange] = useState([0, 1]);
   const [officeRange, setOfficeRange] = useState([0, 1]);
   const [carouselRange, setCarouselRange] = useState([0, 1]);
+  const [afterOfficeRange, setAfterOfficeRange] = useState([0, 1]);
 
   const [isAfterheroVisible, setIsAfterheroVisible] = useState(false);
   const [isAfterheroSticky, setIsAfterheroSticky] = useState(false);
@@ -90,6 +93,30 @@ const App = () => {
       return () => window.removeEventListener('resize', handleResize);
     }
   }, [officeRef]);
+
+  const updateAfterOfficeRange = (start, end) => {
+    setAfterOfficeRange([start, end]);
+  };
+  
+  useEffect(() => {
+    if (afterOfficeRef.current) {
+      const handleResize = () => {
+        const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
+        const afterOfficeOffsetTop = afterOfficeRef.current.offsetTop;
+        const afterOfficeHeight = afterOfficeRef.current.offsetHeight;
+        const afterOfficeStart = (afterOfficeOffsetTop - window.innerHeight) / totalScrollHeight;
+        const afterOfficeEnd = (afterOfficeOffsetTop + afterOfficeHeight) / totalScrollHeight;
+        updateAfterOfficeRange(afterOfficeStart, afterOfficeEnd);
+      };
+  
+      // Initial calculation
+      handleResize();
+  
+      // Recalculate on window resize
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, [afterOfficeRef]);
 
   // useMotionValueEvent(scrollYProgress, "change", 
   //   (latest) => {
@@ -173,9 +200,10 @@ useEffect(() => {
       <div ref={officeRef}>
         <Office progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateOfficeRange} officeRange={officeRange}/>
       </div>
-      
-      <AfterOffice />
-      <Transition color="black" height={"100vh"}/>
+      <div ref={afterOfficeRef}>
+        <AfterOffice progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateAfterOfficeRange} afterOfficeRange={afterOfficeRange}/>
+      </div>
+      {/* <Transition color="black" height={"100vh"}/> */}
       <div ref={carouselRef}>
 
       <Carousel progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateCarouselRange} carouselRange={carouselRange} />

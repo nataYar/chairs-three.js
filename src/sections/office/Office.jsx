@@ -122,8 +122,8 @@ useEffect(()=>{setGlobalProgress(progress.get())},[progress])
         initial={{ opacity: 0, y: -30 }}
         animate={textControls}
         style={{
-          opacity: useTransform(officeProgress, [0.01, 0.8], [1, 0]),
-          y: useTransform(officeProgress, [0.01, 0.9], [ "0vh", "70vh"]),
+          opacity: useTransform(officeProgress, [0.01, 0.6], [1, 0]),
+          y: useTransform(officeProgress, [0.01, 0.7], [ "0vh", "60vh"]),
         }}
       >
         <div className="text">
