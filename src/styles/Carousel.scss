@@ -90,7 +90,7 @@
 }
 
   .books-back {
-    animation: booksBack 7s infinite ease-out; 
+    animation: booksBack 5s infinite ease-out; 
     
   }
   @keyframes booksBack {
@@ -116,7 +116,7 @@
   }
 
   .books-front {
-    animation: booksFront 5s infinite ease-in-out;
+    animation: booksFront 4s infinite ease-in-out;
   }
   @keyframes booksFront {
     0% {

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useScroll, useMotionValueEvent } from "framer-motion";
+
 import Hero from "./sections/hero/Hero";
 import Office from "./sections/office/office";
 import Carousel from "./sections/carousel/Carousel";
@@ -7,6 +8,7 @@ import Transition from "./sections/Transition";
 import AfterHero from "./sections/Afterhero";
 import './styles/App.scss';
 import AfterOffice from "./sections/AfterOffice";
+import { debounce } from 'lodash';
 
 const App = () => {
   const [scrollDirection, setScrollDirection] = useState("down")
@@ -37,11 +39,11 @@ const App = () => {
     }
   }, []);
 
-  useEffect(()=> {
-    console.log("heroRange " + heroRange)
-    console.log("officeRange "+ officeRange)
-    console.log("carouselRange "+ carouselRange)
-  }, [heroRange, officeRange, carouselRange])
+  // useEffect(()=> {
+  //   console.log("heroRange " + heroRange)
+  //   console.log("officeRange "+ officeRange)
+  //   console.log("carouselRange "+ carouselRange)
+  // }, [heroRange, officeRange, carouselRange])
 
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
@@ -71,28 +73,29 @@ const App = () => {
     setOfficeRange([start, end]);
   };
 
+  
+
+  // Inside useEffect:
   useEffect(() => {
     if (officeRef.current) {
       const handleResize = () => {
         const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
         const officeOffsetTop = officeRef.current.offsetTop;
-        console.log("officeOffsetTop "+officeOffsetTop)
         const officeHeight = officeRef.current.offsetHeight;
-        console.log("office Height "+officeHeight)
         const officeStart = officeOffsetTop / totalScrollHeight;
         const officeEnd = (officeOffsetTop + officeHeight) / totalScrollHeight;
-        console.log("start "+officeStart +" end "+ officeEnd)
         updateOfficeRange(officeStart, officeEnd);
       };
-
-      // Initial calculation
-      handleResize();
-
-      // Recalculate on window resize
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+  
+      const debouncedHandleResize = debounce(handleResize, 200); // 200ms delay
+  
+      handleResize(); // Initial call
+      window.addEventListener('resize', debouncedHandleResize);
+  
+      return () => window.removeEventListener('resize', debouncedHandleResize);
     }
   }, [officeRef]);
+  
 
   const updateAfterOfficeRange = (start, end) => {
     setAfterOfficeRange([start, end]);
@@ -123,44 +126,49 @@ const App = () => {
   //     console.log("Global progress "+latest)
   //   })
 
-  // useEffect(() => {
-  //   // Subscribe to `scrollYProgress` updates
-  //   const unsubscribe = scrollYProgress.on("change", (value) => {
-  //     console.log("Scroll Progress:", value); // Log updated progress
-  //   });
+  useEffect(() => {
+    // Subscribe to `scrollYProgress` updates
+    const unsubscribe = scrollYProgress.on("change", (value) => {
+      console.log("Scroll Progress:", value); // Log updated progress
+    });
 
-  //   return () => unsubscribe(); // Clean up the listener
-  // }, [scrollYProgress]);
+    return () => unsubscribe(); // Clean up the listener
+  }, [scrollYProgress]);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const container = containerRef.current;
-    if (container) { 
-      const diff = latest - scrollYProgress.getPrevious();
-      setScrollDirection(diff > 0 ? "down" : "up");
+    if (!container) return;
   
-      // Reset hasShownAfterhero when scrolling back up past heroRange[1]
-      if (latest < heroRange[1] && scrollDirection === "up") {
-        setHasShownAfterhero(false);
-      }
+    const diff = latest - scrollYProgress.getPrevious();
+    const direction = diff > 0 ? "down" : "up";
+    setScrollDirection(direction);
   
-      // Trigger Afterhero visibility only once when scrolling down past heroRange[1]
-      if (latest >= heroRange[1] && scrollDirection === "down" && !isAfterheroSticky && !hasShownAfterhero) {
-        setIsAfterheroSticky(true); // Mark as sticky immediately
-        setHasShownAfterhero(true); // Mark as shown
+    // Reset hasShownAfterhero when scrolling back up past heroRange[1]
+    if (latest < heroRange[1] && direction === "up") {
+      setHasShownAfterhero(false);
+    }
   
-        // Delay the appearance of Afterhero by 1 second
-        setTimeout(() => {
-          setIsAfterheroVisible(true); // Make Afterhero visible after 1 second
-        }, 500); // 300ms delay
+    // Show Afterhero once
+    if (
+      latest >= heroRange[1] &&
+      direction === "down" &&
+      !isAfterheroSticky &&
+      !hasShownAfterhero
+    ) {
+      setIsAfterheroSticky(true);
+      setHasShownAfterhero(true);
   
-        // Set a timeout to hide the Afterhero after 1.5 seconds of being visible
-        setTimeout(() => {
-          setIsAfterheroVisible(false);
-          setIsAfterheroSticky(false); // Reset sticky state
-        }, 1500); // 300ms delay + 1.5 seconds visible = 1.8 seconds total
-      }
+      setTimeout(() => {
+        setIsAfterheroVisible(true);
+      }, 500);
+  
+      setTimeout(() => {
+        setIsAfterheroVisible(false);
+        setIsAfterheroSticky(false);
+      }, 1500);
     }
   });
+  
 
   // In App.jsx
 const updateCarouselRange = (start, end) => {
@@ -168,24 +176,24 @@ const updateCarouselRange = (start, end) => {
 };
 
 useEffect(() => {
-  if (carouselRef.current) {
-    const handleResize = () => {
-      const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
-      const carouselOffsetTop = carouselRef.current.offsetTop;
-      const carouselHeight = carouselRef.current.offsetHeight;
-      const carouselStart = (carouselOffsetTop - window.innerHeight) / totalScrollHeight;
-      const carouselEnd = (carouselOffsetTop + carouselHeight) / totalScrollHeight;
-      updateCarouselRange(carouselStart, carouselEnd);
-    };
+  const handleResize = () => {
+    if (!carouselRef.current) return;
+    const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
+    const carouselOffsetTop = carouselRef.current.offsetTop;
+    const carouselHeight = carouselRef.current.offsetHeight;
+    const carouselStart = (carouselOffsetTop - window.innerHeight) / totalScrollHeight;
+    const carouselEnd = (carouselOffsetTop + carouselHeight) / totalScrollHeight;
+    updateCarouselRange(carouselStart, carouselEnd);
+  };
 
-    // Initial calculation
-    handleResize();
+  const timeout = setTimeout(handleResize, 100); // delay resize for layout
+  window.addEventListener('resize', handleResize);
+  return () => {
+    clearTimeout(timeout);
+    window.removeEventListener('resize', handleResize);
+  };
+}, []);
 
-    // Recalculate on window resize
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }
-}, [carouselRef]);
 
 
   return (
@@ -203,14 +211,14 @@ useEffect(() => {
       <div ref={afterOfficeRef}>
         <AfterOffice progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateAfterOfficeRange} afterOfficeRange={afterOfficeRange}/>
       </div>
-      {/* <Transition color="black" height={"100vh"}/> */}
+      
       <div ref={carouselRef}>
 
       <Carousel progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateCarouselRange} carouselRange={carouselRange} />
       </div>
      
-      <Transition color="black" height={"100vh"}/>
-     <div style={{height:"500vh", backgroundColor:"red"}}></div>
+      {/* <Transition color="black" height={"100vh"}/> */}
+     {/* <div style={{height:"500vh", backgroundColor:"red"}}></div> */}
     </div>
   </div>
   );

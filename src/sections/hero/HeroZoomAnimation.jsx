@@ -20,15 +20,13 @@ const HeroAnimation = ({
   const [isAnimatingUp, setIsAnimatingUp] = useState(false); 
   const animationControls = useAnimation();
   const heroRef = useRef(null);
-  
-    // useEffect(() => {
-    //   window.scrollTo(0, 0); // Scroll the entire page to the top
-    // }, []);
+
 
     useMotionValueEvent(heroProgress, "change", (scrollProgress) => {
+      console.log(scrollProgress)
       const chaElement = document.querySelector(".cha");
       if (chaElement) {
-        if (scrollProgress >= 0.7 && scrollProgress <= 1) {
+        if (scrollProgress >= 0.85 && scrollProgress <= 1) {
           chaElement.classList.add("padding-right");
         } else {
           chaElement.classList.remove("padding-right");

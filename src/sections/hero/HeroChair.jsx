@@ -11,62 +11,37 @@ const HeroChair = forwardRef((props, ref) => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const { viewport } = useThree();
 
-  // Map progress to [0, 1] for the first 20% of progress
-  const heroProgress = useTransform(progress, [0, 0.2], [0, 1]);
-
-  // Define rotation and scale
+  // Define rotation
   const rotation = [0.4, 0.3, 0.1];
-  const scale = isMobile ? 0.09 : 0.2;
 
-  // Define positions based on viewport and device type
+  // Define initial scale and position
+  const initialScale = isMobile ? 0.13 : 0.2;
   const initialPosition = isMobile
     ? [viewport.width * 0.5, -viewport.height * -2.8, -25]
     : [viewport.width * 0, -viewport.height * -4.3, -35];
-  const finalPosition = isMobile
-    ? [viewport.width * 0.1, -viewport.height * -0.6, -10]
-    : [viewport.width * 0, -viewport.height * -0.6, -10];
 
-  // Single useFrame to handle both rotation and position
-  useFrame(({ clock }) => {
-    const time = clock.getElapsedTime();
+  // Use progress to animate Y position and scale
+  const easeIn = (start, end, t) => start + (end - start) * t * t;
 
-    // Easing function
-    const easeInOutCubic = (t) =>
-      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  useFrame(() => {
+    if (localRef.current && progress.get() >= 0.1) {
+      const moveY = easeIn(0, -20, progress.get()); // Move down the Y-axis (adjust the value for desired distance)
+      // const newScale = easeIn(initialScale, 0.13, progress.get()); // Increase scale slightly
 
-    // Calculate eased progress based on heroProgress
-    const progressValue = heroProgress.get(); // Get the current value of heroProgress
-    const easedProgress = easeInOutCubic(progressValue);
-
-    // Animate rotation (subtle oscillation effect)
-    if (localRef.current) {
-      localRef.current.rotation.x = rotation[0] + Math.sin(time * 1.2) * 0.02;
-      localRef.current.rotation.y = rotation[1] + Math.cos(time * 1.1) * 0.02;
-      localRef.current.rotation.z = rotation[2] + Math.sin(time * 1.5) * 0.02;
+      // Update position and scale
+      localRef.current.position.y = initialPosition[1] + moveY;
+      // localRef.current.scale.set(newScale, newScale, newScale);
     }
-
-    // Animate position (smooth interpolation)
-    // if (heroChairRef.current) {
-    //   heroChairRef.current.position.x =
-    //     initialPosition[0] +
-    //     (finalPosition[0] - initialPosition[0]) * easedProgress;
-    //   heroChairRef.current.position.y =
-    //     initialPosition[1] +
-    //     (finalPosition[1] - initialPosition[1]) * easedProgress;
-    //   heroChairRef.current.position.z =
-    //     initialPosition[2] +
-    //     (finalPosition[2] - initialPosition[2]) * easedProgress;
-    // }
   });
 
   return (
     <Chair
       ref={(node) => {
-        localRef.current = node; // Attach local ref
-        if (ref) ref.current = node; // Forward parent ref
+        localRef.current = node; 
+        if (ref) ref.current = node; 
       }}
       modelPath="src/assets/chairs/office_chair.glb"
-      scale={scale}
+      scale={initialScale} 
       position={initialPosition}
       rotation={rotation}
       castShadow={false}

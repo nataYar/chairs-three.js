@@ -11,16 +11,34 @@ const Chair7 = forwardRef((props, ref) => {
     const rotation = [-1.3, -25 * Math.PI / 18, -0.6]; // tilt, rotation, twist
     
     const scale = isMobile ? 1 : 1; 
-    const position = isMobile ? [viewport.width * 0.9, -viewport.height * -0.3, -7 ] :[ viewport.width * 0.9, -viewport.height * -0.3, -7]
- 
-    // Unpredictable rotation animation
+    const position = isMobile ? [viewport.width * 0.9, -viewport.height * -0.3, -7 ] : [ viewport.width * 0.9, -viewport.height * -0.3, -7 ];
+
+    // Ease-in function for smooth transition
+    const easeIn = (start, end, t) => start + (end - start) * t * t;
+
     useFrame(({ clock }) => {
         if (localRef.current) {
             const time = clock.getElapsedTime();
 
+            // Unpredictable rotation animation
             localRef.current.rotation.x = rotation[0] + Math.sin(time * 1.7) * 0.02; 
             localRef.current.rotation.y = rotation[1] + Math.cos(time * 1.3) * 0.04; 
             localRef.current.rotation.z = rotation[2] + Math.sin(time * 1.7) * 0.03; 
+
+            // Flying effect (right and slightly up)
+            const moveSpeed = 1;
+            let moveX = 0;
+            let moveY = 0;
+
+            const progress = props.progress || { get: () => 0.5 };
+            if (progress.get() >= 0.1) {
+                moveX = easeIn(0, (progress.get() - 0.1) * moveSpeed * 3.5, progress.get()); 
+                moveY = easeIn(0, (progress.get() - 0.1) * moveSpeed * 1.5, progress.get()); 
+            }
+
+            // Apply the flying movement
+            localRef.current.position.x = position[0] + moveX;
+            localRef.current.position.y = position[1] + moveY;
         }
     });
 

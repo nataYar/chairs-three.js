@@ -5,10 +5,6 @@ import { useFrame } from "@react-three/fiber";
 const ChairAnimation = ({ chairPositions, chairRefs, isCanvasLoaded, progress, isMobile }) => {
   // Spring configuration
   const springConfig = { mass: 5, stiffness: 400, damping: 80, restDelta: 0.001 };
-
-  useEffect(() => {
-      window.scrollTo(0, 0);
-    }, []);
     
   // Create springs for each chair position
   const springs = chairPositions.map((chair) => {

@@ -145,7 +145,7 @@ const carouselProgress = useTransform(progress, carouselRange, [0, 1]);
           setCurrentIndex((prevIndex) =>
             prevIndex === backgrounds.length - 1 ? 0 : prevIndex + 1
           );
-        }, 2000); // Change image every 2 seconds
+        }, 1000); // Change image every 1 seconds
     
         return () => clearInterval(interval);
       }, []);
