@@ -10,8 +10,10 @@ import './styles/App.scss';
 import AfterOffice from "./sections/AfterOffice";
 import { debounce } from 'lodash';
 
-const App = () => {
+const App = () => { 
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const [scrollDirection, setScrollDirection] = useState("down")
+  let scrollTimeout = useRef(null); 
   const containerRef = useRef(null);
   const officeRef = useRef(null);
   const carouselRef = useRef(null);
@@ -194,18 +196,53 @@ useEffect(() => {
   };
 }, []);
 
+ useMotionValueEvent(scrollYProgress , "change", (latest) => {
+    if (latest >= heroRange[1] && scrollDirection === "down" && !hasScrolledToBottom) {
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+
+      // Wait for natural scroll to settle, then scroll to .bottom
+      scrollTimeout.current = setTimeout(() => {
+        officeRef.current.scrollIntoView({
+          behavior: "smooth", 
+          block: "start", 
+        });
+        setHasScrolledToBottom(true); // Prevent further scrolling
+      }, 100); // Adjust delay to allow natural scrolling to finish
+    }
+
+    // Reset when scrolling back up (Optional)
+    if (latest < heroRange[1] && scrollDirection === "up") {
+      setHasScrolledToBottom(false); // Allow the scroll to trigger again
+    }
+  });
+
+  // Cleanup timeout when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+    };
+  }, []);
 
 
   return (
     <div id="smooth-wrapper" style={{ overflow: "hidden"}} > 
       <div
       ref={containerRef}
-      className="app-container" >
+      className="app-container" 
+      >
+     
       <Hero progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateHeroRange} heroRange={heroRange}/>
-      
+     
+     
+      {/* <div style={{ height: "300vh", position: "relative", backgroundColor:"black" }}>
+       
+      </div>  */}
+
+
       <AfterHero progress={scrollYProgress} isVisible={isAfterheroVisible}/>
       
-      <div ref={officeRef}>
+      <div ref={officeRef}
+      >
         <Office progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateOfficeRange} officeRange={officeRange}/>
       </div>
       <div ref={afterOfficeRef}>

@@ -28,9 +28,9 @@ const Hero = ({ progress, heroRange, updateRange,
   const [isNonFixedDelayed, setIsNonFixedDelayed] = useState(false); 
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const containerHeroRef = useRef(null);
-  const bottomRef = useRef(null);
-  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
-  let scrollTimeout = useRef(null); 
+  // const bottomRef = useRef(null);
+  // const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+  // let scrollTimeout = useRef(null); 
   const heroChairRef = useRef(null);
   const canvasRef = useRef(null);
 
@@ -63,35 +63,32 @@ const Hero = ({ progress, heroRange, updateRange,
 
   const heroProgress = useTransform(progress, heroRange, [0, 1]); 
 
+  // useMotionValueEvent(progress, "change", (latest) => {
+  //   if (latest >= heroRange[1] && scrollDirection === "down" && !hasScrolledToBottom) {
+  //     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
 
-  // listen to progress changes and trigger scroll
-  useMotionValueEvent(progress, "change", (latest) => {
- 
-    if (latest >= heroRange[1] && scrollDirection === "down" && !hasScrolledToBottom) {
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+  //     // Wait for natural scroll to settle, then scroll to .bottom
+  //     scrollTimeout.current = setTimeout(() => {
+  //       bottomRef.current.scrollIntoView({
+  //         behavior: "smooth", // Smooth scrolling
+  //         // block: "start", 
+  //       });
+  //       setHasScrolledToBottom(true); // Prevent further scrolling
+  //     }, 100); // Adjust delay to allow natural scrolling to finish
+  //   }
 
-      // Wait for natural scroll to settle, then scroll to .bottom
-      scrollTimeout.current = setTimeout(() => {
-        bottomRef.current.scrollIntoView({
-          behavior: "smooth", // Smooth scrolling
-          block: "start", // Align the element to the top of the viewport
-        });
-        setHasScrolledToBottom(true); // Prevent further scrolling
-      }, 300); // Adjust delay to allow natural scrolling to finish
-    }
+  //   // Reset when scrolling back up (Optional)
+  //   if (latest < heroRange[1] && scrollDirection === "up") {
+  //     setHasScrolledToBottom(false); // Allow the scroll to trigger again
+  //   }
+  // });
 
-    // Reset when scrolling back up (Optional)
-    if (latest < heroRange[1] && scrollDirection === "up") {
-      setHasScrolledToBottom(false); // Allow the scroll to trigger again
-    }
-  });
-
-  // Cleanup timeout when the component unmounts
-  useEffect(() => {
-    return () => {
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-    };
-  }, []);
+  // // Cleanup timeout when the component unmounts
+  // useEffect(() => {
+  //   return () => {
+  //     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+  //   };
+  // }, []);
 
 
 // custom hook for mob/laptop window size
@@ -113,7 +110,17 @@ const useMediaQuery = (query) => {
   const isDesktop = useMediaQuery("(min-width: 800px)");
 
   const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
-  const canvasAnimationVariants = useAnimation();
+
+
+  const canvasAnimationVariants = {
+    moveCanvas: {
+      y: heroProgress.get() === 1 ? '-100vh' : '0', // When progress is 1, move the canvas off-screen
+      transition: {
+        duration: 0.5, // Adjust the duration for a smooth transition
+        ease: 'easeInOut',
+      },
+    },
+  };
 
   return (
     <motion.div className="hero-section_container"
@@ -133,7 +140,7 @@ const useMediaQuery = (query) => {
       <motion.div
         ref={canvasRef}
         className="canvas-container"
-        animate={canvasAnimationVariants}
+        animate={canvasAnimationVariants.moveCanvas}
         transition={{
           duration: 0.1, 
           ease: "easeInOut"
@@ -177,7 +184,7 @@ const useMediaQuery = (query) => {
       </Canvas>
     </motion.div>
   </Suspense>
-  <div className="bottom" ref={bottomRef}></div> 
+  {/* <div className="bottom" ref={bottomRef}></div>  */}
   </motion.div>
   );
 };
