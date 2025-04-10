@@ -20,7 +20,7 @@ import "../../styles/Hero.scss";
 
 
 const Hero = ({ progress, heroRange, updateRange, 
-   scrollDirection,isHeroAnimatedOut, onHeroAnimationComplete 
+   scrollDirection,isHeroAnimatedOut, onHeroAnimationComplete, isMobile 
 }) => {
 
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false);
@@ -91,24 +91,6 @@ const Hero = ({ progress, heroRange, updateRange,
   // }, []);
 
 
-// custom hook for mob/laptop window size
-const useMediaQuery = (query) => {
-  const [matches, setMatches] = useState(false);
-  useEffect(() => {
-    const mediaQueryList = window.matchMedia(query);
-    setMatches(mediaQueryList.matches);
-    const listener = () => setMatches(mediaQueryList.matches);
-    mediaQueryList.addEventListener('change', listener);
-    return () => {
-      mediaQueryList.removeEventListener('change', listener);
-    };
-  }, [query]);
-
-  return matches;
-};
-  const isMobile = useMediaQuery("(max-width: 799px)");
-  const isDesktop = useMediaQuery("(min-width: 800px)");
-
   const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
 
 
@@ -131,7 +113,6 @@ const useMediaQuery = (query) => {
       isNonFixedDelayed={isNonFixedDelayed}
       heroProgress={heroProgress}
       // onProgressUpdate={onProgressUpdate}
-      isDesktop={isDesktop} 
       isMobile={isMobile}
       containerHeroRef={containerHeroRef}
       isCanvasLoaded={isCanvasLoaded} 
@@ -169,7 +150,6 @@ const useMediaQuery = (query) => {
        isMobile={isMobile} />
         {/* <Preload all /> */}
         <Lighting 
-        isDesktop={isDesktop} 
         isMobile={isMobile}
         />
         <Chair1 ref={chairRefs[0].ref}  isMobile={isMobile} />

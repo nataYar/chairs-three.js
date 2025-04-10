@@ -8,7 +8,7 @@
         height: 120vh; /* Cover the entire viewport */
         z-index: 99; 
         transform: translateY(-100%); /* Start offscreen (below the viewport) */
-        transition: transform .7s ease-in-out;
+        transition: transform 0.5s ease-in-out;
       
         &.visible {
           transform: translateY(0);

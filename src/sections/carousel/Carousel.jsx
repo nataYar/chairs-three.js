@@ -4,9 +4,34 @@ import { motion, AnimatePresence, useMotionValueEvent, useSpring, useTransform, 
 import "../../styles/Carousel.scss";
 import '../../styles/Carousel.scss'
 
-const Carousel = ({ progress, updateRange, carouselRange,  }) => {
+const Carousel = ({ progress, carouselRange, scrollDirection }) => {
 const containerRef = useRef(null);
 const carouselProgress = useTransform(progress, carouselRange, [0, 1]);
+
+const [hasSnappedToCarousel, setHasSnappedToCarousel] = useState(false);
+
+useMotionValueEvent( progress, "change", (latest) => {
+  const prev = progress.getPrevious();
+  const scrollDirection = latest > prev ? "down" : "up";
+
+  // Reset flag when scrolling up past Carousel
+  if (latest < carouselRange[0] && scrollDirection === "up") {
+    setHasSnappedToCarousel(false);
+  }
+
+  // Snap when getting close to Carousel
+  const snapThreshold = 0.007; // tweak this value for sensitivity
+
+  if (
+    scrollDirection === "down" &&
+    !hasSnappedToCarousel &&
+    Math.abs(latest - carouselRange[0]) <= snapThreshold
+  ) {
+    setHasSnappedToCarousel(true);
+    containerRef.current?.scrollIntoView({ behavior: "smooth" });
+  }
+});
+
 
 //   useMotionValueEvent(progress, "change", (latest) => {
 //    console.log("global " +latest)
@@ -145,7 +170,7 @@ const carouselProgress = useTransform(progress, carouselRange, [0, 1]);
           setCurrentIndex((prevIndex) =>
             prevIndex === backgrounds.length - 1 ? 0 : prevIndex + 1
           );
-        }, 1000); // Change image every 1 seconds
+        }, 1500); // Change image every 1 seconds
     
         return () => clearInterval(interval);
       }, []);

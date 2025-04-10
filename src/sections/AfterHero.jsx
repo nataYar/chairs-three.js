@@ -1,7 +1,7 @@
 import React from 'react'
 import "../styles/Afterhero.scss"
 
-const AfterHero = ({ progress, isVisible }) => {
+const AfterHero = ({  isVisible }) => {
   return (
     <div className={`afterhero ${isVisible ? 'visible' : ''}`}>Afterhero</div>
   )

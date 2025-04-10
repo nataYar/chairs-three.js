@@ -9,6 +9,8 @@ import AfterHero from "./sections/Afterhero";
 import './styles/App.scss';
 import AfterOffice from "./sections/AfterOffice";
 import { debounce } from 'lodash';
+import Warhol from "./sections/warhol/Warhol";
+import SharedChair from "./sections/SharedChair";
 
 const App = () => { 
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
@@ -18,13 +20,15 @@ const App = () => {
   const officeRef = useRef(null);
   const carouselRef = useRef(null);
   const afterOfficeRef = useRef(null)
-
+  const warholRef = useRef(null)
+ 
   const { scrollYProgress } = useScroll();
 
   const [heroRange, setHeroRange] = useState([0, 1]);
   const [officeRange, setOfficeRange] = useState([0, 1]);
   const [carouselRange, setCarouselRange] = useState([0, 1]);
   const [afterOfficeRange, setAfterOfficeRange] = useState([0, 1]);
+  const [warholRange, setWarholRange] = useState([0, 1]);
 
   const [isAfterheroVisible, setIsAfterheroVisible] = useState(false);
   const [isAfterheroSticky, setIsAfterheroSticky] = useState(false);
@@ -40,6 +44,25 @@ const App = () => {
       containerRef.current.scrollTop = 0; 
     }
   }, []);
+
+  // custom hook for mob/laptop window size
+  const useMediaQuery = (query) => {
+    const [matches, setMatches] = useState(false);
+    useEffect(() => {
+      const mediaQueryList = window.matchMedia(query);
+      setMatches(mediaQueryList.matches);
+      const listener = () => setMatches(mediaQueryList.matches);
+      mediaQueryList.addEventListener('change', listener);
+      return () => {
+        mediaQueryList.removeEventListener('change', listener);
+      };
+    }, [query]);
+
+    return matches;
+  };
+
+  const isMobile = useMediaQuery("(max-width: 799px)");
+  // const isDesktop = useMediaQuery("(min-width: 800px)");
 
   // useEffect(()=> {
   //   console.log("heroRange " + heroRange)
@@ -167,7 +190,7 @@ const App = () => {
       setTimeout(() => {
         setIsAfterheroVisible(false);
         setIsAfterheroSticky(false);
-      }, 1500);
+      }, 1600);
     }
   });
   
@@ -194,7 +217,30 @@ useEffect(() => {
     clearTimeout(timeout);
     window.removeEventListener('resize', handleResize);
   };
-}, []);
+}, [carouselRef]);
+
+useEffect(() => {
+  const handleResize = () => {
+    if (!warholRef.current) return;
+    const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
+    const warholOffsetTop = warholRef.current.offsetTop;
+    const warholHeight = warholRef.current.offsetHeight;
+    const warholStart = (warholOffsetTop - window.innerHeight) / totalScrollHeight;
+    const warholEnd = (warholOffsetTop + warholHeight) / totalScrollHeight;
+    updateWarholRange(warholStart, warholEnd);
+  };
+
+  const timeout = setTimeout(handleResize, 100); // delay resize for layout
+  window.addEventListener('resize', handleResize);
+  return () => {
+    clearTimeout(timeout);
+    window.removeEventListener('resize', handleResize);
+  };
+}, [warholRef]);
+
+const updateWarholRange = (start, end) => {
+  setWarholRange([start, end]);
+};
 
  useMotionValueEvent(scrollYProgress , "change", (latest) => {
     if (latest >= heroRange[1] && scrollDirection === "down" && !hasScrolledToBottom) {
@@ -231,7 +277,7 @@ useEffect(() => {
       className="app-container" 
       >
      
-      <Hero progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateHeroRange} heroRange={heroRange}/>
+      <Hero progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateHeroRange} heroRange={heroRange} isMobile={isMobile}/>
      
      
       {/* <div style={{ height: "300vh", position: "relative", backgroundColor:"black" }}>
@@ -241,18 +287,33 @@ useEffect(() => {
 
       <AfterHero progress={scrollYProgress} isVisible={isAfterheroVisible}/>
       
-      <div ref={officeRef}
+      <SharedChair
+        progress={scrollYProgress}
+        officeRange={officeRange}
+        carouselRange={carouselRange}
+        warholRange={warholRange}
+        isMobile={isMobile}
+      />
+      
+      <div className="OFFICE"
+      ref={officeRef}
       >
         <Office progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateOfficeRange} officeRange={officeRange}/>
       </div>
-      <div ref={afterOfficeRef}>
+
+      {/* <div ref={afterOfficeRef}>
         <AfterOffice progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateAfterOfficeRange} afterOfficeRange={afterOfficeRange}/>
       </div>
       
       <div ref={carouselRef}>
-
-      <Carousel progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateCarouselRange} carouselRange={carouselRange} />
+        <Carousel progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateCarouselRange} carouselRange={carouselRange} />
       </div>
+
+      <div ref={warholRef}>
+        <Warhol progress={scrollYProgress} scrollDirection={scrollDirection} warholRange={warholRange}
+      />
+      </div> */}
+     
      
       {/* <Transition color="black" height={"100vh"}/> */}
      {/* <div style={{height:"500vh", backgroundColor:"red"}}></div> */}

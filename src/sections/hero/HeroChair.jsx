@@ -1,7 +1,6 @@
 import React, { forwardRef, useRef } from "react";
 import { useMediaQuery } from "react-responsive";
 import { useThree, useFrame } from "@react-three/fiber";
-import { useTransform } from "framer-motion";
 import Chair from "./Chair";
 
 const HeroChair = forwardRef((props, ref) => {
