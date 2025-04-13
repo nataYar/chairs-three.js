@@ -33,11 +33,11 @@ const SharedChair = ({ progress, officeRange, carouselRange, warholRange, isMobi
     <motion.div
     className="shared-chair"
     style={{
-      position: "relative",
-      width: "100%",
-      height: "100%",
+      position: "absolute",
+      width: "100vh",
+      height: "100vh",
       // backgroundColor: "blue",
-      top: 0,
+      top: '300vh',
       left: 0,
       // y,
       // scale,
@@ -60,12 +60,12 @@ const SharedChair = ({ progress, officeRange, carouselRange, warholRange, isMobi
         width: '100%',
         height: '100%',
         zIndex: 99,
-        backgroundColor: "blue",
+        // backgroundColor: "blue",
         pointerEvents: 'none',
         }}>
           <ambientLight intensity={0.5} />
           <directionalLight 
-            position={[5, 50, -15]}
+            position={[7, 16, -36]}
             intensity= {9}
             castShadow 
           />

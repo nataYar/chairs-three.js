@@ -18,10 +18,16 @@ export default function SharedChairFigure({ progress, officeRange, carouselRange
     //     return (clamped - min) / (max - min)
     //   })()
 
-    const initialScale = isMobile ? 0.13 : 0.2;
+    const initialScale = isMobile ? 0.027 : 0.2;
+    const rotation = [-0.2, 3.2, 0];
+   
     const initialPosition = isMobile
-    ? [viewport.width * 0.5, -viewport.height * -2.8, -25]
-    : [viewport.width * 0, -viewport.height * -4.3, -35];
+    ?  [ viewport.width * -0.44, 
+        -viewport.height * 0.55, 
+        1]
+    : [viewport.width * -0.37, 
+        -viewport.height * 0.7, 
+        1 ]
 
 
     // Chair position animation across sections
@@ -37,7 +43,12 @@ export default function SharedChairFigure({ progress, officeRange, carouselRange
     // if (!isVisible) return null
 
     return (
-        <a.group ref={group} position={initialPosition} scale={initialScale }>
+        <a.group 
+        ref={group} 
+        position={initialPosition} 
+        scale={initialScale }
+        rotation={rotation} 
+        >
         <primitive object={scene} />
       </a.group>
     )

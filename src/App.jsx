@@ -301,7 +301,7 @@ const updateWarholRange = (start, end) => {
         <Office progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateOfficeRange} officeRange={officeRange}/>
       </div>
 
-      {/* <div ref={afterOfficeRef}>
+      <div ref={afterOfficeRef}>
         <AfterOffice progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateAfterOfficeRange} afterOfficeRange={afterOfficeRange}/>
       </div>
       
@@ -312,7 +312,7 @@ const updateWarholRange = (start, end) => {
       <div ref={warholRef}>
         <Warhol progress={scrollYProgress} scrollDirection={scrollDirection} warholRange={warholRange}
       />
-      </div> */}
+      </div>
      
      
       {/* <Transition color="black" height={"100vh"}/> */}

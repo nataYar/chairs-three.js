@@ -10,27 +10,27 @@ const carouselProgress = useTransform(progress, carouselRange, [0, 1]);
 
 const [hasSnappedToCarousel, setHasSnappedToCarousel] = useState(false);
 
-useMotionValueEvent( progress, "change", (latest) => {
-  const prev = progress.getPrevious();
-  const scrollDirection = latest > prev ? "down" : "up";
+// useMotionValueEvent( progress, "change", (latest) => {
+//   const prev = progress.getPrevious();
+//   const scrollDirection = latest > prev ? "down" : "up";
 
-  // Reset flag when scrolling up past Carousel
-  if (latest < carouselRange[0] && scrollDirection === "up") {
-    setHasSnappedToCarousel(false);
-  }
+//   // Reset flag when scrolling up past Carousel
+//   if (latest < carouselRange[0] && scrollDirection === "up") {
+//     setHasSnappedToCarousel(false);
+//   }
 
-  // Snap when getting close to Carousel
-  const snapThreshold = 0.007; // tweak this value for sensitivity
+//   // Snap when getting close to Carousel
+//   const snapThreshold = 0.007; // tweak this value for sensitivity
 
-  if (
-    scrollDirection === "down" &&
-    !hasSnappedToCarousel &&
-    Math.abs(latest - carouselRange[0]) <= snapThreshold
-  ) {
-    setHasSnappedToCarousel(true);
-    containerRef.current?.scrollIntoView({ behavior: "smooth" });
-  }
-});
+//   if (
+//     scrollDirection === "down" &&
+//     !hasSnappedToCarousel &&
+//     Math.abs(latest - carouselRange[0]) <= snapThreshold
+//   ) {
+//     setHasSnappedToCarousel(true);
+//     containerRef.current?.scrollIntoView({ behavior: "smooth" });
+//   }
+// });
 
 
 //   useMotionValueEvent(progress, "change", (latest) => {
