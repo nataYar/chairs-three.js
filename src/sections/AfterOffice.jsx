@@ -1,26 +1,24 @@
-import React, { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useMotionValueEvent, useSpring, useTransform, useAnimation  } from "framer-motion";
+import React from "react";
+import { motion, useSpring, useTransform } from "framer-motion";
 import "../styles/AfterOffice.scss"
 
-const AfterOffice = ({ progress, updateRange, afterOfficeRange }) => {
+const AfterOffice = ({ progress, afterOfficeRange }) => {
 
   const currentProgress = useTransform(progress, afterOfficeRange, [0, 1]);
 
-  const springConfig = { mass: 1, stiffness: 100, damping: 40, restDelta: 0.001 };
+  const springConfig = { mass: 0.5, stiffness: 100, damping: 40, restDelta: 0.001 };
 
   // Define the pixel values for the y-axis transformation.
-  const startY = window.innerHeight * 0.1; // Equivalent to "30vh"
-  const endY = window.innerHeight * 0.8; // Equivalent to "80vh"
+  const startY = window.innerHeight * 0.1; // Equivalent to 30vh
+  const endY = window.innerHeight * 0.8; // Equivalent to 80vh
 
-  // Create a raw transform for the y position using numerical values.
   const rawY = useTransform(currentProgress, [0.4, 0.8], [startY, endY]);
 
-  // Wrap the transform with a spring for smooth, spring-like motion.
+  // Wrap the transform with a spring for smooth motion
   const springY = useSpring(rawY, springConfig);
 
   return (
   <div 
-  // ref={containerRef}
   className="after-office">
      <motion.div
             className="carousel-text-container"
@@ -37,11 +35,6 @@ const AfterOffice = ({ progress, updateRange, afterOfficeRange }) => {
             Chair,
             </h2>
             <h2
-            // className={`${
-            //     (backgrounds[currentIndex].overlays || []).some(overlay =>
-            //       overlay.src .includes('photo-studio-overlay.png')
-            //     ) ? 'text-black' : 'text-white'
-            //   }`}
              >
                 <br/>
                     <span>Infinite </span> 

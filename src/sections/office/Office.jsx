@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { motion, useMotionValueEvent, useSpring, useTransform, useAnimation  } from "framer-motion";
 
+
 import "../../styles/Office.scss";
 
 const Office = ({ progress, updateRange, officeRange, isHeroAnimatedOut }) => {
@@ -8,10 +9,13 @@ const Office = ({ progress, updateRange, officeRange, isHeroAnimatedOut }) => {
   const [rightVideoSrc, setRightVideoSrc] = useState("src/assets/office/cat.mp4");
   const [globalProgress, setGlobalProgress] = useState(0)
   const containerRef = useRef(null);
+  const [hasFadedIn, setHasFadedIn] = useState(false);
+  
   // const y = useTransform(progress, [0, 0.2], [0, -window.innerHeight]);
   // const officeProgress = useTransform(progress, [0.46, 0.84], [0, 1]);
   const officeY = useSpring(0, { stiffness: 200, damping: 50 }); 
   const textControls = useAnimation();
+ 
 
   useEffect(() => {
     if (containerRef.current) {
@@ -31,32 +35,6 @@ const Office = ({ progress, updateRange, officeRange, isHeroAnimatedOut }) => {
   }, []);
 
   const officeProgress = useTransform(progress, officeRange, [0, 1]);
-  // console.log(officeRange)
-  // const officeRef = useRef(null);
-  // const [officeScrollRange, setofficeScrollRange] = useState([0, 1]); // Store start and end progress dynamically
-
-  // // Dynamically calculate start and end points for .office-section
-  // useLayoutEffect(() => {
-  //   if (officeRef.current) {
-  //     const officeSection = officeRef.current;
-  //     const totalAppHeight = document.body.scrollHeight - window.innerHeight; // Total scrollable height
-  //     const officeOffsetTop = officeSection.offsetTop; // Distance from the top of the document
-  //     const officeHeight = officeSection.offsetHeight; // Height of .office-section
-
-  //     // Calculate global progress range for .office-section
-  //     const start = officeOffsetTop / totalAppHeight;
-  //     const end = (officeOffsetTop + officeHeight) / totalAppHeight;
-
-  //     setofficeScrollRange([start, end]); // Update the range
-  //   }
-  // }, []);
-
-  // // Transform global scroll progress into local progress for .office-section
-  // const officeProgress = useTransform(progress, officeScrollRange, [0, 1]);
-
-  // useMotionValueEvent(officeProgress, "change", (latest) => {
-  //   console.log("Office progress  " +latest)
-  // });
 
   useEffect(() => {
     const handleOfficeAnimation = () => {
@@ -85,22 +63,24 @@ const Office = ({ progress, updateRange, officeRange, isHeroAnimatedOut }) => {
   useMotionValueEvent(progress, "change", (latest) => {
     setGlobalProgress(latest)
   });
-// useEffect(()=>{console.log(progress)},[progress])
-// useEffect(()=>{console.log(""+globalProgress)},[globalProgress])
+
 
 useEffect(()=>{setGlobalProgress(progress.get())},[progress])
 
-// useMotionValueEvent(officeProgress, "change", (latest) => {
-//     if (latest >= 0.1) {
-//       // Start the one-time animation (if not already started)
-//       textControls.start({
-//         opacity: 1,
-//         y: 0,
-//         transition: { duration: 1, ease: "easeInOut", delay: 1 }
+const fadeIn = useTransform(officeProgress, [0, 0.07], [0, 1]); // fade in
+const fadeOut = useTransform(officeProgress, [0.2, 0.6], [1, 0]); // fade out
+const opacity = useTransform([fadeIn, fadeOut], ([a, b]) => a * b); // combine both
+// const y = useTransform(officeProgress, [0.2, 0.7], ["0vh", "60vh"]);
+ 
 
-//       });
-//     }
-//   });
+const springConfig = { mass: 0.5, stiffness: 100, damping: 40, restDelta: 0.001 };
+
+const startY = window.innerHeight * 0.1;
+const endY = window.innerHeight * 0.6;
+const rawY = useTransform(officeProgress, [0.1, 0.7], [startY, endY]);
+
+  // Wrap the transform with a spring for smooth, spring-like motion.
+  const springY = useSpring(rawY, springConfig);
 
   return (
     <motion.div 
@@ -120,10 +100,9 @@ useEffect(()=>{setGlobalProgress(progress.get())},[progress])
     <motion.div
         className="text-container"
         initial={{ opacity: 0, y: -30 }}
-        animate={textControls}
         style={{
-          opacity: useTransform(officeProgress, [0.01, 0.6], [1, 0]),
-          y: useTransform(officeProgress, [0.01, 0.7], [ "0vh", "60vh"]),
+          opacity,
+          y: springY,
         }}
       >
         <div className="text">

@@ -64,11 +64,11 @@ const App = () => {
   const isMobile = useMediaQuery("(max-width: 799px)");
   // const isDesktop = useMediaQuery("(min-width: 800px)");
 
-  // useEffect(()=> {
-  //   console.log("heroRange " + heroRange)
-  //   console.log("officeRange "+ officeRange)
-  //   console.log("carouselRange "+ carouselRange)
-  // }, [heroRange, officeRange, carouselRange])
+  useEffect(()=> {
+    console.log("heroRange " + heroRange)
+    console.log("officeRange "+ officeRange)
+    console.log("carouselRange "+ carouselRange)
+  }, [heroRange, officeRange, carouselRange])
 
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
@@ -287,13 +287,7 @@ const updateWarholRange = (start, end) => {
 
       <AfterHero progress={scrollYProgress} isVisible={isAfterheroVisible}/>
       
-      <SharedChair
-        progress={scrollYProgress}
-        officeRange={officeRange}
-        carouselRange={carouselRange}
-        warholRange={warholRange}
-        isMobile={isMobile}
-      />
+      
       
       <div className="OFFICE"
       ref={officeRef}
@@ -304,6 +298,14 @@ const updateWarholRange = (start, end) => {
       <div ref={afterOfficeRef}>
         <AfterOffice progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateAfterOfficeRange} afterOfficeRange={afterOfficeRange}/>
       </div>
+
+      <SharedChair
+        progress={scrollYProgress}
+        officeRange={officeRange}
+        carouselRange={carouselRange}
+        warholRange={warholRange}
+        isMobile={isMobile}
+      />
       
       <div ref={carouselRef}>
         <Carousel progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateCarouselRange} carouselRange={carouselRange} />

@@ -10,24 +10,7 @@ import SharedChairFigure from "./SharedChairFigure";
 
 const SharedChair = ({ progress, officeRange, carouselRange, warholRange, isMobile }) => {
 
-
-  // Animate Y position between Office and Carousel
-  const y = useTransform(
-    progress,
-    [officeRange[1], carouselRange[0]],
-    [0, -300]
-  );
-
-  // Scale it down as it enters Warhol
-  const scale = useTransform(
-    progress,
-    [carouselRange[1], warholRange[0]],
-    [1, 0.5]
-  );
-
-  // Optional: hide/show based on progress
   const isVisible = true
-    // progress.get() >= officeRange[0] && progress.get() < warholRange[1];
 
   return isVisible ? (
     <motion.div
@@ -39,9 +22,7 @@ const SharedChair = ({ progress, officeRange, carouselRange, warholRange, isMobi
       // backgroundColor: "blue",
       top: '300vh',
       left: 0,
-      // y,
-      // scale,
-      zIndex: 98,
+      zIndex: 100,
       pointerEvents: "none",
     }}
     >
@@ -59,7 +40,7 @@ const SharedChair = ({ progress, officeRange, carouselRange, warholRange, isMobi
         left: 0,
         width: '100%',
         height: '100%',
-        zIndex: 99,
+        zIndex: 100,
         // backgroundColor: "blue",
         pointerEvents: 'none',
         }}>
