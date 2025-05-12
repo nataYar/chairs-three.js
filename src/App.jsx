@@ -242,32 +242,32 @@ const updateWarholRange = (start, end) => {
   setWarholRange([start, end]);
 };
 
- useMotionValueEvent(scrollYProgress , "change", (latest) => {
-    if (latest >= heroRange[1] && scrollDirection === "down" && !hasScrolledToBottom) {
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+//  useMotionValueEvent(scrollYProgress , "change", (latest) => {
+//     if (latest >= heroRange[1] && scrollDirection === "down" && !hasScrolledToBottom) {
+//       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
 
-      // Wait for natural scroll to settle, then scroll to .bottom
-      scrollTimeout.current = setTimeout(() => {
-        officeRef.current.scrollIntoView({
-          behavior: "smooth", 
-          block: "start", 
-        });
-        setHasScrolledToBottom(true); // Prevent further scrolling
-      }, 100); // Adjust delay to allow natural scrolling to finish
-    }
+//       // Wait for natural scroll to settle, then scroll to .bottom
+//       scrollTimeout.current = setTimeout(() => {
+//         officeRef.current.scrollIntoView({
+//           behavior: "smooth", 
+//           block: "start", 
+//         });
+//         setHasScrolledToBottom(true); // Prevent further scrolling
+//       }, 100); // Adjust delay to allow natural scrolling to finish
+//     }
 
-    // Reset when scrolling back up (Optional)
-    if (latest < heroRange[1] && scrollDirection === "up") {
-      setHasScrolledToBottom(false); // Allow the scroll to trigger again
-    }
-  });
+//     // Reset when scrolling back up (Optional)
+//     if (latest < heroRange[1] && scrollDirection === "up") {
+//       setHasScrolledToBottom(false); // Allow the scroll to trigger again
+//     }
+//   });
 
   // Cleanup timeout when the component unmounts
-  useEffect(() => {
-    return () => {
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+  //   };
+  // }, []);
 
 
   return (
@@ -278,14 +278,9 @@ const updateWarholRange = (start, end) => {
       >
      
       <Hero progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateHeroRange} heroRange={heroRange} isMobile={isMobile}/>
-     
-     
-      {/* <div style={{ height: "300vh", position: "relative", backgroundColor:"black" }}>
-       
-      </div>  */}
 
 
-      <AfterHero progress={scrollYProgress} isVisible={isAfterheroVisible}/>
+      {/* <AfterHero progress={scrollYProgress} isVisible={isAfterheroVisible}/> */}
       
       
       

@@ -4,7 +4,6 @@ import { Plane} from '@react-three/drei';
 import { motion, useTransform, useSpring, useMotionValueEvent, useAnimation } from "framer-motion";
 
 // Import Components
-import Loading from "../loading/Loading";
 import Chair1 from "./Chair1";
 import Chair2 from "./Chair2";
 import Chair3 from "./Chair3";
@@ -17,7 +16,6 @@ import HeroZoomAnimation from "./HeroZoomAnimation";
 
 // Styles
 import "../../styles/Hero.scss";
-
 
 const Hero = ({ progress, heroRange, updateRange, 
    scrollDirection,isHeroAnimatedOut, onHeroAnimationComplete, isMobile 
@@ -109,9 +107,11 @@ const Hero = ({ progress, heroRange, updateRange,
       ref={containerHeroRef}
       >
       <HeroZoomAnimation 
+      progress={progress}
       scrollDirection={scrollDirection}
       isNonFixedDelayed={isNonFixedDelayed}
       heroProgress={heroProgress}
+      heroRange={heroRange}
       // onProgressUpdate={onProgressUpdate}
       isMobile={isMobile}
       containerHeroRef={containerHeroRef}
@@ -164,7 +164,6 @@ const Hero = ({ progress, heroRange, updateRange,
       </Canvas>
     </motion.div>
   </Suspense>
-  {/* <div className="bottom" ref={bottomRef}></div>  */}
   </motion.div>
   );
 };
