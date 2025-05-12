@@ -151,14 +151,14 @@ const App = () => {
   //     console.log("Global progress "+latest)
   //   })
 
-  useEffect(() => {
-    // Subscribe to `scrollYProgress` updates
-    const unsubscribe = scrollYProgress.on("change", (value) => {
-      console.log("Scroll Progress:", value); // Log updated progress
-    });
+  // useEffect(() => {
+  //   // Subscribe to `scrollYProgress` updates
+  //   const unsubscribe = scrollYProgress.on("change", (value) => {
+  //     console.log("Scroll Progress:", value); // Log updated progress
+  //   });
 
-    return () => unsubscribe(); // Clean up the listener
-  }, [scrollYProgress]);
+  //   return () => unsubscribe(); // Clean up the listener
+  // }, [scrollYProgress]);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const container = containerRef.current;

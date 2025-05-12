@@ -35,29 +35,27 @@ const Office = ({ progress, updateRange, officeRange, isHeroAnimatedOut }) => {
   }, []);
 
   const officeProgress = useTransform(progress, officeRange, [0, 1]);
-
+  
   useEffect(() => {
     const handleOfficeAnimation = () => {
-      if (officeProgress.get() <= 0.05 ) {
+      const value = officeProgress.get();
+  
+      if (value <= 0.05 || value > 0.5) {
         setLeftVideoSrc("src/assets/office/glitch.mp4");
         setRightVideoSrc("src/assets/office/glitch.mp4");
-        
-      } 
-      else if (officeProgress.get() > 0.05 && officeProgress.get() <= 0.6 ){
+      } else if (value > 0.05 && value <= 0.5) {
         setLeftVideoSrc("src/assets/office/office party.mp4");
         setRightVideoSrc("src/assets/office/cat.mp4");
-        
-      } else {
-        setLeftVideoSrc("src/assets/office/glitch.mp4");
-        setRightVideoSrc("src/assets/office/glitch.mp4");
       }
     };
-
+  
+    // Run immediately on mount
+    handleOfficeAnimation();
+  
     const unsubscribe = officeProgress.on("change", handleOfficeAnimation);
-
-    // Clean up subscription
     return () => unsubscribe();
   }, [officeProgress]);
+  
 
  
   useMotionValueEvent(progress, "change", (latest) => {
@@ -67,7 +65,7 @@ const Office = ({ progress, updateRange, officeRange, isHeroAnimatedOut }) => {
 
 useEffect(()=>{setGlobalProgress(progress.get())},[progress])
 
-const fadeIn = useTransform(officeProgress, [0, 0.07], [0, 1]); // fade in
+const fadeIn = useTransform(officeProgress, [0, 0.04], [0, 1]); // fade in
 const fadeOut = useTransform(officeProgress, [0.2, 0.6], [1, 0]); // fade out
 const opacity = useTransform([fadeIn, fadeOut], ([a, b]) => a * b); // combine both
 // const y = useTransform(officeProgress, [0.2, 0.7], ["0vh", "60vh"]);
@@ -75,7 +73,7 @@ const opacity = useTransform([fadeIn, fadeOut], ([a, b]) => a * b); // combine b
 
 const springConfig = { mass: 0.5, stiffness: 100, damping: 40, restDelta: 0.001 };
 
-const startY = window.innerHeight * 0.1;
+const startY = window.innerHeight * 0.05;
 const endY = window.innerHeight * 0.6;
 const rawY = useTransform(officeProgress, [0.1, 0.7], [startY, endY]);
 

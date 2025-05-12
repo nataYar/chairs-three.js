@@ -20,7 +20,7 @@ const SharedChair = ({ progress, officeRange, carouselRange, warholRange, isMobi
       width: "100vh",
       height: "100vh",
       // backgroundColor: "blue",
-      top: '300vh',
+      top: '400vh',
       left: 0,
       zIndex: 100,
       pointerEvents: "none",
@@ -46,7 +46,7 @@ const SharedChair = ({ progress, officeRange, carouselRange, warholRange, isMobi
         }}>
           <ambientLight intensity={0.5} />
           <directionalLight 
-            position={[7, 16, -36]}
+            position={[7, 10, -36]}
             intensity= {9}
             castShadow 
           />
