@@ -9,7 +9,7 @@ import AfterHero from "./sections/Afterhero";
 import './styles/App.scss';
 import AfterOffice from "./sections/AfterOffice";
 import { debounce } from 'lodash';
-import Warhol from "./sections/warhol/Warhol";
+import Store from "./sections/store/Store";
 import SharedChair from "./sections/SharedChair";
 
 const App = () => { 
@@ -20,7 +20,7 @@ const App = () => {
   const officeRef = useRef(null);
   const carouselRef = useRef(null);
   const afterOfficeRef = useRef(null)
-  const warholRef = useRef(null)
+  const storeRef = useRef(null)
  
   const { scrollYProgress } = useScroll();
 
@@ -28,7 +28,7 @@ const App = () => {
   const [officeRange, setOfficeRange] = useState([0, 1]);
   const [carouselRange, setCarouselRange] = useState([0, 1]);
   const [afterOfficeRange, setAfterOfficeRange] = useState([0, 1]);
-  const [warholRange, setWarholRange] = useState([0, 1]);
+  const [storeRange, setStoreRange] = useState([0, 1]);
 
   const [isAfterheroVisible, setIsAfterheroVisible] = useState(false);
   const [isAfterheroSticky, setIsAfterheroSticky] = useState(false);
@@ -221,13 +221,13 @@ useEffect(() => {
 
 useEffect(() => {
   const handleResize = () => {
-    if (!warholRef.current) return;
+    if (!storeRef.current) return;
     const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
-    const warholOffsetTop = warholRef.current.offsetTop;
-    const warholHeight = warholRef.current.offsetHeight;
-    const warholStart = (warholOffsetTop - window.innerHeight) / totalScrollHeight;
-    const warholEnd = (warholOffsetTop + warholHeight) / totalScrollHeight;
-    updateWarholRange(warholStart, warholEnd);
+    const storeOffsetTop = storeRef.current.offsetTop;
+    const storeHeight = storeRef.current.offsetHeight;
+    const storeStart = (storeOffsetTop - window.innerHeight) / totalScrollHeight;
+    const storeEnd = (storeOffsetTop + storeHeight) / totalScrollHeight;
+    updatestoreRange(storeStart, storeEnd);
   };
 
   const timeout = setTimeout(handleResize, 100); // delay resize for layout
@@ -236,10 +236,10 @@ useEffect(() => {
     clearTimeout(timeout);
     window.removeEventListener('resize', handleResize);
   };
-}, [warholRef]);
+}, [storeRef]);
 
-const updateWarholRange = (start, end) => {
-  setWarholRange([start, end]);
+const updatestoreRange = (start, end) => {
+  setStoreRange([start, end]);
 };
 
 //  useMotionValueEvent(scrollYProgress , "change", (latest) => {
@@ -269,6 +269,9 @@ const updateWarholRange = (start, end) => {
   //   };
   // }, []);
 
+  const OPTIONS = { loop: true }
+  const SLIDE_COUNT = 5
+  const SLIDES = Array.from(Array(SLIDE_COUNT).keys())
 
   return (
     <div id="smooth-wrapper" style={{ overflow: "hidden"}} > 
@@ -298,7 +301,7 @@ const updateWarholRange = (start, end) => {
         progress={scrollYProgress}
         officeRange={officeRange}
         carouselRange={carouselRange}
-        warholRange={warholRange}
+        storeRange={storeRange}
         isMobile={isMobile}
       />
       
@@ -306,8 +309,9 @@ const updateWarholRange = (start, end) => {
         <Carousel progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateCarouselRange} carouselRange={carouselRange} />
       </div>
 
-      <div ref={warholRef}>
-        <Warhol progress={scrollYProgress} scrollDirection={scrollDirection} warholRange={warholRange}
+
+      <div ref={storeRef}>
+        <Store slides={SLIDES} progress={scrollYProgress} scrollDirection={scrollDirection} storeRange={storeRange}
       />
       </div>
      
