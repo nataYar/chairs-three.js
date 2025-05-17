@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import BackgroundSlider from './BackgroundSlider'
 import { motion, AnimatePresence, useMotionValueEvent, useSpring, useTransform, useAnimation  } from "framer-motion";
-import "../../styles/Carousel.scss";
-import '../../styles/Carousel.scss'
+import "../../styles/Slides.scss";
 
-const Carousel = ({ progress, carouselRange, scrollDirection }) => {
+
+const Slides = ({ progress, slidesRange, scrollDirection }) => {
 const containerRef = useRef(null);
-const carouselProgress = useTransform(progress, carouselRange, [0, 1]);
+const carouselProgress = useTransform(progress, slidesRange, [0, 1]);
 
 const [hasSnappedToCarousel, setHasSnappedToCarousel] = useState(false);
 
@@ -15,7 +15,7 @@ const [hasSnappedToCarousel, setHasSnappedToCarousel] = useState(false);
 //   const scrollDirection = latest > prev ? "down" : "up";
 
 //   // Reset flag when scrolling up past Carousel
-//   if (latest < carouselRange[0] && scrollDirection === "up") {
+//   if (latest < slidesRange[0] && scrollDirection === "up") {
 //     setHasSnappedToCarousel(false);
 //   }
 
@@ -25,7 +25,7 @@ const [hasSnappedToCarousel, setHasSnappedToCarousel] = useState(false);
 //   if (
 //     scrollDirection === "down" &&
 //     !hasSnappedToCarousel &&
-//     Math.abs(latest - carouselRange[0]) <= snapThreshold
+//     Math.abs(latest - slidesRange[0]) <= snapThreshold
 //   ) {
 //     setHasSnappedToCarousel(true);
 //     containerRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -42,7 +42,7 @@ const [hasSnappedToCarousel, setHasSnappedToCarousel] = useState(false);
 //    });
 
 //   useEffect(() => {
-//     console.log("carouselRange "+ carouselRange)
+//     console.log("slidesRange "+ slidesRange)
 //   }, [carouselProgress]);
 
 //  useEffect(() => {
@@ -204,4 +204,4 @@ const [hasSnappedToCarousel, setHasSnappedToCarousel] = useState(false);
   );
 }
 
-export default Carousel
+export default Slides

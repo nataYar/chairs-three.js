@@ -3,7 +3,7 @@ import { useScroll, useMotionValueEvent } from "framer-motion";
 
 import Hero from "./sections/hero/Hero";
 import Office from "./sections/office/office";
-import Carousel from "./sections/carousel/Carousel";
+import Slides from "./sections/slides/Slides";
 import Transition from "./sections/Transition";
 import AfterHero from "./sections/Afterhero";
 import './styles/App.scss';
@@ -11,6 +11,7 @@ import AfterOffice from "./sections/AfterOffice";
 import { debounce } from 'lodash';
 import Store from "./sections/store/Store";
 import SharedChair from "./sections/SharedChair";
+import CarouselSection from "./sections/CarouselSection/CarouselSection";
 
 const App = () => { 
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
@@ -18,7 +19,7 @@ const App = () => {
   let scrollTimeout = useRef(null); 
   const containerRef = useRef(null);
   const officeRef = useRef(null);
-  const carouselRef = useRef(null);
+  const slidesRef = useRef(null);
   const afterOfficeRef = useRef(null)
   const storeRef = useRef(null)
  
@@ -26,7 +27,7 @@ const App = () => {
 
   const [heroRange, setHeroRange] = useState([0, 1]);
   const [officeRange, setOfficeRange] = useState([0, 1]);
-  const [carouselRange, setCarouselRange] = useState([0, 1]);
+  const [slidesRange, setSlidesRange] = useState([0, 1]);
   const [afterOfficeRange, setAfterOfficeRange] = useState([0, 1]);
   const [storeRange, setStoreRange] = useState([0, 1]);
 
@@ -38,12 +39,12 @@ const App = () => {
     history.scrollRestoration = 'manual';
   }
   
-  useEffect(() => {
-    window.scrollTo(0, 0); 
-    if (containerRef.current) {
-      containerRef.current.scrollTop = 0; 
-    }
-  }, []);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0); 
+  //   if (containerRef.current) {
+  //     containerRef.current.scrollTop = 0; 
+  //   }
+  // }, []);
 
   // custom hook for mob/laptop window size
   const useMediaQuery = (query) => {
@@ -67,8 +68,8 @@ const App = () => {
   useEffect(()=> {
     console.log("heroRange " + heroRange)
     console.log("officeRange "+ officeRange)
-    console.log("carouselRange "+ carouselRange)
-  }, [heroRange, officeRange, carouselRange])
+    console.log("slidesRange "+ slidesRange)
+  }, [heroRange, officeRange, slidesRange])
 
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
@@ -196,19 +197,19 @@ const App = () => {
   
 
   // In App.jsx
-const updateCarouselRange = (start, end) => {
-  setCarouselRange([start, end]);
+const updateslidesRange = (start, end) => {
+  setSlidesRange([start, end]);
 };
 
 useEffect(() => {
   const handleResize = () => {
-    if (!carouselRef.current) return;
+    if (!slidesRef.current) return;
     const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
-    const carouselOffsetTop = carouselRef.current.offsetTop;
-    const carouselHeight = carouselRef.current.offsetHeight;
-    const carouselStart = (carouselOffsetTop - window.innerHeight) / totalScrollHeight;
-    const carouselEnd = (carouselOffsetTop + carouselHeight) / totalScrollHeight;
-    updateCarouselRange(carouselStart, carouselEnd);
+    const slidesOffsetTop = slidesRef.current.offsetTop;
+    const slidesHeight = slidesRef.current.offsetHeight;
+    const slidesStart = (slidesOffsetTop - window.innerHeight) / totalScrollHeight;
+    const slidesEnd = (slidesOffsetTop + slidesHeight) / totalScrollHeight;
+    updateslidesRange(slidesStart, slidesEnd);
   };
 
   const timeout = setTimeout(handleResize, 100); // delay resize for layout
@@ -217,7 +218,7 @@ useEffect(() => {
     clearTimeout(timeout);
     window.removeEventListener('resize', handleResize);
   };
-}, [carouselRef]);
+}, [slidesRef]);
 
 useEffect(() => {
   const handleResize = () => {
@@ -300,20 +301,21 @@ const updatestoreRange = (start, end) => {
       <SharedChair
         progress={scrollYProgress}
         officeRange={officeRange}
-        carouselRange={carouselRange}
+        slidesRange={slidesRange}
         storeRange={storeRange}
         isMobile={isMobile}
       />
       
-      <div ref={carouselRef}>
-        <Carousel progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateCarouselRange} carouselRange={carouselRange} />
+      <div ref={slidesRef}>
+        <Slides progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateslidesRange} slidesRange={slidesRange} />
       </div>
 
 
-      <div ref={storeRef}>
+      <CarouselSection />
+      {/* <div ref={storeRef}>
         <Store slides={SLIDES} progress={scrollYProgress} scrollDirection={scrollDirection} storeRange={storeRange}
       />
-      </div>
+      </div> */}
      
      
       {/* <Transition color="black" height={"100vh"}/> */}

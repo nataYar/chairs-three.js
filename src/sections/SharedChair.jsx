@@ -8,7 +8,7 @@ import { useSpring, a } from '@react-spring/three'
 import SharedChairFigure from "./SharedChairFigure";
 
 
-const SharedChair = ({ progress, officeRange, carouselRange, warholRange, isMobile }) => {
+const SharedChair = ({ progress, officeRange, slidesRange, warholRange, isMobile }) => {
 
   const isVisible = true
 
@@ -54,7 +54,7 @@ const SharedChair = ({ progress, officeRange, carouselRange, warholRange, isMobi
           <SharedChairFigure
             progress={progress}
             officeRange={officeRange}
-            carouselRange={carouselRange}
+            slidesRange={slidesRange}
             warholRange={warholRange}
             isMobile={isMobile}
           />

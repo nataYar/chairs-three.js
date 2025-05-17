@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
-import "../../styles/Carousel.scss";
+import "../../styles/Slides.scss";
 
 // Backgrounds array
 const backgrounds = [

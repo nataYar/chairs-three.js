@@ -5,6 +5,8 @@ import { DotButton, useDotButton } from './StoreButton'
 import Autoplay from 'embla-carousel-autoplay'
 
 import "../../styles/Store.scss";
+import Item1 from './Item1';
+// import Item2 from './Item2';
 
 
 const Store = (props) => {
@@ -15,15 +17,22 @@ const Store = (props) => {
     useDotButton(emblaApi)
 
   return (
-    <section className="embla">
-      <h2>Ready to meet your own everyday hero?</h2>
+    <section className="store">
+      <div className='store__text'>
+       
+        <h2> Not all office chairs are built the same.</h2>
+        <h2>Some are practical.</h2>
+        <h2>Some are extra.</h2>
+        <h2>Some… are legendary.</h2>
+
+        <h2>Find yours.</h2>
+        
+        
+      </div>
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">
-          {slides.map((index) => (
-            <div className="embla__slide" key={index}>
-              <div className="embla__slide__number">{index + 1}</div>
-            </div>
-          ))}
+          <Item1 />
+          {/* <Item2 /> */}
         </div>
       </div>
 
