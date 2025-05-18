@@ -6,20 +6,21 @@ import ChairCarousel from "./ChairCarousel";
 import { Html } from "@react-three/drei";
 
 
-const Carousel = ({ radius = 5 }) => {
+const Carousel = ({ radius }) => {
   const groupRef = useRef();
   const [currentAngle, setCurrentAngle] = useState(0);
   const chairConfigs = [
-    { url: 'src/assets/chairs/victorian_chair.glb' },
-    { url: 'src/assets/chairs/rocking_chair.glb' },
+    { url: 'src/assets/chairs/bar_stool.glb', scale: 13 },
+    { url: 'src/assets/chairs/red_armchair_new-v1.glb', scale: 9  },
    
-    { url: 'src/assets/chairs/chair_round.glb' },
-    { url: 'src/assets/chairs/patio_chair_reconstruction.glb' },
-    // { url: 'src/assets/chairs/chair_round.glb' },
+    { url: 'src/assets/chairs/medieval_chair.glb', scale: 13 },
+    { url: 'src/assets/chairs/zig_zag.glb', scale: 13   },
+   
+    {url: 'src/assets/chairs/throne_of_iron__stone-v1.glb', scale: 9, }
   ]
   const chairCount = chairConfigs.length;
   const angleStep = (2 * Math.PI) / chairCount;
-  const activeIndex = Math.round(currentAngle / angleStep) % chairCount;
+  const activeIndex = (Math.round(-currentAngle / angleStep) % chairCount + chairCount) % chairCount;
 
 
   const { size } = useThree();
@@ -66,29 +67,31 @@ const Carousel = ({ radius = 5 }) => {
     <>
       <animated.group ref={groupRef} {...bind()} rotation-y={rotationY}>
       {chairConfigs.map((chair, index) => {
-        const angle = index * angleStep
-        const x = radius * Math.sin(angle)
-        const z = radius * Math.cos(angle)
-        const scale = 2
-        const isActive = index === ((activeIndex + chairCount) % chairCount);
-        const yRotation = angle + (isActive ? 0 : Math.PI);
+       const angle = index * angleStep + Math.PI;
+
+       const x = radius * Math.sin(angle);
+       const z = radius * Math.cos(angle);
+        const isActive = index === activeIndex;
+        const yRotation = angle;
+
 
 
         return (
           <ChairCarousel
-          key={`${chair.url}-${index}`} 
+          key={chair.url}
             url={chair.url}
             position={[x, -1, z]}
-            rotation={[-0.2, yRotation, 0]}
-            scale={scale}
+            rotation={[0, yRotation, 0.1]}
+            scale={chair.scale}
             isActive={isActive}
+            transform={chair.transform}
           />
         )
       })}
       </animated.group>
 
       {isMobile && (
-        <Html center>
+        <Html fullscreen>
           <div className="carousel-controls">
             <button onClick={goToPreviousChair}>◀</button>
             <button onClick={goToNextChair}>▶</button>
