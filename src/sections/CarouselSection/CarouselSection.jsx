@@ -6,13 +6,13 @@ import '../../styles/Carousel.scss'
 
 const CarouselSection = () => {
 
-  const radius =25;
+  const radius =40;
   return (
     <div className='carousel_section'>
         <div>Carousel</div>
         <Canvas camera={{ position: [0, 0, -100], fov: 50 }}>
-        <ambientLight intensity={1} />
-        <directionalLight position={[50, 50, 50]} intensity={3} />
+          <ambientLight intensity={2} />
+          <directionalLight position={[0, 30, -50]} intensity={2} />
 
             <Suspense fallback={null}>
                 <Carousel radius={radius}/>

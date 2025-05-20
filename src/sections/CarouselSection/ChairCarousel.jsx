@@ -21,7 +21,7 @@ export default function ChairCarousel({ url, position, rotation, scale, isActive
   ];
 
   return (
-    <group  object={scene} ref={ref} position={position} rotation={finalRotation} scale={scale}>
+    <group  object={scene} ref={ref} position={position} rotation={finalRotation} scale={isActive ? scale+2 : scale}>
       <primitive object={scene} />
     </group>
   )

@@ -80,7 +80,7 @@ const Carousel = ({ radius }) => {
           <ChairCarousel
           key={chair.url}
             url={chair.url}
-            position={[x, -1, z]}
+            position={[x, -5, z]}
             rotation={[0, yRotation, 0.1]}
             scale={chair.scale}
             isActive={isActive}
@@ -90,14 +90,14 @@ const Carousel = ({ radius }) => {
       })}
       </animated.group>
 
-      {isMobile && (
+      {/* {isMobile && ( */}
         <Html fullscreen>
           <div className="carousel-controls">
             <button onClick={goToPreviousChair}>◀</button>
             <button onClick={goToNextChair}>▶</button>
           </div>
         </Html>
-      )}
+      {/* )} */}
     </>
   );
 };
