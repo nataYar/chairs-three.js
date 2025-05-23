@@ -10,14 +10,39 @@ const Carousel = ({ radius }) => {
   const groupRef = useRef();
   const [currentAngle, setCurrentAngle] = useState(0);
   const chairConfigs = [
-    { url: 'src/assets/chairs/bar_stool.glb', scale: 13 },
-    { url: 'src/assets/chairs/red_armchair_new-v1.glb', scale: 9  },
-   
-    { url: 'src/assets/chairs/medieval_chair.glb', scale: 13 },
-    { url: 'src/assets/chairs/zig_zag.glb', scale: 13   },
-   
-    {url: 'src/assets/chairs/throne_of_iron__stone-v1.glb', scale: 9, }
+    {
+      url: 'src/assets/chairs/bar_stool.glb',
+      scale: 13,
+      label: 'This is for late-night chats over cocktails.',
+      backgroundUrl: 'src/assets/carousel/dark_wood.jpg'
+    },
+    {
+      url: 'src/assets/chairs/red_armchair_new-v1.glb',
+      scale: 9,
+      label: 'This is for cozy evening reads.',
+      backgroundUrl: 'src/assets/carousel/vintage.jpg'
+    },
+    {
+      url: 'src/assets/chairs/medieval_chair.glb',
+      scale: 13,
+      label: 'This is for commanding respect.',
+      backgroundUrl: 'src/assets/carousel/castle.jpg'
+    },
+    {
+      url: 'src/assets/chairs/zig_zag.glb',
+      scale: 13,
+      label: 'This is for bold choices and sharper angles.',
+      backgroundUrl: 'src/assets/carousel/glass.jpg'
+    },
+    {
+      url: 'src/assets/chairs/throne_of_iron__stone.glb',
+      scale: 9,
+      label: 'This is for ruling kingdoms.',
+      backgroundUrl: 'src/assets/carousel/stone_wall.jpg'
+    }
   ]
+  
+  
   const chairCount = chairConfigs.length;
   const angleStep = (2 * Math.PI) / chairCount;
   const activeIndex = (Math.round(-currentAngle / angleStep) % chairCount + chairCount) % chairCount;
@@ -50,14 +75,14 @@ const Carousel = ({ radius }) => {
   );
 
   const goToPreviousChair = () => {
-    const snappedIndex = Math.round(currentAngle / angleStep) - 1;
+    const snappedIndex = Math.round(currentAngle / angleStep) + 1;
     const newAngle = snappedIndex * angleStep;
     setCurrentAngle(newAngle);
     api.start({ rotationY: newAngle });
   };
 
   const goToNextChair = () => {
-    const snappedIndex = Math.round(currentAngle / angleStep) + 1;
+    const snappedIndex = Math.round(currentAngle / angleStep) - 1;
     const newAngle = snappedIndex * angleStep;
     setCurrentAngle(newAngle);
     api.start({ rotationY: newAngle });
@@ -85,6 +110,8 @@ const Carousel = ({ radius }) => {
             scale={chair.scale}
             isActive={isActive}
             transform={chair.transform}
+            backgroundUrl={chair.backgroundUrl}
+            label={chair.label}
           />
         )
       })}

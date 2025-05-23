@@ -4,11 +4,11 @@ import "../../styles/Slides.scss";
 
 // Backgrounds array
 const backgrounds = [
-  "src/assets/carousel/office.jpg",
-  "src/assets/carousel/art-studio.jpg",
-  "src/assets/carousel/underwater.jpg",
-  "src/assets/carousel/shelves.jpg",
-  "src/assets/carousel/disco.jpg",
+  "src/assets/slides/office.jpg",
+  "src/assets/slides/art-studio.jpg",
+  "src/assets/slides/underwater.jpg",
+  "src/assets/slides/shelves.jpg",
+  "src/assets/slides/disco.jpg",
 ];
 
 const BackgroundSlider = () => {

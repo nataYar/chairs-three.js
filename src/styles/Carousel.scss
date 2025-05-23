@@ -1,6 +1,10 @@
 .carousel_section{
-    height: 100vh;
-    background-color: black;
+    min-height: 100vh;
+    background-color: rgb(0, 0, 0);
+    .carousel__text-before{
+        height: 50vh;
+        background-color: chartreuse;
+    }
     .carousel-controls {
         position: absolute;
         bottom: 1rem;

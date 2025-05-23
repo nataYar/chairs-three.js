@@ -6,28 +6,28 @@ import "../../styles/Slides.scss";
 
 const Slides = ({ progress, slidesRange, scrollDirection }) => {
 const containerRef = useRef(null);
-const carouselProgress = useTransform(progress, slidesRange, [0, 1]);
+const slidesProgress = useTransform(progress, slidesRange, [0, 1]);
 
-const [hasSnappedToCarousel, setHasSnappedToCarousel] = useState(false);
+const [hasSnappedToslides, setHasSnappedToslides] = useState(false);
 
 // useMotionValueEvent( progress, "change", (latest) => {
 //   const prev = progress.getPrevious();
 //   const scrollDirection = latest > prev ? "down" : "up";
 
-//   // Reset flag when scrolling up past Carousel
+//   // Reset flag when scrolling up past slides
 //   if (latest < slidesRange[0] && scrollDirection === "up") {
-//     setHasSnappedToCarousel(false);
+//     setHasSnappedToslides(false);
 //   }
 
-//   // Snap when getting close to Carousel
+//   // Snap when getting close to slides
 //   const snapThreshold = 0.007; // tweak this value for sensitivity
 
 //   if (
 //     scrollDirection === "down" &&
-//     !hasSnappedToCarousel &&
+//     !hasSnappedToslides &&
 //     Math.abs(latest - slidesRange[0]) <= snapThreshold
 //   ) {
-//     setHasSnappedToCarousel(true);
+//     setHasSnappedToslides(true);
 //     containerRef.current?.scrollIntoView({ behavior: "smooth" });
 //   }
 // });
@@ -37,43 +37,43 @@ const [hasSnappedToCarousel, setHasSnappedToCarousel] = useState(false);
 //    console.log("global " +latest)
 //   });
 
-//   useMotionValueEvent(carouselProgress, "change", (latest) => {
-//     console.log("carousel Progress " +carouselProgress)
+//   useMotionValueEvent(slidesProgress, "change", (latest) => {
+//     console.log("slides Progress " +slidesProgress)
 //    });
 
 //   useEffect(() => {
 //     console.log("slidesRange "+ slidesRange)
-//   }, [carouselProgress]);
+//   }, [slidesProgress]);
 
 //  useEffect(() => {
 //     if (containerRef.current) {
 //       const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
 
-//       // Get the carousel section's offset and height
-//       const carouselOffsetTop = containerRef.current.offsetTop;
-//       const carouselHeight = containerRef.current.offsetHeight;
+//       // Get the slides section's offset and height
+//       const slidesOffsetTop = containerRef.current.offsetTop;
+//       const slidesHeight = containerRef.current.offsetHeight;
 
-//       // Calculate the dynamic range for carousel
-//       const carouselStart = carouselOffsetTop / totalScrollHeight;
-//       const carouselEnd = (carouselOffsetTop + carouselHeight) / totalScrollHeight;
+//       // Calculate the dynamic range for slides
+//       const slidesStart = slidesOffsetTop / totalScrollHeight;
+//       const slidesEnd = (slidesOffsetTop + slidesHeight) / totalScrollHeight;
 
 //       // Pass the range to App.js through the updateRange function
-//       updateRange(carouselStart, carouselEnd);
+//       updateRange(slidesStart, slidesEnd);
 //     }
 //   }, []);
 
-//   useMotionValueEvent(carouselProgress, "change", (latest) => {
+//   useMotionValueEvent(slidesProgress, "change", (latest) => {
 //     if (latest >= 0) {
-//         console.log("started CAROUSEL")
+//         console.log("started slides")
 //     }
 //   });
 
 
     const backgrounds = [
         {
-          src: "src/assets/carousel/office.jpg",
+          src: "src/assets/slides/office.jpg",
           overlays: [
-            { src: "src/assets/carousel/office-top.png", 
+            { src: "src/assets/slides/office-top.png", 
                 zIndex: 3, 
                 className: "" 
             },
@@ -81,79 +81,79 @@ const [hasSnappedToCarousel, setHasSnappedToCarousel] = useState(false);
         },
 
         {
-            src: "src/assets/carousel/art-studio.jpg",
+            src: "src/assets/slides/art-studio.jpg",
             overlays: []
         },
         {
-            src: "src/assets/carousel/underwater-min.jpg",
+            src: "src/assets/slides/underwater-min.jpg",
             overlays: [
-                 { src: "src/assets/carousel/underwater-bush.png", 
+                 { src: "src/assets/slides/underwater-bush.png", 
                   zIndex: 5, 
                   className: ""
                 },
-                // { src: "src/assets/carousel/reef-left.png", 
+                // { src: "src/assets/slides/reef-left.png", 
                 //     zIndex: 4, 
                 //     className: "" 
                 // },
-                { src: "src/assets/carousel/fish-single.png", 
+                { src: "src/assets/slides/fish-single.png", 
                     zIndex: 4, 
                     className: "fish-single" 
                 },
-                { src: "src/assets/carousel/fish-right.png", 
+                { src: "src/assets/slides/fish-right.png", 
                     zIndex: 20, 
                     className: "fish-right" 
                 },
-                { src: "src/assets/carousel/fish-left.png", 
+                { src: "src/assets/slides/fish-left.png", 
                     zIndex: 2, 
                     className: "fish-left" 
                 },
             ],
         },
         {
-            src: "src/assets/carousel/photo-studio.jpg",
+            src: "src/assets/slides/photo-studio.jpg",
             overlays: [
-                { src: "src/assets/carousel/photo-studio-overlay.png", 
+                { src: "src/assets/slides/photo-studio-overlay.png", 
                     zIndex: 10, 
                     className: null
                 },
             ],
         },
         {
-            src: "src/assets/carousel/car.jpg",
+            src: "src/assets/slides/car.jpg",
             overlays: [
                 
             ],
         },
         {
-            src: "src/assets/carousel/jungle-min.jpg",
+            src: "src/assets/slides/jungle-min.jpg",
             overlays: [
-                { src: "src/assets/carousel/jungle-overlay.png",
+                { src: "src/assets/slides/jungle-overlay.png",
                     zIndex: 10, 
                     className: "shake" 
                 },
             ],
         },
         {
-            src: "src/assets/carousel/library.jpg",
+            src: "src/assets/slides/library.jpg",
             overlays: [
-              { src: "src/assets/carousel/library-gates.png", 
+              { src: "src/assets/slides/library-gates.png", 
                   zIndex: 3, 
                   className: "" 
               },
-              { src: "src/assets/carousel/books-back-layer.png", 
+              { src: "src/assets/slides/books-back-layer.png", 
                 zIndex: 2, 
                 className: "books-back" 
                 },
-                { src: "src/assets/carousel/books-front.png", 
+                { src: "src/assets/slides/books-front.png", 
                     zIndex: 4, 
                     className: "books-front" 
                 },
             ],
         },
         {
-            src: "src/assets/carousel/space-red.jpg",
+            src: "src/assets/slides/space-red.jpg",
             overlays: [
-                { src: "src/assets/carousel/sparks-bottom.png", 
+                { src: "src/assets/slides/sparks-bottom.png", 
                     zIndex: 2, 
                     className: "stars-move" 
                 },
@@ -177,7 +177,7 @@ const [hasSnappedToCarousel, setHasSnappedToCarousel] = useState(false);
 
   return (
     <div  ref={containerRef} 
-    className='carousel-container'
+    className='slides-container'
     >
       <div className="scroll-container">
         <AnimatePresence custom={direction}>
@@ -198,7 +198,7 @@ const [hasSnappedToCarousel, setHasSnappedToCarousel] = useState(false);
             ))}
           </motion.div>
         </AnimatePresence>
-        <img src="src/assets/carousel/chair.png" alt="Hero Chair" className="chair" />
+        <img src="src/assets/slides/chair.png" alt="Hero Chair" className="chair" />
       </div>
     </div>
   );
