@@ -24,7 +24,7 @@ function FixedBackgroundPlane({ isInView }) {
     mass: 2
   });
 
-  const color = useTransform(spring, [0, 1], ['#000000', '#b4b4b4']);
+  const color = useTransform(spring, [0, 1], ['#000000', '#d0d0d0']);
 
 
   useEffect(() => {
@@ -58,9 +58,6 @@ function FixedBackgroundPlane({ isInView }) {
       const position = camera.position.clone().add(dir.clone().multiplyScalar(100));
       planeRef.current.position.copy(position);
       planeRef.current.lookAt(camera.position);
-
-      // const currentColor = new THREE.Color(color.get());
-      // materialRef.current.color.copy(currentColor);
     }
   });
  
@@ -99,7 +96,7 @@ const CarouselSection = () => {
         <directionalLight position={[0, 30, -50]} intensity={1.5} />
 
         <EffectComposer disableNormalPass>
-          <Noise opacity={0.4} />
+          <Noise opacity={0.6} />
           <Vignette eskil={false} offset={0.2} darkness={0.6} />
         </EffectComposer>
 

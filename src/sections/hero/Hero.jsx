@@ -18,7 +18,7 @@ import HeroZoomAnimation from "./HeroZoomAnimation";
 import "../../styles/Hero.scss";
 
 const Hero = ({ progress, heroRange, updateRange, 
-   scrollDirection,isHeroAnimatedOut, onHeroAnimationComplete, isMobile 
+   scrollDirection, isMobile 
 }) => {
 
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false);
@@ -26,9 +26,7 @@ const Hero = ({ progress, heroRange, updateRange,
   const [isNonFixedDelayed, setIsNonFixedDelayed] = useState(false); 
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
   const containerHeroRef = useRef(null);
-  // const bottomRef = useRef(null);
-  // const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
-  // let scrollTimeout = useRef(null); 
+
   const heroChairRef = useRef(null);
   const canvasRef = useRef(null);
 
@@ -59,35 +57,7 @@ const Hero = ({ progress, heroRange, updateRange,
     }
   }, []);
 
-  const heroProgress = useTransform(progress, heroRange, [0, 1]); 
-
-  // useMotionValueEvent(progress, "change", (latest) => {
-  //   if (latest >= heroRange[1] && scrollDirection === "down" && !hasScrolledToBottom) {
-  //     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-
-  //     // Wait for natural scroll to settle, then scroll to .bottom
-  //     scrollTimeout.current = setTimeout(() => {
-  //       bottomRef.current.scrollIntoView({
-  //         behavior: "smooth", // Smooth scrolling
-  //         // block: "start", 
-  //       });
-  //       setHasScrolledToBottom(true); // Prevent further scrolling
-  //     }, 100); // Adjust delay to allow natural scrolling to finish
-  //   }
-
-  //   // Reset when scrolling back up (Optional)
-  //   if (latest < heroRange[1] && scrollDirection === "up") {
-  //     setHasScrolledToBottom(false); // Allow the scroll to trigger again
-  //   }
-  // });
-
-  // // Cleanup timeout when the component unmounts
-  // useEffect(() => {
-  //   return () => {
-  //     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-  //   };
-  // }, []);
-
+  const heroProgress = useTransform(progress, heroRange, [0, -3000]); 
 
   const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
 
@@ -195,76 +165,6 @@ const CameraAnimation = ({ progress, heroRange }) => {
 
   return null;
 };
-
-
-
-
-
-
-// const CameraAnimation = ({ progress, heroRange }) => {
-//   const { camera } = useThree();
-
-//   const initialPosition = new THREE.Vector3(0, 0, 5);
-//   const initialRotation = new THREE.Euler(0, 0, 0);
-
-//   const adjustedProgress = useTransform(progress, heroRange, [0, 1]);
-
-//   const keyframes = [
-//     { progress: 0, position: new THREE.Vector3(0, 0, 5), rotation: new THREE.Euler(0, 0, 0) },
-//     { progress: 0.5, position: new THREE.Vector3(0, 10, 3.5), rotation: new THREE.Euler(-0.005, 0, 0) },
-//     { progress: 0.7, position: new THREE.Vector3(0, 17, 1.5), rotation: new THREE.Euler(-0.01, 0, 0) },
-//     { progress: 1, position: new THREE.Vector3(0, 23, -2), rotation: new THREE.Euler(0, 0, 0) },
-//   ];
-
-//   const easeOutQuad = (t) => t * (2 - t);
-//   const finalPosition = new THREE.Vector3().copy(keyframes[keyframes.length - 1].position);
-//   const finalRotation = new THREE.Euler().copy(keyframes[keyframes.length - 1].rotation);
-//   const finalQuaternion = new THREE.Quaternion().setFromEuler(finalRotation);
-
-//   useFrame(() => {
-//     const currentProgress = adjustedProgress.get();
-//     // console.log(camera.position)
-
-//     if (currentProgress >= 1) {
-//       camera.position.copy(finalPosition);
-//       camera.quaternion.copy(finalQuaternion);
-//       return; // Stop further updates when progress is at or beyond 1
-//     }
-
-//     // Ensure smooth transition back to initial state
-//     if (currentProgress <= 0.01) {
-//       camera.position.lerp(initialPosition, 0.2);
-//       camera.quaternion.slerp(new THREE.Quaternion().setFromEuler(initialRotation), 0.2);
-//       return;
-//     }
-
-//     // Find the two keyframes to interpolate between
-//     let startKeyframe, endKeyframe;
-//     for (let i = 0; i < keyframes.length - 1; i++) {
-//       if (currentProgress >= keyframes[i].progress && currentProgress <= keyframes[i + 1].progress) {
-//         startKeyframe = keyframes[i];
-//         endKeyframe = keyframes[i + 1];
-//         break;
-//       }
-//     }
-
-//     if (!startKeyframe || !endKeyframe) return;
-
-//     // Compute interpolation factor
-//     const t = (currentProgress - startKeyframe.progress) / (endKeyframe.progress - startKeyframe.progress);
-//     const easedT = easeOutQuad(t);
-
-//     // Interpolate position and rotation
-//     camera.position.lerpVectors(startKeyframe.position, endKeyframe.position, easedT);
-//     camera.quaternion.slerpQuaternions(
-//       new THREE.Quaternion().setFromEuler(startKeyframe.rotation),
-//       new THREE.Quaternion().setFromEuler(endKeyframe.rotation),
-//       easedT
-//     );
-//   });
-
-//   return null;
-// };
 
 
 const Lighting = ({ isMobile, isDesktop }) => {

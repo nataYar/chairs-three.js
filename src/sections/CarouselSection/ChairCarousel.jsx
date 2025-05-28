@@ -8,14 +8,11 @@ export default function ChairCarousel({
   rotation,
   scale,
   isActive,
-  transform,
-  backgroundUrl,
-  label,
+  transform
 }) {
   const ref = useRef()
   const { scene } = useGLTF(url)
   const additionalRotation = transform ? [Math.PI / 2, 0, 0] : [0, 0, 0]
-  const bgTexture = useTexture(backgroundUrl)
 
   if (!scene) return null
 

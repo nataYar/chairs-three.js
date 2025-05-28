@@ -113,8 +113,6 @@ const Carousel = ({ radius }) => {
             scale={chair.scale}
             isActive={isActive}
             transform={chair.transform}
-            backgroundUrl={chair.backgroundUrl}
-            label={chair.label}
           />
         )
       })}

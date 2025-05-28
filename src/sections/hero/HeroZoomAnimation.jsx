@@ -70,44 +70,12 @@ const HeroAnimation = ({
         } else {
           setIntroTextVisible(true);
         }
-
         let backgroundScaleValue = 1;
 
         if (scrollProgress > 0) {
-          backgroundScaleValue = 1 + scrollProgress * 1.5;
-          // const scaledDifference = backgroundScaleValue - 1;
-          // backgroundTranslateYValue = scaledDifference * viewportHeight * 1.2; 
-          
+          backgroundScaleValue = 1 + scrollProgress * 1.5;    
         }
         backgroundScale.set(backgroundScaleValue);
-        // backgroundTranslateY.set(backgroundTranslateYValue);
-
-        // let backgroundTranslateYValue = 0;
-        // if (scrollProgress > 0.7) {
-        //   backgroundTranslateYValue = (scrollProgress - 0.5) * viewportHeight * 1.5; 
-        
-        //   setGradientVisible(true);
-        // } 
-        // else {
-        //   setGradientVisible(false);
-        
-        // }
-        // backgroundTranslateY.set(backgroundTranslateYValue);
-      
-        // Trigger animations at specific points
-        // if (scrollProgress >= 1) {
-        //   animationControls.start({
-        //     y: -viewportHeight * 2,
-        //     transition: { duration: .5, ease: "easeInOut" },
-        //   });
-        // } 
-        // else if (scrollProgress < 1) {
-        //   // setIsJumping(false);
-        //   animationControls.start({
-        //     y: 0,
-        //     transition: { duration: .5, ease: "easeInOut" },
-        //   });
-        // }
       });
 
       return () => unsubscribe();

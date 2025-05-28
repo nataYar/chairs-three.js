@@ -10,7 +10,7 @@ const AfterOffice = ({ progress, afterOfficeRange }) => {
 
   // Define the pixel values for the y-axis transformation.
   const startY = window.innerHeight * 0.1; // Equivalent to 30vh
-  const endY = window.innerHeight * 1.2; // Equivalent to 80vh
+  const endY = window.innerHeight * 0.7; // Equivalent to 80vh
 
   const rawY = useTransform(currentProgress, [0.4, 0.8], [startY, endY]);
 
@@ -24,7 +24,7 @@ const AfterOffice = ({ progress, afterOfficeRange }) => {
             className="carousel-text-container"
             initial={{ opacity: 0, y: "10vh" }}
             style={{
-              opacity: useTransform(currentProgress, [0.4, 0.8], [0, 1]),
+              opacity: useTransform(currentProgress, [0.2, 0.8], [0, 1]),
               y: springY,
             }}
             >

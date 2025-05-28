@@ -19,19 +19,12 @@ const App = () => {
   const officeRef = useRef(null);
   const slidesRef = useRef(null);
   const afterOfficeRef = useRef(null)
-  const storeRef = useRef(null)
  
   const { scrollYProgress } = useScroll();
 
   const [heroRange, setHeroRange] = useState([0, 1]);
   const [officeRange, setOfficeRange] = useState([0, 1]);
   const [slidesRange, setSlidesRange] = useState([0, 1]);
-  const [afterOfficeRange, setAfterOfficeRange] = useState([0, 1]);
-  const [storeRange, setStoreRange] = useState([0, 1]);
-
-  const [isAfterheroVisible, setIsAfterheroVisible] = useState(false);
-  const [isAfterheroSticky, setIsAfterheroSticky] = useState(false);
-  const [hasShownAfterhero, setHasShownAfterhero] = useState(false); // to make it show just once
 
   // custom hook for mob/laptop window size
   const useMediaQuery = (query) => {
@@ -68,14 +61,19 @@ const App = () => {
   });
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (container) { 
-      const heroHeight = container.firstChild?.offsetHeight || 0;
-      // console.log("heroHeight "+heroHeight) 
-      const officeStart = heroHeight; 
-      setHeroRange([0, officeStart / container.scrollHeight]);
-    }
-  }, [containerRef.current?.scrollHeight]);
+    const handleResize = () => {
+      if (!containerHeroRef.current) return;
+      const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
+      const heroOffsetTop = containerHeroRef.current.offsetTop;
+      const heroHeight = containerHeroRef.current.offsetHeight;
+      const heroStart = heroOffsetTop / totalScrollHeight;
+      const heroEnd = (heroOffsetTop + heroHeight) / totalScrollHeight;
+      updateRange(heroStart, heroEnd);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Function to update Hero and office scroll ranges dynamically
   const updateHeroRange = (start, end) => {
@@ -133,58 +131,9 @@ const App = () => {
       return () => window.removeEventListener('resize', handleResize);
     }
   }, [afterOfficeRef]);
-
-  // useMotionValueEvent(scrollYProgress, "change", 
-  //   (latest) => {
-  //     console.log("Global progress "+latest)
-  //   })
-
-  // useEffect(() => {
-  //   // Subscribe to `scrollYProgress` updates
-  //   const unsubscribe = scrollYProgress.on("change", (value) => {
-  //     console.log("Scroll Progress:", value); // Log updated progress
-  //   });
-
-  //   return () => unsubscribe(); // Clean up the listener
-  // }, [scrollYProgress]);
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const container = containerRef.current;
-    if (!container) return;
   
-    const diff = latest - scrollYProgress.getPrevious();
-    const direction = diff > 0 ? "down" : "up";
-    setScrollDirection(direction);
-  
-    // Reset hasShownAfterhero when scrolling back up past heroRange[1]
-    if (latest < heroRange[1] && direction === "up") {
-      setHasShownAfterhero(false);
-    }
-  
-    // Show Afterhero once
-    if (
-      latest >= heroRange[1] &&
-      direction === "down" &&
-      !isAfterheroSticky &&
-      !hasShownAfterhero
-    ) {
-      setIsAfterheroSticky(true);
-      setHasShownAfterhero(true);
-  
-      setTimeout(() => {
-        setIsAfterheroVisible(true);
-      }, 500);
-  
-      setTimeout(() => {
-        setIsAfterheroVisible(false);
-        setIsAfterheroSticky(false);
-      }, 1600);
-    }
-  });
-  
-
   // In App.jsx
-const updateslidesRange = (start, end) => {
+const updateSlidesRange = (start, end) => {
   setSlidesRange([start, end]);
 };
 
@@ -196,7 +145,7 @@ useEffect(() => {
     const slidesHeight = slidesRef.current.offsetHeight;
     const slidesStart = (slidesOffsetTop - window.innerHeight) / totalScrollHeight;
     const slidesEnd = (slidesOffsetTop + slidesHeight) / totalScrollHeight;
-    updateslidesRange(slidesStart, slidesEnd);
+    updateSlidesRange(slidesStart, slidesEnd);
   };
 
   const timeout = setTimeout(handleResize, 100); // delay resize for layout
@@ -230,32 +179,6 @@ const updatestoreRange = (start, end) => {
   setStoreRange([start, end]);
 };
 
-//  useMotionValueEvent(scrollYProgress , "change", (latest) => {
-//     if (latest >= heroRange[1] && scrollDirection === "down" && !hasScrolledToBottom) {
-//       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-
-//       // Wait for natural scroll to settle, then scroll to .bottom
-//       scrollTimeout.current = setTimeout(() => {
-//         officeRef.current.scrollIntoView({
-//           behavior: "smooth", 
-//           block: "start", 
-//         });
-//         setHasScrolledToBottom(true); // Prevent further scrolling
-//       }, 100); // Adjust delay to allow natural scrolling to finish
-//     }
-
-//     // Reset when scrolling back up (Optional)
-//     if (latest < heroRange[1] && scrollDirection === "up") {
-//       setHasScrolledToBottom(false); // Allow the scroll to trigger again
-//     }
-//   });
-
-  // Cleanup timeout when the component unmounts
-  // useEffect(() => {
-  //   return () => {
-  //     if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-  //   };
-  // }, []);
 
   const OPTIONS = { loop: true }
   const SLIDE_COUNT = 5
@@ -271,11 +194,11 @@ const updatestoreRange = (start, end) => {
       <Hero progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateHeroRange} heroRange={heroRange} isMobile={isMobile}/>
 
       
-      <div className="office" ref={officeRef} >
+      {/* <div className="office" ref={officeRef} >
         <Office progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateOfficeRange} officeRange={officeRange}/>
-      </div>
+      </div> */}
 
-      <div ref={afterOfficeRef}>
+      {/* <div ref={afterOfficeRef}>
         <AfterOffice progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateAfterOfficeRange} afterOfficeRange={afterOfficeRange}/>
       </div>
 
@@ -285,14 +208,14 @@ const updatestoreRange = (start, end) => {
         slidesRange={slidesRange}
         storeRange={storeRange}
         isMobile={isMobile}
-      />
+      /> */}
       
-      <div ref={slidesRef}>
-        <Slides progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateslidesRange} slidesRange={slidesRange} isMobile={isMobile}/>
-      </div>
+      {/* <div ref={slidesRef}>
+        <Slides progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateSlidesRange} slidesRange={slidesRange} isMobile={isMobile}/>
+      </div> */}
 
 
-      <CarouselSection /> 
+      {/* <CarouselSection />  */}
      
      {/* <div ref={storeRef}>
         <Store slides={SLIDES} progress={scrollYProgress} scrollDirection={scrollDirection} storeRange={storeRange}
