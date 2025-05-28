@@ -26,49 +26,62 @@ export default function SharedChairFigure({ progress, officeRange, isMobile }) {
   }));
 
   // Monitor the progress (scrolling) and change rotation
-  useMotionValueEvent(progress, 'change', (latest) => {
-    if (latest >= officeRange[0] && latest <= officeRange[1]) {
-      // The user is within the office range and scrolling
-      if (!isScrolling) {
-        setIsScrolling(true); // Start scrolling behavior
-      }
+  // useMotionValueEvent(progress, 'change', (latest) => {
+  //   if (latest >= officeRange[0] && latest <= officeRange[1]) {
+  //     // The user is within the office range and scrolling
+  //     if (!isScrolling) {
+  //       setIsScrolling(true); // Start scrolling behavior
+  //     }
 
-      // If there's already a timer, clear it to reset
-      if (timer) {
-        clearTimeout(timer);
-      }
+  //     // If there's already a timer, clear it to reset
+  //     if (timer) {
+  //       clearTimeout(timer);
+  //     }
 
-      // Start a new timer to detect if the user stops scrolling
-      setTimer(setTimeout(() => {
-        setIsScrolling(false); // Stop rotation when user stops scrolling
-        setIsStopped(true); // Mark that scrolling has stopped
-      }, 300)); // 300 ms delay to detect scroll stop
-    } else {
-      // The user is outside the office range
-      if (isScrolling) {
-        setIsScrolling(false); // Stop scrolling behavior
-      }
-    }
-  });
+  //     // Start a new timer to detect if the user stops scrolling
+  //     setTimer(setTimeout(() => {
+  //       setIsScrolling(false); // Stop rotation when user stops scrolling
+  //       setIsStopped(true); // Mark that scrolling has stopped
+  //     }, 300)); // 300 ms delay to detect scroll stop
+  //   } else {
+  //     // The user is outside the office range
+  //     if (isScrolling) {
+  //       setIsScrolling(false); // Stop scrolling behavior
+  //     }
+  //   }
+  // });
 
   // Back and forth rotation logic
-  useFrame(() => {
-    if (isScrolling) {
-      const swingAngle = Math.sin(lastRotationY * 2) * 0.1 + Math.PI; // Back and forth
-      setRotationY(swingAngle); // Update rotation while scrolling
-      setLastRotationY(lastRotationY + 0.02); // Increment to continue the swing motion
+  // useFrame(() => {
+    // if (isScrolling) {
+      // const swingAngle = Math.sin(2) * 0.1 + Math.PI; // Back and forth
+      // setRotationY(swingAngle); // Update rotation while scrolling
+      // setLastRotationY(lastRotationY + 0.02); // Increment to continue the swing motion
+    // }
+  // });
+
+  // Reset the stopped state when user starts scrolling again
+  // useEffect(() => {
+  //   if (isScrolling) {
+  //     setIsStopped(false); // Reset stop flag when scrolling starts
+  //   }
+  // }, [isScrolling]);
+
+  const time = useRef(0);
+  const baseYRotation = Math.PI;
+  const tiltZ = 0.09;
+  
+  useFrame((state, delta) => {
+    time.current += delta;
+    const swingY = Math.sin(time.current * 1.1) * 0.3; // Back and forth
+  
+    if (group.current) {
+      group.current.rotation.set(0, baseYRotation + swingY, tiltZ);
     }
   });
 
-  // Reset the stopped state when user starts scrolling again
-  useEffect(() => {
-    if (isScrolling) {
-      setIsStopped(false); // Reset stop flag when scrolling starts
-    }
-  }, [isScrolling]);
-
   return (
-    <a.group ref={group} position={spring.position} scale={initialScale} rotation={[0, rotationY, 0.09]}>
+    <a.group ref={group} position={spring.position} scale={initialScale} >
       <primitive object={scene} />
     </a.group>
   );

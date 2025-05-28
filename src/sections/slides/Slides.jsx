@@ -4,7 +4,7 @@ import { motion, AnimatePresence, useMotionValueEvent, useSpring, useTransform, 
 import "../../styles/Slides.scss";
 
 
-const Slides = ({ progress, slidesRange, scrollDirection }) => {
+const Slides = ({ progress, slidesRange, isMobile }) => {
 const containerRef = useRef(null);
 const slidesProgress = useTransform(progress, slidesRange, [0, 1]);
 
@@ -69,97 +69,121 @@ const [hasSnappedToslides, setHasSnappedToslides] = useState(false);
 //   });
 
 
-    const backgrounds = [
-        {
-          src: "src/assets/slides/office.jpg",
-          overlays: [
-            { src: "src/assets/slides/office-top.png", 
-                zIndex: 3, 
-                className: "" 
-            },
-          ],
-        },
+const backgrounds = [
+  {
+    srcLap: "src/assets/slides/office.jpg",
+    srcMob: "src/assets/slides/mob/office-mob.webp",
+    overlays: [
+      {
+        srcLap: "src/assets/slides/office-top.png",
+        srcMob: "src/assets/slides/mob/office-cropped.webp",
+        zIndex: 3,
+        className: ""
+      },
+    ],
+  },
+  {
+    src: "src/assets/slides/art-studio.jpg",
+    srcMob: "src/assets/slides/mob/art-studio-min.webp",
+    overlays: []
+  },
+  {
+    src: "src/assets/slides/underwater-min.jpg",
+    srcMob: "src/assets/slides/mob/underwater-min.webp",
+    overlays: [
+      {
+        src: "src/assets/slides/underwater-bush.png",
+        srcMob: "src/assets/slides/mob/underwater-bush-min.webp",
+        zIndex: 5,
+        className: ""
+      },
+      {
+        src: "src/assets/slides/fish-single.png",
+        srcMob: "src/assets/slides/mob/fish-single-min.png",
+        zIndex: 4,
+        className: "fish-single"
+      },
+      {
+        src: "src/assets/slides/fish-right.png",
+        srcMob: "src/assets/slides/mob/fish-right-min.png",
+        zIndex: 20,
+        className: "fish-right"
+      },
+      {
+        src: "src/assets/slides/fish-left.png",
+        srcMob: "src/assets/slides/mob/fish-left-min.png",
+        zIndex: 2,
+        className: "fish-left"
+      },
+    ],
+  },
+  {
+    src: "src/assets/slides/photo-studio.jpg",
+    srcMob: "src/assets/slides/mob/photo-studio-min.webp",
+    overlays: [
+      {
+        src: "src/assets/slides/photo-studio-overlay.png",
+        srcMob: "src/assets/slides/mob/photo-studio-overlay-min.png",
+        zIndex: 10,
+        className: null
+      },
+    ],
+  },
+  {
+    src: "src/assets/slides/car.jpg",
+    srcMob: "src/assets/slides/mob/car-min.webp",
+    overlays: []
+  },
+  {
+    src: "src/assets/slides/jungle.jpg",
+    srcMob: "src/assets/slides/mob/jungle-min.webp",
+    overlays: [
+      {
+        src: "src/assets/slides/jungle-overlay.png",
+        srcMob: "src/assets/slides/mob/jungle-overlay-min.webp",
+        zIndex: 4,
+        className: "shake"
+      },
+    ],
+  },
+  {
+    src: "src/assets/slides/library.jpg",
+    srcMob: "src/assets/slides/mob/library-min.webp",
+    overlays: [
+      {
+        src: "src/assets/slides/library-gates.png",
+        srcMob: "src/assets/slides/mob/library-gates-min.webp",
+        zIndex: 3,
+        className: ""
+      },
+      {
+        src: "src/assets/slides/books-back-layer.png",
+        srcMob: "src/assets/slides/mob/books-back-layer-min.webp",
+        zIndex: 2,
+        className: "books-back"
+      },
+      {
+        src: "src/assets/slides/books-front.png",
+        srcMob: "src/assets/slides/mob/books-front-min.webp",
+        zIndex: 4,
+        className: "books-front"
+      },
+    ],
+  },
+  {
+    src: "src/assets/slides/space-red.jpg",
+    srcMob: "src/assets/slides/mob/space-red-min.webp",
+    overlays: [
+      {
+        src: "src/assets/slides/sparks-bottom.png",
+        srcMob: "src/assets/slides/mob/sparks-bottom-min.webp",
+        zIndex: 2,
+        className: "stars-move"
+      },
+    ],
+  },
+];
 
-        {
-            src: "src/assets/slides/art-studio.jpg",
-            overlays: []
-        },
-        {
-            src: "src/assets/slides/underwater-min.jpg",
-            overlays: [
-                 { src: "src/assets/slides/underwater-bush.png", 
-                  zIndex: 5, 
-                  className: ""
-                },
-                // { src: "src/assets/slides/reef-left.png", 
-                //     zIndex: 4, 
-                //     className: "" 
-                // },
-                { src: "src/assets/slides/fish-single.png", 
-                    zIndex: 4, 
-                    className: "fish-single" 
-                },
-                { src: "src/assets/slides/fish-right.png", 
-                    zIndex: 20, 
-                    className: "fish-right" 
-                },
-                { src: "src/assets/slides/fish-left.png", 
-                    zIndex: 2, 
-                    className: "fish-left" 
-                },
-            ],
-        },
-        {
-            src: "src/assets/slides/photo-studio.jpg",
-            overlays: [
-                { src: "src/assets/slides/photo-studio-overlay.png", 
-                    zIndex: 10, 
-                    className: null
-                },
-            ],
-        },
-        {
-            src: "src/assets/slides/car.jpg",
-            overlays: [
-                
-            ],
-        },
-        {
-            src: "src/assets/slides/jungle-min.jpg",
-            overlays: [
-                { src: "src/assets/slides/jungle-overlay.png",
-                    zIndex: 10, 
-                    className: "shake" 
-                },
-            ],
-        },
-        {
-            src: "src/assets/slides/library.jpg",
-            overlays: [
-              { src: "src/assets/slides/library-gates.png", 
-                  zIndex: 3, 
-                  className: "" 
-              },
-              { src: "src/assets/slides/books-back-layer.png", 
-                zIndex: 2, 
-                className: "books-back" 
-                },
-                { src: "src/assets/slides/books-front.png", 
-                    zIndex: 4, 
-                    className: "books-front" 
-                },
-            ],
-        },
-        {
-            src: "src/assets/slides/space-red.jpg",
-            overlays: [
-                { src: "src/assets/slides/sparks-bottom.png", 
-                    zIndex: 2, 
-                    className: "stars-move" 
-                },
-            ],
-        },
-      ];
 
       const [currentIndex, setCurrentIndex] = useState(0);
       const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
@@ -170,7 +194,7 @@ const [hasSnappedToslides, setHasSnappedToslides] = useState(false);
           setCurrentIndex((prevIndex) =>
             prevIndex === backgrounds.length - 1 ? 0 : prevIndex + 1
           );
-        }, 1500); // Change image every 1 seconds
+        }, 2000); // Change image every 1 seconds
     
         return () => clearInterval(interval);
       }, []);
@@ -184,13 +208,15 @@ const [hasSnappedToslides, setHasSnappedToslides] = useState(false);
           <motion.div
             key={currentIndex}
             className="background"
-            style={{ backgroundImage: `url(${backgrounds[currentIndex].src})` }}
+            style={{ 
+              backgroundImage:`url(${isMobile ? backgrounds[currentIndex].srcMob : backgrounds[currentIndex].srcLap})` 
+          }}
           >
             {
             (backgrounds[currentIndex].overlays || []).map((overlay, index) => (
               <img 
                 key={index} 
-                src={overlay.src} 
+                src={isMobile ? overlay.srcMob : overlay.srcLap} 
                 alt="Overlay" 
                 style={{zIndex: overlay.zIndex}}
                 className={`overlay-image ${overlay.className || ''}`} 

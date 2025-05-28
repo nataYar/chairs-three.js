@@ -14,9 +14,7 @@ import SharedChair from "./sections/SharedChair";
 import CarouselSection from "./sections/CarouselSection/CarouselSection";
 
 const App = () => { 
-  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const [scrollDirection, setScrollDirection] = useState("down")
-  let scrollTimeout = useRef(null); 
   const containerRef = useRef(null);
   const officeRef = useRef(null);
   const slidesRef = useRef(null);
@@ -34,17 +32,6 @@ const App = () => {
   const [isAfterheroVisible, setIsAfterheroVisible] = useState(false);
   const [isAfterheroSticky, setIsAfterheroSticky] = useState(false);
   const [hasShownAfterhero, setHasShownAfterhero] = useState(false); // to make it show just once
-  
-  if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
-  }
-  
-  // useEffect(() => {
-  //   window.scrollTo(0, 0); 
-  //   if (containerRef.current) {
-  //     containerRef.current.scrollTop = 0; 
-  //   }
-  // }, []);
 
   // custom hook for mob/laptop window size
   const useMediaQuery = (query) => {
@@ -275,7 +262,7 @@ const updatestoreRange = (start, end) => {
   const SLIDES = Array.from(Array(SLIDE_COUNT).keys())
 
   return (
-    <div id="smooth-wrapper" style={{ overflow: "hidden"}} > 
+    <div id="smooth-wrapper"> 
       <div
       ref={containerRef}
       className="app-container" 
@@ -283,14 +270,8 @@ const updatestoreRange = (start, end) => {
      
       <Hero progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateHeroRange} heroRange={heroRange} isMobile={isMobile}/>
 
-
-      {/* <AfterHero progress={scrollYProgress} isVisible={isAfterheroVisible}/> */}
       
-      
-      
-      <div className="OFFICE"
-      ref={officeRef}
-      >
+      <div className="office" ref={officeRef} >
         <Office progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateOfficeRange} officeRange={officeRange}/>
       </div>
 
@@ -307,18 +288,19 @@ const updatestoreRange = (start, end) => {
       />
       
       <div ref={slidesRef}>
-        <Slides progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateslidesRange} slidesRange={slidesRange} />
+        <Slides progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateslidesRange} slidesRange={slidesRange} isMobile={isMobile}/>
       </div>
 
 
-      <CarouselSection />
-      {/* <div ref={storeRef}>
+      <CarouselSection /> 
+     
+     {/* <div ref={storeRef}>
         <Store slides={SLIDES} progress={scrollYProgress} scrollDirection={scrollDirection} storeRange={storeRange}
       />
       </div> */}
      
      
-      {/* <Transition color="black" height={"100vh"}/> */}
+  
      {/* <div style={{height:"500vh", backgroundColor:"red"}}></div> */}
     </div>
   </div>

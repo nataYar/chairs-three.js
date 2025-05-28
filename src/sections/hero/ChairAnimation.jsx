@@ -14,12 +14,12 @@ const ChairAnimation = ({ chairPositions, chairRefs, isCanvasLoaded, progress, i
   // Speed multipliers for each chair index
   const speedMultipliers = {
     0: 1.0, // Normal speed
-    1: 0.2, // Slower than chairs 6 and 2
-    2: 0.5, // Slower than chairs 0, 3, 4, 5
+    1: 0.2, // Slower 
+    2: 0.5, // Slower 
     3: 1.0, // Normal speed
     4: 1.0, // Normal speed
     5: 1.0, // Normal speed
-    6: 0.5, // Slower than chairs 0, 3, 4, 5
+    6: 0.5, // Slower 
   };
 
   // Update spring targets based on progress

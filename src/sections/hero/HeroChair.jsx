@@ -16,22 +16,23 @@ const HeroChair = forwardRef((props, ref) => {
   // Define initial scale and position
   const initialScale = isMobile ? 0.13 : 0.2;
   const initialPosition = isMobile
-    ? [viewport.width * 0.5, -viewport.height * -2.8, -25]
+    ? [viewport.width * 0.7, -viewport.height * -2.8, -25]
     : [viewport.width * 0, -viewport.height * -4.3, -35];
 
   // Use progress to animate Y position and scale
   const easeIn = (start, end, t) => start + (end - start) * t * t;
 
   useFrame(() => {
-    if (localRef.current && progress.get() >= 0.1) {
-      const moveY = easeIn(0, -20, progress.get()); // Move down the Y-axis (adjust the value for desired distance)
-      // const newScale = easeIn(initialScale, 0.13, progress.get()); // Increase scale slightly
-
-      // Update position and scale
+    if (localRef.current && progress.get() >= 0.1 && progress.get() <= 0.9) {
+      const normalizedProgress = (progress.get() - 0.1) / (0.9 - 0.1); // Map 0.1 → 0.0 and 0.9 → 1.0
+      const moveY = easeIn(0, -20, normalizedProgress);
       localRef.current.position.y = initialPosition[1] + moveY;
-      // localRef.current.scale.set(newScale, newScale, newScale);
+    } else if (localRef.current && progress.get() > 0.9) {
+      // Snap to final position when past 0.9
+      localRef.current.position.y = initialPosition[1] - 20;
     }
   });
+  
 
   return (
     <Chair

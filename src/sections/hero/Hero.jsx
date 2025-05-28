@@ -301,7 +301,7 @@ const ShadowPlane = () => {
     <Plane 
       position={[0, -7, 0]} 
       rotation={[-Math.PI / 2, 0, 0]} 
-      args={[viewport.width * 30, viewport.width * 10]} // Width = 2x viewport width
+      args={[viewport.width * 30, viewport.width * 10]}
       receiveShadow
     >
       <shadowMaterial transparent opacity={0.6} />

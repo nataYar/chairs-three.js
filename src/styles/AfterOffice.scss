@@ -1,24 +1,23 @@
 .after-office {
     background-color: rgb(0, 0, 0);
-    height: 70vh;
+    height: 100vh;
     width: 100%;
     position: relative;
-    z-index: 5;
+    z-index: 10;
     .carousel-text-container {
         position: absolute;
         width: 100%;
-        // top: 10vh;
-        z-index: 6; 
+        z-index: 10; 
         .carousel-text {
           text-shadow: 2px 2px #383838;
           width: 100%; 
-          font-size: 1.5rem;
+          font-size: 20px;
           text-align: center;
           color: #ffffff;
           .text-black{ color: #000000;}
           .text-white{ color: #ffffff;}
           span{
-            font-size: 4.5rem;
+            font-size: 50px;
             &:first-of-type {
                 margin-bottom: 100px;
             }

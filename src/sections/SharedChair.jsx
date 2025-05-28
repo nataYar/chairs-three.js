@@ -17,7 +17,7 @@ const SharedChair = ({ progress, officeRange, slidesRange, warholRange, isMobile
     className="shared-chair"
     style={{
       position: "absolute",
-      width: "100vh",
+      width: "100vw",
       height: "100vh",
       // backgroundColor: "blue",
       top: '400vh',

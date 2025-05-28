@@ -81,11 +81,13 @@ const rawY = useTransform(officeProgress, [0.1, 0.7], [startY, endY]);
   const springY = useSpring(rawY, springConfig);
 
   return (
-    <motion.div 
+    <div 
     ref={containerRef} 
     className='main-section' 
-    style={{ y: officeY }} >
-     <div className="pc-container">
+    // style={{ y: officeY }} 
+    >
+      <div>
+         <div className="pc-container">
       <div className="pc pc-left">
         <video src={leftVideoSrc} autoPlay muted loop></video>
       </div>
@@ -104,10 +106,12 @@ const rawY = useTransform(officeProgress, [0.1, 0.7], [startY, endY]);
         }}
       >
         <div className="text">
-          <h2>The Backbone of <br/><span>Productivity</span><br/>Amidst Chaos</h2>
+          <h2>the backbone of <br/><span>Productivity</span><br/>amidst chaos</h2>
         </div>
       </motion.div>
-  </motion.div>
+      </div>
+    
+  </div>
   
   );
 };

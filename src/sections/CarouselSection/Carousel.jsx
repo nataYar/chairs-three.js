@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { useSpring, animated } from "@react-spring/three";
 import { useGesture } from "@use-gesture/react";
 import ChairCarousel from "./ChairCarousel";
@@ -11,22 +12,10 @@ const Carousel = ({ radius }) => {
   const [currentAngle, setCurrentAngle] = useState(0);
   const chairConfigs = [
     {
-      url: 'src/assets/chairs/bar_stool.glb',
-      scale: 13,
-      label: 'This is for late-night chats over cocktails.',
-      backgroundUrl: 'src/assets/carousel/dark_wood.jpg'
-    },
-    {
-      url: 'src/assets/chairs/red_armchair_new-v1.glb',
+      url: 'src/assets/chairs/throne_of_iron__stone.glb',
       scale: 9,
-      label: 'This is for cozy evening reads.',
-      backgroundUrl: 'src/assets/carousel/vintage.jpg'
-    },
-    {
-      url: 'src/assets/chairs/medieval_chair.glb',
-      scale: 13,
-      label: 'This is for commanding respect.',
-      backgroundUrl: 'src/assets/carousel/castle.jpg'
+      label: 'This is for ruling kingdoms.',
+      backgroundUrl: 'src/assets/carousel/stone_wall.jpg'
     },
     {
       url: 'src/assets/chairs/zig_zag.glb',
@@ -35,11 +24,24 @@ const Carousel = ({ radius }) => {
       backgroundUrl: 'src/assets/carousel/glass.jpg'
     },
     {
-      url: 'src/assets/chairs/throne_of_iron__stone.glb',
+      url: 'src/assets/chairs/bar_stool.glb',
+      scale: 13,
+      label: 'This is for late-night chats over cocktails.',
+      backgroundUrl: 'src/assets/carousel/dark_wood.jpg'
+    },
+    {
+      url: 'src/assets/chairs/medieval_chair.glb',
+      scale: 13,
+      label: 'This is for commanding respect.',
+      backgroundUrl: 'src/assets/carousel/castle.jpg'
+    },
+    {
+      url: 'src/assets/chairs/red_armchair_new-v1.glb',
       scale: 9,
-      label: 'This is for ruling kingdoms.',
-      backgroundUrl: 'src/assets/carousel/stone_wall.jpg'
+      label: 'This is for cozy evening reads.',
+      backgroundUrl: 'src/assets/carousel/vintage.jpg'
     }
+   
   ]
   
   
@@ -116,9 +118,28 @@ const Carousel = ({ radius }) => {
         )
       })}
       </animated.group>
-
+     
       {/* {isMobile && ( */}
         <Html fullscreen>
+        <div className="carousel_lable"
+        style={{
+          position: 'absolute',
+          bottom: "90px",
+          left: 0,
+          width: '100vw',
+          color: 'black',
+          textAlign: 'center',
+          fontSize: '1.5rem',
+          padding: '1rem',
+          fontWeight: 'bold',
+          // boxShadow: '0 -2px 10px rgba(0,0,0,0.1)',
+          pointerEvents: 'none',  
+          userSelect: 'none',
+
+        }}
+      >
+        {chairConfigs[activeIndex].label}
+      </div>
           <div className="carousel-controls">
             <button onClick={goToPreviousChair}>◀</button>
             <button onClick={goToNextChair}>▶</button>

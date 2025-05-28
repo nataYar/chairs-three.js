@@ -11,7 +11,10 @@ body {
     padding: 0;
     width: 100%;
     height: auto;
-    overflow-x: hidden;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .app {
@@ -22,7 +25,7 @@ body {
 
 #smooth-wrapper {
     position: relative; 
-    // height: 100vh; 
+    overflow-x: hidden;
   }
 
 .app-container{
@@ -30,11 +33,12 @@ body {
     background-color: white;
     width: 100vw;
     // border: 2px solid red; 
+    .office{
+        // position: relative;
+        // height: 200vh; 
+      }
 }
 
-.no-scroll {
-    overflow: hidden; 
-  }
 
 
   
