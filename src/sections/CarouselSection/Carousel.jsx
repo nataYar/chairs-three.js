@@ -5,6 +5,7 @@ import { useSpring, animated } from "@react-spring/three";
 import { useGesture } from "@use-gesture/react";
 import ChairCarousel from "./ChairCarousel";
 import { Html } from "@react-three/drei";
+import { motion, AnimatePresence } from "framer-motion";
 
 
 const Carousel = ({ radius }) => {
@@ -13,7 +14,7 @@ const Carousel = ({ radius }) => {
   const chairConfigs = [
     {
       url: 'src/assets/chairs/throne_of_iron__stone.glb',
-      scale: 9,
+      scale: 7,
       label: 'This is for ruling kingdoms.',
       backgroundUrl: 'src/assets/carousel/stone_wall.jpg'
     },
@@ -121,25 +122,32 @@ const Carousel = ({ radius }) => {
      
       {/* {isMobile && ( */}
         <Html fullscreen>
-        <div className="carousel_lable"
-        style={{
-          position: 'absolute',
-          bottom: "90px",
-          left: 0,
-          width: '100vw',
-          color: 'black',
-          textAlign: 'center',
-          fontSize: '1.5rem',
-          padding: '1rem',
-          fontWeight: 'bold',
-          // boxShadow: '0 -2px 10px rgba(0,0,0,0.1)',
-          pointerEvents: 'none',  
-          userSelect: 'none',
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeIndex} // triggers unmount/remount
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="carousel_lable"
+            style={{
+              position: 'absolute',
+              bottom: "90px",
+              left: 0,
+              width: '100vw',
+              color: 'black',
+              textAlign: 'center',
+              fontSize: '1.5rem',
+              padding: '1rem',
+              fontWeight: 'bold',
+              pointerEvents: 'none',
+              userSelect: 'none',
+            }}
+          >
+            {chairConfigs[activeIndex].label}
+          </motion.div>
+        </AnimatePresence>
 
-        }}
-      >
-        {chairConfigs[activeIndex].label}
-      </div>
           <div className="carousel-controls">
             <button onClick={goToPreviousChair}>◀</button>
             <button onClick={goToNextChair}>▶</button>

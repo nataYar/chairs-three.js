@@ -1,20 +1,33 @@
 .carousel_section{
-    height: 200vh;
+    height: 210vh;
     color: rgb(255, 255, 255);
+    position: relative;
     .carousel_presection{
       background-color: #000000;
       height: 100vh;
       font-size: 34px;
-      padding: 20px 40px;
+      display: flex;
+      flex-flow: column wrap;
+      justify-content: center;
+      padding: 0px 40px;
       p {
         margin: 20px 0px;
       }
+      &::after {
+        content: '';
+        position: absolute;
+        z-index: 99;
+        bottom: 100vh;
+        left: 0;
+        width: 100%;
+        height: 20vh;
+        background: linear-gradient(to bottom, rgb(0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
+        pointer-events: none;
+        opacity: 1; 
+        transition: opacity 1s ease-in-out; 
+       
+      }
     }
-    // .carousel__text-before{
-    //     height: 50vh;
-    //     font-size: 44px;
-    //     background-color: chartreuse;
-    // }
     .carousel-controls {
         position: absolute;
         bottom: 1rem;
