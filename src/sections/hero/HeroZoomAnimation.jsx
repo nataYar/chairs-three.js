@@ -8,7 +8,7 @@ const HeroAnimation = ({
   heroRange, 
   heroProgress, 
   isCanvasLoaded,
-  // onProgressUpdate,
+
 }) => {
   const springConfig = { mass: 0.2, stiffness: 50, damping: 10, restDelta: 0.001 };
   // const backgroundScale = useSpring(1, springConfig);
@@ -37,9 +37,8 @@ const HeroAnimation = ({
       setIsFixed(false); 
     }
   
-   
     if (chaRef.current) {
-      if (latest >= heroRange[1]-0.1 && latest <= heroRange[1]) {
+      if (latest >= heroRange[1]-0.05 && latest <= heroRange[1]) {
         chaRef.current.classList.add("padding-right");
       } else {
         chaRef.current.classList.remove("padding-right");
@@ -48,12 +47,12 @@ const HeroAnimation = ({
   });
 
   useMotionValueEvent(progress, "change", (scrollProgress) => {
-    const fadeStart = heroRange[1] - 0.025;
+    const fadeStart = heroRange[1] - 0.02;
     const fadeEnd = heroRange[1];
 
     if (scrollProgress >= fadeStart && scrollProgress <= fadeEnd) {
       const fadeProgress = (scrollProgress - fadeStart) / (fadeEnd - fadeStart);
-      backgroundOpacity.set(1 - fadeProgress); 
+      backgroundOpacity.set(1.2 - fadeProgress); 
     } else if (scrollProgress < fadeStart) {
       backgroundOpacity.set(1); // fully visible before fade starts
     } else {
@@ -64,11 +63,15 @@ const HeroAnimation = ({
     // Handle animations based on scroll progress
     useEffect(() => {
       const unsubscribe = heroProgress.on("change", (scrollProgress) => {
+
+        console.log(scrollProgress)
         if (!isCanvasLoaded) return;
-        if (scrollProgress >= 1) {
-          setIntroTextVisible(false); 
-        } else {
+        const eightyPercentIntoHero = heroRange[0] + (heroRange[1] - heroRange[0]) * 0.8;
+
+        if (scrollProgress >= 0.8 && scrollProgress < 1) {
           setIntroTextVisible(true);
+        } else {
+          setIntroTextVisible(false);
         }
         let backgroundScaleValue = 1;
 
