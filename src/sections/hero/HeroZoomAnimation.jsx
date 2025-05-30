@@ -63,8 +63,6 @@ const HeroAnimation = ({
     // Handle animations based on scroll progress
     useEffect(() => {
       const unsubscribe = heroProgress.on("change", (scrollProgress) => {
-
-        console.log(scrollProgress)
         if (!isCanvasLoaded) return;
         const eightyPercentIntoHero = heroRange[0] + (heroRange[1] - heroRange[0]) * 0.8;
 

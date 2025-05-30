@@ -18,7 +18,7 @@ import HeroZoomAnimation from "./HeroZoomAnimation";
 // Styles
 import "../../styles/Hero.scss";
 
-const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOfficeRange, slidesRange, isMobile }) => {
+const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOfficeRange, slidesRange, carouselRange, isMobile }) => {
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false);
 
   const [isNonFixedDelayed, setIsNonFixedDelayed] = useState(false); 
@@ -104,6 +104,7 @@ const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOffi
          officeRange={officeRange}
          afterOfficeRange={afterOfficeRange}
          slidesRange={slidesRange} 
+         carouselRange={carouselRange}
         />
         <Chair1 ref={chairRefs[0].ref}  isMobile={isMobile} />
         <Chair2 ref={chairRefs[1].ref} progress={heroProgress} isMobile={isMobile}  />
@@ -156,101 +157,125 @@ const Lighting = ({
   afterOfficeRange,
   officeRange,
   slidesRange,
+  carouselRange,
   isMobile
 }) => {
   const directionalLightRef = useRef();
   const ambientLightRef = useRef();
 
-  const hero = useSpring(useTransform(progress, heroRange, [0, 1]));
-  const heroTransition = useSpring(useTransform(progress, heroTransitionRange, [0, 1]));
-  const afterOffice = useSpring(useTransform(progress, afterOfficeRange, [0, 1]));
-  const office = useSpring(useTransform(progress, officeRange, [0, 1]));
-  const slides = useSpring(useTransform(progress, slidesRange, [0, 1]));
-
-  const blend = (values, weights) => {
-    const total = weights.reduce((a, b) => a + b, 0) || 1;
-    return values.reduce((sum, v, i) => sum + v * weights[i], 0) / total;
-  };
-
+  const hero = useTransform(progress, heroRange, [0, 1]);
+  const heroTransition = useTransform(progress, heroTransitionRange, [0, 1]);
+  const afterOffice = useTransform(progress, afterOfficeRange, [0, 1]);
+  const office = useTransform(progress, officeRange, [0, 1]);
+  const slides = useTransform(progress, slidesRange, [0, 1]);
+  const carousel = useTransform(progress, carouselRange, [0, 1])
   
+  const currentLighting = useRef({
+    ambientIntensity: 0,
+    directionalIntensity: 0,
+  });
+
   useFrame(() => {
     const heroVal = hero.get();
     const heroT = heroTransition.get();
-    const afterO = afterOffice.get();
+   
     const officeP = office.get();
+    const afterO = afterOffice.get();
     const slidesP = slides.get();
-  
-    const weights = [heroVal, heroT, afterO, officeP, slidesP];
-    const keys = ["heroRange", "heroTransitionRange", "afterOfficeRange", "officeRange", "slidesRange"];
+    const carouselS = carousel.get()
+    const weights = [heroVal, heroT,  officeP, afterO, slidesP, carouselS];
+    const keys = ["heroRange", "heroTransitionRange", "officeRange", "afterOfficeRange", "slidesRange", "carouselRange"];
 
-
-    const blend = (values, weights) => {
-      const total = weights.reduce((a, b) => a + b, 0);
-      if (total === 0) return values[0]; // Fallback to first section
-      return values.reduce((sum, v, i) => sum + v * weights[i], 0) / total;
+      const lightingPresets = {
+      heroRange: {
+        ambientIntensity: 0.5,
+        directionalIntensity: 9,
+        directionalColor: '#ffffff',
+      },
+      heroTransitionRange: {
+        ambientIntensity: 100,
+        directionalIntensity: 100,
+        directionalColor: '#ffffff',
+      },
+      officeRange: {
+        ambientIntensity: 0.1,
+        directionalIntensity: 0.1,
+        directionalColor: '#3a44fc',
+      },
+      afterOfficeRange: {
+        ambientIntensity: 30,
+        directionalIntensity: 30,
+        directionalColor:'#ffffff',
+      },
+      slidesRange: {
+        ambientIntensity: 1,
+        directionalIntensity: 1,
+        directionalColor:'#ffffff',
+      },
+      carouselRange: {
+        ambientIntensity: 100,
+        directionalIntensity: 100,
+        directionalColor:'#ffffff',
+      },
     };
 
+ 
+      const p = progress.get(); // current scroll progress between 0 and 1
     
-  const lightingPresets = {
-  heroRange: {
-    ambientIntensity: 0.5,
-    directionalIntensity: 9,
-    // directionalColor: '#ffffff',
-  },
-  heroTransitionRange: {
-    ambientIntensity: 0,
-    directionalIntensity: 0,
-    // directionalColor: '#ffdede',
-  },
-  afterOfficeRange: {
-    ambientIntensity: 9,
-    directionalIntensity: 9,
-    // directionalColor: '#fdf6e3',
-  },
-  officeRange: {
-    ambientIntensity: 0,
-    directionalIntensity: 0,
-    // directionalColor: '#a2d2ff',
-  },
-  slidesRange: {
-    ambientIntensity: 9,
-    directionalIntensity: 9,
-    // directionalColor: '#caffbf',
-  },
-};
+      const early = (range) => range[0] - (range[1] - range[0]) * 0.1;
 
+      let currentKey = "heroRange"; // fallback
 
-    const ambient = blend(
-      keys.map(k => lightingPresets[k].ambientIntensity),
-      weights
-    );
-    const directionalIntensity = blend(
-      keys.map(k => lightingPresets[k].directionalIntensity),
-      weights
-    );
+      if (p >= heroRange[0] && p < heroTransitionRange[0]) {
+        currentKey = "heroRange";
+      } else if (p >= early(heroTransitionRange) && p < early(officeRange)) {
+        currentKey = "heroTransitionRange";
+      } else if (p >= early(officeRange) && p < early(afterOfficeRange)) {
+        currentKey = "officeRange";
+      } else if (p >= early(afterOfficeRange) && p < early(slidesRange)) {
+        currentKey = "afterOfficeRange";
+      } else if (p >= early(slidesRange) && p < early(carouselRange)) {
+        currentKey = "slidesRange";
+      } else if (p >= early(carouselRange)) {
+        currentKey = "carouselRange";
+      }
+
+     
+
+      const lerp = (a, b, t) => a + (b - a) * t;
+
+    
+      // Use a default if nothing matched
+      const preset = lightingPresets[currentKey] || lightingPresets.heroRange;
+      const t = 0.001; // Adjust for speed of transition (smaller = slower)
+
+      // Lerp current values toward target
+      currentLighting.current.ambientIntensity = lerp(
+        currentLighting.current.ambientIntensity,
+        preset.ambientIntensity,
+        t
+      );
+      currentLighting.current.directionalIntensity = lerp(
+        currentLighting.current.directionalIntensity,
+        preset.directionalIntensity,
+        t
+      );
+    
+
+      if (ambientLightRef.current) {
+        ambientLightRef.current.intensity = preset.ambientIntensity;
+      }
+      if (directionalLightRef.current) {
+        directionalLightRef.current.intensity = preset.directionalIntensity;
+        directionalLightRef.current.color.set(preset.directionalColor);
+      }
+
+    
   
-    // Color blending
-    // const blendedColor = new THREE.Color(0, 0, 0);
-    // keys.forEach((k, i) => {
-    //   const color = new THREE.Color(lightingPresets[k].directionalColor);
-    //   blendedColor.r += color.r * weights[i];
-    //   blendedColor.g += color.g * weights[i];
-    //   blendedColor.b += color.b * weights[i];
-    // });
-    // blendedColor.multiplyScalar(1 / (weights.reduce((a, b) => a + b, 0) || 1));
-  
-    // Apply values
-    if (directionalLightRef.current) {
-      directionalLightRef.current.intensity = directionalIntensity;
-      // directionalLightRef.current.color = blendedColor;
-    }
-  
-    if (ambientLightRef.current) {
-      ambientLightRef.current.intensity = ambient;
-    }
+
+   
   });
   
-
   return (
     <>
       <ambientLight ref={ambientLightRef} />

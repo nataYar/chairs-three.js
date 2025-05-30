@@ -18,10 +18,13 @@ const App = () => {
   const [scrollDirection, setScrollDirection] = useState("down")
   const containerRef = useRef(null);
   const heroRef = useRef(null)
+  const heroTransitionRef = useRef(null)
   const officeRef = useRef(null);
-  const slidesRef = useRef(null);
   const afterOfficeRef = useRef(null)
- const heroTransitionRef = useRef(null)
+  const slidesRef = useRef(null);
+  const carouselRef = useRef(null)
+  
+  
   const { scrollYProgress } = useScroll();
 
   const [heroRange, setHeroRange] = useState([0, 1]);
@@ -30,6 +33,12 @@ const App = () => {
   const [afterOfficeRange, setAfterOfficeRange] =  useState([0, 1]);
  
   const [slidesRange, setSlidesRange] = useState([0, 1]);
+  const [carouselRange, setCarouselRange] = useState([0, 1]);
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    console.log("scrollYProgress changed:", latest);
+  });
+  
+
 
   // custom hook for mob/laptop window size
   const useMediaQuery = (query) => {
@@ -56,7 +65,8 @@ const App = () => {
     console.log("officeRange "+ officeRange)
     console.log("afterOfficeRange "+ afterOfficeRange)
     console.log("slidesRange "+ slidesRange)
-  }, [heroRange, heroTransitionRange, afterOfficeRange, officeRange, slidesRange])
+    console.log("carouselRange"+ carouselRange)
+  }, [heroRange, heroTransitionRange, afterOfficeRange, officeRange, slidesRange, carouselRange])
 
 
     // Function to update Hero and office scroll ranges dynamically
@@ -142,7 +152,8 @@ const App = () => {
         const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
         const afterOfficeOffsetTop = afterOfficeRef.current.offsetTop;
         const afterOfficeHeight = afterOfficeRef.current.offsetHeight;
-        const afterOfficeStart = (afterOfficeOffsetTop - window.innerHeight) / totalScrollHeight;
+        const afterOfficeStart = afterOfficeOffsetTop / totalScrollHeight;
+
         const afterOfficeEnd = (afterOfficeOffsetTop + afterOfficeHeight) / totalScrollHeight;
         updateAfterOfficeRange(afterOfficeStart, afterOfficeEnd);
       };
@@ -167,7 +178,8 @@ useEffect(() => {
     const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
     const slidesOffsetTop = slidesRef.current.offsetTop;
     const slidesHeight = slidesRef.current.offsetHeight;
-    const slidesStart = (slidesOffsetTop - window.innerHeight) / totalScrollHeight;
+    const slidesStart = slidesOffsetTop / totalScrollHeight;
+
     const slidesEnd = (slidesOffsetTop + slidesHeight) / totalScrollHeight;
     updateSlidesRange(slidesStart, slidesEnd);
   };
@@ -179,6 +191,32 @@ useEffect(() => {
     window.removeEventListener('resize', handleResize);
   };
 }, []);
+
+const updateCarouselRange = (start, end) => {
+  setCarouselRange([start, end]);
+};
+
+useEffect(() => {
+  const handleResize = () => {
+    if (!carouselRef.current) return;
+    
+    const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
+    const carouselOffsetTop = carouselRef.current.offsetTop;
+    const carouselHeight = carouselRef.current.offsetHeight;
+
+    const carouselStart = carouselOffsetTop / totalScrollHeight;
+    const carouselEnd = (carouselOffsetTop + carouselHeight) / totalScrollHeight;
+    updateCarouselRange(carouselStart, carouselEnd);
+  };
+
+  handleResize(); // Initial run
+  window.addEventListener("resize", handleResize);
+
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
+
+
 
   const OPTIONS = { loop: true }
   const SLIDE_COUNT = 5
@@ -199,6 +237,7 @@ useEffect(() => {
         officeRange={officeRange}
         afterOfficeRange={afterOfficeRange}
         slidesRange={slidesRange} 
+        carouselRange={carouselRange}
         isMobile={isMobile}/>
      </div>
      
@@ -230,8 +269,10 @@ useEffect(() => {
         <Slides progress={scrollYProgress} scrollDirection={scrollDirection} updateRange={updateSlidesRange} slidesRange={slidesRange} isMobile={isMobile}/>
       </div>
 
-
-      <CarouselSection /> 
+      <div ref={carouselRef}>
+        <CarouselSection /> 
+      </div>
+      
      
      
   

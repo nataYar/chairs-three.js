@@ -1,0 +1,26 @@
+.word-carousel {
+    height: 30px;
+    width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    overflow: hidden;
+    // background: rgb(239, 38, 38);
+    color: white;
+    // font-size: 4rem;
+ 
+    position: relative;
+
+  }
+  
+  .word {
+    display: flex;
+    // gap: 0.1em;
+    position: absolute;
+  }
+  
+  .letter {
+    display: inline-block;
+    white-space: pre;
+  }
+  

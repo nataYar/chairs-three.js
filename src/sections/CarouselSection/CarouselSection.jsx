@@ -1,8 +1,8 @@
 import React, { Suspense, useRef, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
 import { EffectComposer, Noise, Vignette  } from '@react-three/postprocessing'
 import Carousel from './Carousel'
+import WordCarousel from './WordCarousel'
 import { useThree } from "@react-three/fiber";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from 'three';
@@ -25,15 +25,6 @@ function FixedBackgroundPlane({ isInView }) {
   });
 
   const color = useTransform(spring, [0, 1], ['#000000', '#d0d0d0']);
-
-
-  useEffect(() => {
-    console.log(isInView)
-    if (isInView) {
-      console.log("isInView must be +")
-      // viewValue.set(1);
-    }
-  }, [isInView]);
 
   // Trigger animation when isInView becomes true
   useEffect(() => {
@@ -81,7 +72,7 @@ const CarouselSection = () => {
       
       <div className='carousel_presection'>
         <h2>Now, meet its unruly cousins.</h2>
-        <p> Some came from castles, some from cocktail bars. </p>
+        <WordCarousel />
         <p> None are boring.</p>
         <p>Give them a spin. Literally.</p>
       </div>
