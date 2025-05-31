@@ -10,9 +10,7 @@ const HeroAnimation = ({
   isCanvasLoaded,
 
 }) => {
-  const springConfig = { mass: 0.2, stiffness: 50, damping: 10, restDelta: 0.001 };
-  // const backgroundScale = useSpring(1, springConfig);
-  // const backgroundTranslateY = useSpring(1, springConfig);
+
   const backgroundScale = useMotionValue(1);
   const backgroundTranslateY = useMotionValue(0);
   const backgroundOpacity = useMotionValue(1);
@@ -63,6 +61,7 @@ const HeroAnimation = ({
     // Handle animations based on scroll progress
     useEffect(() => {
       const unsubscribe = heroProgress.on("change", (scrollProgress) => {
+
         if (!isCanvasLoaded) return;
         const eightyPercentIntoHero = heroRange[0] + (heroRange[1] - heroRange[0]) * 0.8;
 
@@ -109,6 +108,7 @@ const HeroAnimation = ({
           scale: backgroundScale,
           y: backgroundTranslateY,
           opacity: backgroundOpacity,
+          // opacity: 0.5,
         }}
         animate={animationControls}
       />

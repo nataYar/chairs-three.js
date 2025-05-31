@@ -20,7 +20,7 @@ body {
 .app {
     position: relative;
     height: auto;
-    background-color: white;
+    background-color: rgb(232, 30, 205);
 }
 
 #smooth-wrapper {
@@ -30,12 +30,12 @@ body {
 
 .app-container{
     position: relative;
-    background-color: white;
     width: 100vw;
-   .hero_transition{
+   
+    .hero_transition{
     width: 100%;
     height: 150vh;
-    background-color: rgb(0, 0, 0);
+    background-color: rgb(12, 206, 44);
    }
 }
 

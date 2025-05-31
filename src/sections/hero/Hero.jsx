@@ -39,13 +39,20 @@ const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOffi
 
   const heroProgress = useTransform(progress, heroRange, [0, 1]); 
 
+   useEffect(() => {
+      const unsubscribe = heroProgress.on("change", (latest) => {
+        console.log("heroProgress:", latest);
+      });
+      return () => unsubscribe();
+    }, [heroProgress]);
+
   const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
 
   const canvasAnimationVariants = {
     moveCanvas: {
-      y: heroProgress.get() === 1 ? '-100vh' : '0', // When progress is 1, move the canvas off-screen
+      y: heroProgress.get() === 1 ? '-100vh' : '0', 
       transition: {
-        duration: 0.5, // Adjust the duration for a smooth transition
+        duration: 0.5, 
         ease: 'easeInOut',
       },
     },
@@ -64,7 +71,7 @@ const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOffi
       containerHeroRef={containerHeroRef}
       isCanvasLoaded={isCanvasLoaded} 
       />
-      <Suspense fallback={null}>
+       <Suspense fallback={null}>
       <motion.div
         ref={canvasRef}
         className="canvas-container"
@@ -95,7 +102,7 @@ const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOffi
       <CameraAnimation progress={progress} 
         heroRange={heroRange} 
         isMobile={isMobile} />
-        {/* <Preload all /> */}
+    
       <Lighting 
         isMobile={isMobile}
         progress={progress} 
@@ -116,7 +123,7 @@ const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOffi
         <HeroChair ref={heroChairRef} heroProgress={heroProgress}  heroRange={heroRange} progress={progress.get()} heroChairRef={heroChairRef}/>
         <ShadowPlane />
       </Canvas>
-    </motion.div>
+    </motion.div> 
   </Suspense>
   </motion.div>
   );

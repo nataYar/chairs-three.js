@@ -1,46 +1,22 @@
 import React, { useRef, useEffect, useState } from "react";
-import { motion, useMotionValueEvent, useSpring, useTransform, useAnimation  } from "framer-motion";
+import { motion, useMotionValueEvent, useSpring, useTransform, useAnimation, useVelocity, useInView  } from "framer-motion";
 
 
 import "../../styles/Office.scss";
 
-const Office = ({ progress, updateRange, officeRange, isHeroAnimatedOut }) => {
+const Office = ({ progress, officeRange }) => {
   const [leftVideoSrc, setLeftVideoSrc] = useState("src/assets/office/office party.mp4");
   const [rightVideoSrc, setRightVideoSrc] = useState("src/assets/office/cat.mp4");
-  const [globalProgress, setGlobalProgress] = useState(0)
   const containerRef = useRef(null);
-  const [hasFadedIn, setHasFadedIn] = useState(false);
-  
-  // const y = useTransform(progress, [0, 0.2], [0, -window.innerHeight]);
-  // const officeProgress = useTransform(progress, [0.46, 0.84], [0, 1]);
-  const officeY = useSpring(0, { stiffness: 200, damping: 50 }); 
-  const textControls = useAnimation();
- 
-
-  useEffect(() => {
-    if (containerRef.current) {
-      const totalScrollHeight = document.body.scrollHeight - window.innerHeight;
-
-      // Get the office section's offset and height
-      const officeOffsetTop = containerRef.current.offsetTop;
-      const officeHeight = containerRef.current.offsetHeight;
-
-      // Calculate the dynamic range for office
-      const officeStart = officeOffsetTop / totalScrollHeight;
-      const officeEnd = (officeOffsetTop + officeHeight) / totalScrollHeight;
-
-      // Pass the range to App.js through the updateRange function
-      updateRange(officeStart, officeEnd);
-    }
-  }, []);
+  const textContainerRef = useRef(null);
 
   const officeProgress = useTransform(progress, officeRange, [0, 1]);
   
   useEffect(() => {
     const handleOfficeAnimation = () => {
       const value = officeProgress.get();
-  
-      if (value <= 0.05 || value > 0.5) {
+  if (value == 0.5){ console.log("0.5")}
+      else if (value <= 0.05 || value > 0.5) {
         setLeftVideoSrc("src/assets/office/glitch.mp4");
         setRightVideoSrc("src/assets/office/glitch.mp4");
       } else if (value > 0.05 && value <= 0.5) {
@@ -55,36 +31,34 @@ const Office = ({ progress, updateRange, officeRange, isHeroAnimatedOut }) => {
     const unsubscribe = officeProgress.on("change", handleOfficeAnimation);
     return () => unsubscribe();
   }, [officeProgress]);
+
+  //  useMotionValueEvent(officeProgress, "change", (latest) => {
+  //     console.log("office Progress changed:", latest);
+  //   });
+
+  useEffect(() => {
+    const unsubscribe = officeProgress.on("change", (latest) => {
+      console.log("officeProgress:", latest);
+    });
+    return () => unsubscribe();
+  }, [officeProgress]);
+
+
+
+  const scrollVelocity = useVelocity(progress);
+
+  const skewXRaw = useTransform(scrollVelocity, [-0.2, 0.2], ["45deg", "-45deg"]);
+  const skewX = useSpring(skewXRaw, { mass: 3, stiffness: 400, damping: 50 });
+
+  const xExitRaw = useTransform(officeProgress, [0.5, 0.7], [0, -2000]);
+  const exitX = useSpring(xExitRaw, { mass: 2, stiffness: 300, damping: 50 });
+
   
-
- 
-  useMotionValueEvent(progress, "change", (latest) => {
-    setGlobalProgress(latest)
-  });
-
-
-useEffect(()=>{setGlobalProgress(progress.get())},[progress])
-
-const fadeIn = useTransform(officeProgress, [0, 0.04], [0, 1]); // fade in
-const fadeOut = useTransform(officeProgress, [0.2, 0.6], [1, 0]); // fade out
-const opacity = useTransform([fadeIn, fadeOut], ([a, b]) => a * b); // combine both
-// const y = useTransform(officeProgress, [0.2, 0.7], ["0vh", "60vh"]);
- 
-
-const springConfig = { mass: 0.5, stiffness: 100, damping: 40, restDelta: 0.001 };
-
-const startY = window.innerHeight * 0.05;
-const endY = window.innerHeight * 0.6;
-const rawY = useTransform(officeProgress, [0.1, 0.7], [startY, endY]);
-
-  // Wrap the transform with a spring for smooth, spring-like motion.
-  const springY = useSpring(rawY, springConfig);
 
   return (
     <div 
     ref={containerRef} 
     className='main-section' 
-    // style={{ y: officeY }} 
     >
       <div>
          <div className="pc-container">
@@ -98,19 +72,16 @@ const rawY = useTransform(officeProgress, [0.1, 0.7], [startY, endY]);
 
     <div className='office-content'></div> 
     <motion.div
+        ref={textContainerRef}
         className="text-container"
-        initial={{ opacity: 0, y: -30 }}
-        style={{
-          opacity,
-          y: springY,
-        }}
       >
-        <div className="text">
-          <h2>the backbone of <br/><span>Productivity</span><br/>amidst chaos</h2>
-        </div>
+       
+      <motion.h2 style={{ x:exitX, skewX }} >the backbone</motion.h2>
+      {/* <motion.h2 style={{ x, skewX }} >of productivity</motion.h2>
+      <motion.h2 style={{ x, skewX }} >amidst chaos</motion.h2> */}
+     
       </motion.div>
       </div>
-    
   </div>
   
   );
