@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
 import { ReactLenis, useLenis } from 'lenis/react'
 import { useScroll, useMotionValueEvent } from "framer-motion";
 
@@ -24,13 +24,21 @@ const App = () => {
   
   const { scrollYProgress } = useScroll();
 
-  const [heroRange, setHeroRange] = useState([0, 0.43]);
-  const [heroTransitionRange, setHeroTransitionRange] = useState([0.43, 0.488]);
-  const [officeRange, setOfficeRange] = useState([0.489, 0.60]);
-  const [afterOfficeRange, setAfterOfficeRange] =  useState([0.60, .66]);
+  // const [heroRange, setHeroRange] = useState([0, 1]);
+  // const [heroTransitionRange, setHeroTransitionRange] = useState([0, 1]);
+  // const [officeRange, setOfficeRange] = useState([0, 1]);
+  // const [afterOfficeRange, setAfterOfficeRange] =  useState([0, 1]);
  
-  const [slidesRange, setSlidesRange] = useState([0.66, .77]);
-  const [carouselRange, setCarouselRange] = useState([0.77, 1]);
+  // const [slidesRange, setSlidesRange] = useState([0, 1]);
+  // const [carouselRange, setCarouselRange] = useState([0, 1]);
+
+  const [heroRange, setHeroRange] = useState([0, 0.43]);
+  const [heroTransitionRange, setHeroTransitionRange] = useState([0.32, 0.59]);
+  const [officeRange, setOfficeRange] = useState([0.489, 0.7]);
+  const [afterOfficeRange, setAfterOfficeRange] =  useState([0.53, 0.77]);
+ 
+  const [slidesRange, setSlidesRange] = useState([0.65, 0.88]);
+  const [carouselRange, setCarouselRange] = useState([0.79, 1]);
   
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     console.log("scrollYProgress changed:", latest);
@@ -69,74 +77,100 @@ const App = () => {
   const SLIDE_COUNT = 5
   const SLIDES = Array.from(Array(SLIDE_COUNT).keys())
 
-  const [sectionRanges, setSectionRanges] = useState({});
+  // const [sectionRanges, setSectionRanges] = useState({});
 
-  let ranges = {};
 
-  const calculateSectionRanges = () => {
-    const vhToPx = (vh) => (vh / 100) * window.innerHeight;
+// useLayoutEffect(() => {
+//   const sections = [
+//     { key: 'hero', ref: heroRef },
+//     { key: 'heroTransition', ref: heroTransitionRef },
+//     { key: 'office', ref: officeRef },
+//     { key: 'afterOffice', ref: afterOfficeRef },
+//     { key: 'slides', ref: slidesRef },
+//     { key: 'carousel', ref: carouselRef },
+//   ];
+
+//   const totalHeight = document.body.scrollHeight - window.innerHeight;
+
+//   const ranges = {};
+
+//   let prevEnd = 0;
+//   sections.forEach(({ key, ref }) => {
+//     const el = ref.current;
+//     const start = el.offsetTop;
+//     const end = start + el.offsetHeight;
+//     const normalized = [start / totalHeight, end / totalHeight];
+//     ranges[key] = normalized;
+//     prevEnd = end;
+//   });
+
+//   setSectionRanges(ranges);
+// }, []);
+
+
+  // let ranges = {};
+
+  // const calculateSectionRanges = () => {
+  //   const sectionVHs = {
+  //     hero: 400,
+  //     heroTransition: 150,
+  //     office: 100,
+  //     afterOffice: 60,
+  //     slides: 100,
+  //     carousel: 210,
+  //   };
   
-    const sectionHeights = {
-      hero: 400,
-      heroTransition: 150,
-      office: 100,
-      afterOffice: 60,
-      slides: 100,
-      carousel: 210,
-    };
+  //   let scrollStartVH = 0;
+  //   const ranges = {};
   
+  //   const totalVH = Object.values(sectionVHs).reduce((sum, vh) => sum + vh, 0);
   
-    let scrollStart = 0;
+  //   for (const key in sectionVHs) {
+  //     const start = scrollStartVH;
+  //     const end = scrollStartVH + sectionVHs[key];
+  //     ranges[key] = [start / totalVH, end / totalVH];
+  //     scrollStartVH = end;
+  //   }
   
-    for (const key in sectionHeights) {
-      const heightPx = vhToPx(sectionHeights[key]);
-      const start = scrollStart;
-      const end = scrollStart + heightPx;
-      ranges[key] = [start, end];
-      scrollStart = end;
-    }
+  //   return ranges;
+  // };
   
-    return ranges;
-  };
 
   
-  useEffect(() => {
-    const ranges = calculateSectionRanges();
-    setSectionRanges(ranges);
-  }, []);
+  // useEffect(() => {
+  //   const ranges = calculateSectionRanges();
+  //   setSectionRanges(ranges);
+  // }, []);
 
-  useEffect(() => {
-   console.log(sectionRanges)
-  }, [sectionRanges]);
+  // useEffect(() => {
+  //  console.log(sectionRanges)
+  // }, [sectionRanges]);
 
   
-  const normalizeRanges = (ranges, totalScroll) => {
-    const normalize = ([start, end]) => [start / totalScroll, end / totalScroll];
+  // const normalizeRanges = (ranges, totalScroll) => {
+  //   const normalize = ([start, end]) => [start / totalScroll, end / totalScroll];
   
-    return {
-      hero: normalize(ranges.hero),
-      heroTransition: normalize(ranges.heroTransition),
-      office: normalize(ranges.office),
-      afterOffice: normalize(ranges.afterOffice),
-      slides: normalize(ranges.slides),
-      carousel: normalize(ranges.carousel),
-    };
-  };
-  useEffect(() => {
-    if(ranges.length > 1 ){
-      const ranges = calculateSectionRanges();
-      const totalScroll = ranges.carousel[1];
-      const normalized = normalizeRanges(ranges, totalScroll);
-    
-      setHeroRange(normalized.hero);
-      setHeroTransitionRange(normalized.heroTransition);
-      setOfficeRange(normalized.office);
-      setAfterOfficeRange(normalized.afterOffice);
-      setSlidesRange(normalized.slides);
-      setCarouselRange(normalized.carousel);
-    }
-    
-  }, [ranges]);
+  //   return {
+  //     hero: normalize(ranges.hero),
+  //     heroTransition: normalize(ranges.heroTransition),
+  //     office: normalize(ranges.office),
+  //     afterOffice: normalize(ranges.afterOffice),
+  //     slides: normalize(ranges.slides),
+  //     carousel: normalize(ranges.carousel),
+  //   };
+  // };
+
+  // useEffect(() => {
+  //   const normalized = calculateSectionRanges();
+  
+  //   setHeroRange(normalized.hero);
+  //   setHeroTransitionRange(normalized.heroTransition);
+  //   setOfficeRange(normalized.office);
+  //   setAfterOfficeRange(normalized.afterOffice);
+  //   setSlidesRange(normalized.slides);
+  //   setCarouselRange(normalized.carousel);
+  // }, []);
+  
   
 
   // useEffect(() => {

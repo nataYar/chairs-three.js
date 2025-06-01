@@ -4,12 +4,12 @@ import { motion, useTransform, useSpring, useMotionValueEvent, useAnimation } fr
 const HeroTransition = ({ progress, heroTransitionRange  }) => {
   const heroTransition = useTransform(progress, heroTransitionRange , [0, 1]); 
 
-   useEffect(() => {
-      const unsubscribe = heroTransition.on("change", (latest) => {
-        console.log("hero Transition progress:", latest);
-      });
-      return () => unsubscribe();
-    }, [heroTransition]);
+  //  useEffect(() => {
+  //     const unsubscribe = heroTransition.on("change", (latest) => {
+  //       console.log("hero Transition progress:", latest);
+  //     });
+  //     return () => unsubscribe();
+  //   }, [heroTransition]);
 
   return (
     <></>

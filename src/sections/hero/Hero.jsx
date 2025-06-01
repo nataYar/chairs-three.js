@@ -39,12 +39,12 @@ const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOffi
 
   const heroProgress = useTransform(progress, heroRange, [0, 1]); 
 
-   useEffect(() => {
-      const unsubscribe = heroProgress.on("change", (latest) => {
-        console.log("heroProgress:", latest);
-      });
-      return () => unsubscribe();
-    }, [heroProgress]);
+  //  useEffect(() => {
+  //     const unsubscribe = heroProgress.on("change", (latest) => {
+  //       console.log("heroProgress:", latest);
+  //     });
+  //     return () => unsubscribe();
+  //   }, [heroProgress]);
 
   const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
 

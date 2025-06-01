@@ -15,11 +15,11 @@ const Office = ({ progress, officeRange }) => {
   useEffect(() => {
     const handleOfficeAnimation = () => {
       const value = officeProgress.get();
-  if (value == 0.5){ console.log("0.5")}
-      else if (value <= 0.05 || value > 0.5) {
+      console.log(value)
+      if (value <= 0.05 || value > 0.6) {
         setLeftVideoSrc("src/assets/office/glitch.mp4");
         setRightVideoSrc("src/assets/office/glitch.mp4");
-      } else if (value > 0.05 && value <= 0.5) {
+      } else if (value > 0.3 && value <= 0.6) {
         setLeftVideoSrc("src/assets/office/office party.mp4");
         setRightVideoSrc("src/assets/office/cat.mp4");
       }
@@ -50,9 +50,12 @@ const Office = ({ progress, officeRange }) => {
   const skewXRaw = useTransform(scrollVelocity, [-0.2, 0.2], ["45deg", "-45deg"]);
   const skewX = useSpring(skewXRaw, { mass: 3, stiffness: 400, damping: 50 });
 
-  const xExitRaw = useTransform(officeProgress, [0.5, 0.7], [0, -2000]);
-  const exitX = useSpring(xExitRaw, { mass: 2, stiffness: 300, damping: 50 });
-
+  const createLineX = (offset = 0) =>
+    useTransform(officeProgress, [0 + offset, 0.2 + offset, 0.5 + offset, 0.7 + offset], [-2000, 0, 0, -2000]);
+  
+  const xLine1 = useSpring(createLineX(0), { mass: 3, stiffness: 200, damping: 50 });
+  const xLine2 = useSpring(createLineX(0.05), { mass: 3, stiffness: 200, damping: 50 });
+  const xLine3 = useSpring(createLineX(0.1), { mass: 3, stiffness: 200, damping: 50 });
   
 
   return (
@@ -76,9 +79,10 @@ const Office = ({ progress, officeRange }) => {
         className="text-container"
       >
        
-      <motion.h2 style={{ x:exitX, skewX }} >the backbone</motion.h2>
-      {/* <motion.h2 style={{ x, skewX }} >of productivity</motion.h2>
-      <motion.h2 style={{ x, skewX }} >amidst chaos</motion.h2> */}
+      <motion.h2 style={{ x: xLine1, skewX }}>the backbone</motion.h2>
+      <motion.h2 style={{ x: xLine2, skewX }}>of productivity</motion.h2>
+      <motion.h2 style={{ x: xLine3, skewX }}>amidst chaos</motion.h2>
+
      
       </motion.div>
       </div>
