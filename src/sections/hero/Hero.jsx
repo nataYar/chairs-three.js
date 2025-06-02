@@ -216,7 +216,7 @@ const Lighting = ({
       officeRange: {
         ambientIntensity: 0.5,
         directionalIntensity: 9,
-        directionalColor: '#3a44fc',
+        directionalColor: '#ffffff',
       },
       afterOfficeRange: {
         ambientIntensity: 0.5,
@@ -229,9 +229,9 @@ const Lighting = ({
         directionalColor:'#ffffff',
       },
       carouselRange: {
-        ambientIntensity: 100,
-        directionalIntensity: 100,
-        directionalColor:'#ffffff',
+        ambientIntensity: 0.5,
+        directionalIntensity: 9,
+        directionalColor: '#ffffff',
       },
     };
 
