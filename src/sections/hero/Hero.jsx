@@ -120,7 +120,16 @@ const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOffi
         <Chair5 ref={chairRefs[4].ref}  isMobile={isMobile} />
         <Chair6 ref={chairRefs[5].ref} progress={heroProgress} isMobile={isMobile} />
         <Chair7 ref={chairRefs[6].ref} progress={heroProgress} isMobile={isMobile} />
-        <HeroChair ref={heroChairRef} heroProgress={heroProgress}  heroRange={heroRange} progress={progress.get()} heroChairRef={heroChairRef}/>
+        <HeroChair ref={heroChairRef} 
+        heroProgress={heroProgress}  
+        progress={progress.get()} 
+        heroRange={heroRange} 
+        heroTransitionRange={heroTransitionRange}
+        officeRange={officeRange}
+        afterOfficeRange={afterOfficeRange}
+        slidesRange={slidesRange} 
+        carouselRange={carouselRange}
+        heroChairRef={heroChairRef}/>
         <ShadowPlane />
       </Canvas>
     </motion.div> 
@@ -200,23 +209,23 @@ const Lighting = ({
         directionalColor: '#ffffff',
       },
       heroTransitionRange: {
-        ambientIntensity: 100,
-        directionalIntensity: 100,
+        ambientIntensity: 0.5,
+        directionalIntensity: 9,
         directionalColor: '#ffffff',
       },
       officeRange: {
-        ambientIntensity: 0.1,
-        directionalIntensity: 0.1,
+        ambientIntensity: 0.5,
+        directionalIntensity: 9,
         directionalColor: '#3a44fc',
       },
       afterOfficeRange: {
-        ambientIntensity: 30,
-        directionalIntensity: 30,
+        ambientIntensity: 0.5,
+        directionalIntensity: 9,
         directionalColor:'#ffffff',
       },
       slidesRange: {
-        ambientIntensity: 1,
-        directionalIntensity: 1,
+        ambientIntensity: 0.5,
+        directionalIntensity: 9,
         directionalColor:'#ffffff',
       },
       carouselRange: {
@@ -229,7 +238,7 @@ const Lighting = ({
  
       const p = progress.get(); // current scroll progress between 0 and 1
     
-      const early = (range) => range[0] - (range[1] - range[0]) * 0.1;
+      const early = (range) => range[0] - (range[1] - range[0]);
 
       let currentKey = "heroRange"; // fallback
 

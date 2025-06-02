@@ -4,7 +4,16 @@ import { useThree, useFrame } from "@react-three/fiber";
 import Chair from "./Chair";
 
 const HeroChair = forwardRef((props, ref) => {
-  const { progress, heroProgress, heroRange, heroChairRef, ...otherProps } = props;
+  const { progress, 
+    heroProgress, 
+    heroRange, 
+    heroTransitionRange,
+    afterOfficeRange,
+    officeRange,
+    slidesRange,
+    carouselRange,
+    heroChairRef, 
+    ...otherProps } = props;
 
   const localRef = useRef();
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
@@ -37,14 +46,26 @@ const HeroChair = forwardRef((props, ref) => {
     const heroStart = heroRange[0];
     const heroEnd = heroRange[1]; // 100% of hero range
   
+    // position during hero range
     if (progress >= heroStart && progress <= heroEnd) {
       const moveY = easeIn(0, -20, heroProgress.get());
       localRef.current.position.y = initialPosition[1] + moveY
         0;
-    } else if(heroProgress.get())
-    {
+    } else {
       localRef.current.position.y = initialPosition[1];
     }
+
+     // animation during heroTransition range
+  if (progress >= transitionStart && progress <= transitionEnd) {
+    const t =
+      (progress - transitionStart) / (transitionEnd - transitionStart); // normalized [0,1]
+    const rotationY = t * Math.PI; // 0 to 180°
+    localRef.current.rotation.y = rotationY;
+  } else if (progress < transitionStart) {
+    localRef.current.rotation.y = 0;
+  } else if (progress > transitionEnd) {
+    localRef.current.rotation.y = Math.PI;
+  }
   });
   
   
