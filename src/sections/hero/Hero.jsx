@@ -122,7 +122,7 @@ const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOffi
         <Chair7 ref={chairRefs[6].ref} progress={heroProgress} isMobile={isMobile} />
         <HeroChair ref={heroChairRef} 
         heroProgress={heroProgress}  
-        progress={progress.get()} 
+        progress={progress} 
         heroRange={heroRange} 
         heroTransitionRange={heroTransitionRange}
         officeRange={officeRange}

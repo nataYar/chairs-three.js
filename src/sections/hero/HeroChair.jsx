@@ -1,6 +1,7 @@
-import React, { forwardRef, useRef } from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 import { useMediaQuery } from "react-responsive";
 import { useThree, useFrame } from "@react-three/fiber";
+import { useMotionValueEvent } from "framer-motion";
 import Chair from "./Chair";
 
 const HeroChair = forwardRef((props, ref) => {
@@ -41,32 +42,52 @@ const HeroChair = forwardRef((props, ref) => {
   //     localRef.current.position.y = initialPosition[1] - 20;
   //   }
   // });
+
+  // useMotionValueEvent(progress, "change", (latest) => {
+  //   console.log("progress changed:", latest);
+  // });
+
+
   useFrame(() => {
     if (!localRef.current) return;
-    const heroStart = heroRange[0];
-    const heroEnd = heroRange[1]; // 100% of hero range
   
-    // position during hero range
-    if (progress >= heroStart && progress <= heroEnd) {
+    const p = typeof progress === "number" ? progress : progress.get();
+  
+    const heroStart = heroRange[0];
+    const heroEnd = heroRange[1];
+  
+    // Animate Y position
+    if (p >= heroStart && p <= heroEnd) {
       const moveY = easeIn(0, -20, heroProgress.get());
-      localRef.current.position.y = initialPosition[1] + moveY
-        0;
-    } else {
-      localRef.current.position.y = initialPosition[1];
+      localRef.current.position.y = initialPosition[1] + moveY;
     }
-
-     // animation during heroTransition range
-  if (progress >= transitionStart && progress <= transitionEnd) {
-    const t =
-      (progress - transitionStart) / (transitionEnd - transitionStart); // normalized [0,1]
-    const rotationY = t * Math.PI; // 0 to 180°
-    localRef.current.rotation.y = rotationY;
-  } else if (progress < transitionStart) {
-    localRef.current.rotation.y = 0;
-  } else if (progress > transitionEnd) {
-    localRef.current.rotation.y = Math.PI;
-  }
+  
+    // Animate rotation & scale during heroTransitionRange
+    const transitionStart = (heroTransitionRange[0] + heroTransitionRange[1]) / 2;;
+    const transitionEnd = heroTransitionRange[1]; // fix here!
+  
+    if (p >= transitionStart && p <= transitionEnd) {
+      const t = (p - transitionStart) / (transitionEnd - transitionStart);
+  
+      // Smooth 180° turn
+      localRef.current.rotation.y = t * Math.PI;
+  
+      // Scale from initialScale to 1.5× initialScale
+      const finalScale = initialScale * 1.5;
+      const scale = initialScale + (finalScale - initialScale) * t;
+      localRef.current.scale.set(scale, scale, scale);
+  
+    } else if (p < transitionStart) {
+      localRef.current.rotation.y = 0;
+      localRef.current.scale.set(initialScale, initialScale, initialScale);
+    } else if (p > transitionEnd) {
+      localRef.current.rotation.y = Math.PI;
+      const finalScale = initialScale * 1.5;
+      localRef.current.scale.set(finalScale, finalScale, finalScale);
+    }
   });
+  
+  
   
   
   
