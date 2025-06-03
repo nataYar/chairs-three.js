@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
 import { ReactLenis, useLenis } from 'lenis/react'
 import { useScroll, useMotionValueEvent } from "framer-motion";
 
+
 import Hero from "./sections/hero/Hero";
 import Office from "./sections/office/office";
 import Slides from "./sections/slides/Slides";
@@ -11,6 +12,8 @@ import './styles/App.scss';
 import AfterOffice from "./sections/AfterOffice";
 import { debounce } from 'lodash';
 import CarouselSection from "./sections/CarouselSection/CarouselSection";
+
+
 
 const App = () => { 
   const containerRef = useRef(null);
@@ -40,9 +43,9 @@ const App = () => {
   const [slidesRange, setSlidesRange] = useState([0.65, 0.88]);
   const [carouselRange, setCarouselRange] = useState([0.79, 1]);
   
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    console.log("scrollYProgress changed:", latest);
-  });
+  // useMotionValueEvent(scrollYProgress, "change", (latest) => {
+  //   console.log("scrollYProgress changed:", latest);
+  // });
   
   // custom hook for mob/laptop window size
   const useMediaQuery = (query) => {
@@ -77,204 +80,6 @@ const App = () => {
   const SLIDE_COUNT = 5
   const SLIDES = Array.from(Array(SLIDE_COUNT).keys())
 
-  // const [sectionRanges, setSectionRanges] = useState({});
-
-
-// useLayoutEffect(() => {
-//   const sections = [
-//     { key: 'hero', ref: heroRef },
-//     { key: 'heroTransition', ref: heroTransitionRef },
-//     { key: 'office', ref: officeRef },
-//     { key: 'afterOffice', ref: afterOfficeRef },
-//     { key: 'slides', ref: slidesRef },
-//     { key: 'carousel', ref: carouselRef },
-//   ];
-
-//   const totalHeight = document.body.scrollHeight - window.innerHeight;
-
-//   const ranges = {};
-
-//   let prevEnd = 0;
-//   sections.forEach(({ key, ref }) => {
-//     const el = ref.current;
-//     const start = el.offsetTop;
-//     const end = start + el.offsetHeight;
-//     const normalized = [start / totalHeight, end / totalHeight];
-//     ranges[key] = normalized;
-//     prevEnd = end;
-//   });
-
-//   setSectionRanges(ranges);
-// }, []);
-
-
-  // let ranges = {};
-
-  // const calculateSectionRanges = () => {
-  //   const sectionVHs = {
-  //     hero: 400,
-  //     heroTransition: 150,
-  //     office: 100,
-  //     afterOffice: 60,
-  //     slides: 100,
-  //     carousel: 210,
-  //   };
-  
-  //   let scrollStartVH = 0;
-  //   const ranges = {};
-  
-  //   const totalVH = Object.values(sectionVHs).reduce((sum, vh) => sum + vh, 0);
-  
-  //   for (const key in sectionVHs) {
-  //     const start = scrollStartVH;
-  //     const end = scrollStartVH + sectionVHs[key];
-  //     ranges[key] = [start / totalVH, end / totalVH];
-  //     scrollStartVH = end;
-  //   }
-  
-  //   return ranges;
-  // };
-  
-
-  
-  // useEffect(() => {
-  //   const ranges = calculateSectionRanges();
-  //   setSectionRanges(ranges);
-  // }, []);
-
-  // useEffect(() => {
-  //  console.log(sectionRanges)
-  // }, [sectionRanges]);
-
-  
-  // const normalizeRanges = (ranges, totalScroll) => {
-  //   const normalize = ([start, end]) => [start / totalScroll, end / totalScroll];
-  
-  //   return {
-  //     hero: normalize(ranges.hero),
-  //     heroTransition: normalize(ranges.heroTransition),
-  //     office: normalize(ranges.office),
-  //     afterOffice: normalize(ranges.afterOffice),
-  //     slides: normalize(ranges.slides),
-  //     carousel: normalize(ranges.carousel),
-  //   };
-  // };
-
-  // useEffect(() => {
-  //   const normalized = calculateSectionRanges();
-  
-  //   setHeroRange(normalized.hero);
-  //   setHeroTransitionRange(normalized.heroTransition);
-  //   setOfficeRange(normalized.office);
-  //   setAfterOfficeRange(normalized.afterOffice);
-  //   setSlidesRange(normalized.slides);
-  //   setCarouselRange(normalized.carousel);
-  // }, []);
-  
-  
-
-  // useEffect(() => {
-  //   const sections = {
-  //     hero: 400,
-  //     heroTransition: 150,
-  //     office: 100,
-  //     afterOffice: 60,
-  //     slides: 100,
-  //     carousel: 210,
-  //   };
-
-  //   const sectionNames = Object.keys(sections);
-
-  //   const totalVh = Object.values(sections).reduce((sum, h) => sum + h, 0);
-  //   const scrollableVh = totalVh - 100; // subtract 100vh of initial visible viewport
-
-  //   let cumulativeVh = 0;
-  //   const ranges = {};
-
-  //   for (const name of sectionNames) {
-  //     const start = cumulativeVh / scrollableVh;
-  //     cumulativeVh += sections[name];
-  //     const end = cumulativeVh / scrollableVh;
-
-  //     ranges[name] = [parseFloat(start.toFixed(4)), parseFloat(end.toFixed(4))];
-  //   }
-
-  //   setHeroRange(ranges.hero);
-  //   setHeroTransitionRange(ranges.heroTransition);
-  //   setOfficeRange(ranges.office);
-  //   setAfterOfficeRange(ranges.afterOffice);
-  //   setSlidesRange(ranges.slides);
-  //   setCarouselRange(ranges.carousel);
-  // }, []);
-  
-  
-  // useEffect(() => {
-  //   const updateRanges = () => {
-  //     const vh = window.innerHeight;
-  
-  //     // Define section heights in vh
-  //     const sectionHeightsVh = {
-  //       hero: 400,
-  //       heroTransition: 150,
-  //       office: 100,
-  //       afterOffice: 60,
-  //       slides: 100,
-  //       carousel: 210,
-  //     };
-  
-  //     // Convert to px
-  //     const sectionHeightsPx = Object.entries(sectionHeightsVh).map(
-  //       ([key, value]) => [key, (value / 100) * vh]
-  //     );
-  
-  //     const totalScrollableHeight =
-  //       sectionHeightsPx.reduce((sum, [, px]) => sum + px, 0) - vh;
-  
-  //     let offset = 0;
-  //     for (let [key, height] of sectionHeightsPx) {
-  //       const start = offset / totalScrollableHeight;
-  //       const end = (offset + height) / totalScrollableHeight;
-  
-  //       // Set the corresponding range
-  //       switch (key) {
-  //         case "hero":
-  //           setHeroRange([start, end]);
-  //           break;
-  //         case "heroTransition":
-  //           setHeroTransitionRange([start, end]);
-  //           break;
-  //         case "office":
-  //           setOfficeRange([start, end]);
-  //           break;
-  //         case "afterOffice":
-  //           setAfterOfficeRange([start, end]);
-  //           break;
-  //         case "slides":
-  //           setSlidesRange([start, end]);
-  //           break;
-  //         case "carousel":
-  //           setCarouselRange([start, end]);
-  //           break;
-  //         default:
-  //           break;
-  //       }
-  
-  //       offset += height;
-  //     }
-  //   };
-  
-  //   updateRanges();
-  //   window.addEventListener("resize", updateRanges);
-  //   return () => window.removeEventListener("resize", updateRanges);
-  // }, []);
-  
-  
-  
- 
-
-
-    
-
   return (
     <div id="smooth-wrapper"> 
       <ReactLenis root />
@@ -285,6 +90,7 @@ const App = () => {
      
      <div ref={heroRef} >
        <Hero 
+       afterOfficeRef={afterOfficeRef}
        progress={scrollYProgress} 
        heroRange={heroRange}  
        heroTransitionRange={heroTransitionRange}

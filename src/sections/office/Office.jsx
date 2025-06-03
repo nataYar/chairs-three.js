@@ -15,7 +15,7 @@ const Office = ({ progress, officeRange }) => {
   useEffect(() => {
     const handleOfficeAnimation = () => {
       const value = officeProgress.get();
-      console.log(value)
+     
       if (value <= 0.05 || value > 0.6) {
         setLeftVideoSrc("src/assets/office/glitch.mp4");
         setRightVideoSrc("src/assets/office/glitch.mp4");
@@ -36,12 +36,12 @@ const Office = ({ progress, officeRange }) => {
   //     console.log("office Progress changed:", latest);
   //   });
 
-  useEffect(() => {
-    const unsubscribe = officeProgress.on("change", (latest) => {
-      console.log("officeProgress:", latest);
-    });
-    return () => unsubscribe();
-  }, [officeProgress]);
+  // useEffect(() => {
+  //   const unsubscribe = officeProgress.on("change", (latest) => {
+  //     console.log("officeProgress:", latest);
+  //   });
+  //   return () => unsubscribe();
+  // }, [officeProgress]);
 
 
 
@@ -51,7 +51,7 @@ const Office = ({ progress, officeRange }) => {
   const skewX = useSpring(skewXRaw, { mass: 3, stiffness: 400, damping: 50 });
 
   const createLineX = (offset = 0) =>
-    useTransform(officeProgress, [0 + offset, 0.2 + offset, 0.5 + offset, 0.7 + offset], [-2000, 0, 0, -2000]);
+    useTransform(officeProgress, [0 + offset, 0.2 + offset, 0.55 + offset, 0.65 + offset], [-2000, 0, 0, -2000]);
   
   const xLine1 = useSpring(createLineX(0), { mass: 3, stiffness: 200, damping: 50 });
   const xLine2 = useSpring(createLineX(0.05), { mass: 3, stiffness: 200, damping: 50 });

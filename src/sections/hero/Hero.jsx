@@ -1,8 +1,12 @@
 import React, { Suspense, useRef, useEffect, useState } from "react";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { Plane} from '@react-three/drei';
-import { motion, useTransform, useSpring, useMotionValueEvent, useAnimation } from "framer-motion";
-import * as THREE from 'three';
+import { motion, useTransform, useSpring, useMotionValueEvent } from "framer-motion";
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import gsap from 'gsap';
+  
+gsap.registerPlugin(ScrollTrigger);
 
 // Import Components
 import Chair1 from "./Chair1";
@@ -18,7 +22,7 @@ import HeroZoomAnimation from "./HeroZoomAnimation";
 // Styles
 import "../../styles/Hero.scss";
 
-const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOfficeRange, slidesRange, carouselRange, isMobile }) => {
+const Hero = ({ afterOfficeRef, progress, heroRange, heroTransitionRange, officeRange, afterOfficeRange, slidesRange, carouselRange, isMobile }) => {
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false);
 
   const [isNonFixedDelayed, setIsNonFixedDelayed] = useState(false); 
@@ -48,15 +52,82 @@ const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOffi
 
   const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
 
-  const canvasAnimationVariants = {
-    moveCanvas: {
-      y: heroProgress.get() === 1 ? '-100vh' : '0', 
-      transition: {
-        duration: 0.5, 
-        ease: 'easeInOut',
-      },
+  // const canvasAnimationVariants = {
+  //   moveCanvas: {
+  //     y: heroProgress.get() === 1 ? '-100vh' : '0', 
+  //     transition: {
+  //       duration: 0.5, 
+  //       ease: 'easeInOut',
+  //     },
+  //   },
+  // };
+
+ const officeHalfWay = officeRange[0] + (officeRange[1] - officeRange[0]) * 0.5;
+const pinEnd = window.innerHeight * 5.5;
+
+useGSAP(() => {
+  if (!containerHeroRef.current || !canvasRef.current) return;
+
+  const canvas = canvasRef.current;
+
+  const st = ScrollTrigger.create({
+    trigger: containerHeroRef.current,
+    start: "top top",
+    end: `+=${pinEnd}`,
+    pin: canvas,
+    scrub: true,
+    markers: true,
+    // pinSpacing: false,
+
+    onLeave: () => {
+      // Detach from ScrollTrigger's transform/inset
+      gsap.set(canvas, {
+        clearProps: "all",
+      });
+
+      canvas.style.position = "absolute";
+      // canvas.style.top = `-${window.innerHeight}px`;
+      canvas.style.top = `${containerHeroRef.current.offsetTop + pinEnd}px`; // canvas is ok, but disappears
+      // canvas.style.top = `${canvas.getBoundingClientRect().top + window.scrollY}px`; // canvas is ok, but disappears
+// canvas.style.top = "0px";
+
+      canvas.style.left = "0";
+      canvas.style.width = "100%";
+      canvas.style.zIndex = "99"; // Restore z-index manually
+      
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+
     },
-  };
+
+    onEnterBack: () => {
+      // Reattach to ScrollTrigger-style pinning
+      canvas.style.position = "fixed";
+      canvas.style.top = "0px";
+      canvas.style.left = "0";
+      canvas.style.width = "100%";
+      canvas.style.zIndex = "99";
+    },
+  });
+
+  return () => st.kill(); // clean up
+}, []);
+
+
+
+useMotionValueEvent(progress, "change", (latest) => {
+  if (canvasRef.current) {
+    console.log("Motion progress:", latest);
+    console.log("Inline styles:");
+    console.log("top:", canvasRef.current.style.top);
+    console.log("position:", canvasRef.current.style.position);
+
+    console.log("Computed styles:");
+    console.log("top:", getComputedStyle(canvasRef.current).top);
+    console.log("position:", getComputedStyle(canvasRef.current).position);
+  }
+});
 
   return (
     <motion.div className="hero-section_container"
@@ -72,30 +143,43 @@ const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOffi
       isCanvasLoaded={isCanvasLoaded} 
       />
        <Suspense fallback={null}>
+      
       <motion.div
         ref={canvasRef}
         className="canvas-container"
-        animate={canvasAnimationVariants.moveCanvas}
-        transition={{
-          duration: 0.1, 
-          ease: "easeInOut"
+        style={{
+          backgroundColor:"red",
+          opacity: 0.5, 
+         // position: isPinned ? "fixed" : "absolute",
+          // top: isPinned ? 0 : `${pinThreshold}px`,
+        //   left: 0,
+          width: '100vw',
+          height: '100vh',
+          pointerEvents: 'auto',
         }}
+        // animate={canvasAnimationVariants.moveCanvas}
+        // transition={{
+        //   duration: 0.1, 
+        //   ease: "easeInOut"
+        // }} 
       >
-      <Canvas shadows 
-      onCreated={() => setIsCanvasLoaded(true)} 
-      camera={{
-        position: [0, 0, 5],
-        fov: 75,
-        near: 0.1,
-        far: 100,
-      }}
-      style={{ 
-        position: 'fixed',
-        top: 0,
-        left: 0,
+      <Canvas 
+      
+        shadows 
+        onCreated={() => setIsCanvasLoaded(true)} 
+        camera={{
+          position: [0, 0, 5],
+          fov: 75,
+          near: 0.1,
+          far: 100,
+        }}
+        style={{ 
+        // position: 'fixed',
+        // top: 0,
+        // left: 0,
         width: '100%',
         height: '100%',
-        zIndex: 2, 
+        zIndex: 99, 
         pointerEvents: 'auto',
         }}>
             
@@ -120,7 +204,9 @@ const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOffi
         <Chair5 ref={chairRefs[4].ref}  isMobile={isMobile} />
         <Chair6 ref={chairRefs[5].ref} progress={heroProgress} isMobile={isMobile} />
         <Chair7 ref={chairRefs[6].ref} progress={heroProgress} isMobile={isMobile} />
-        <HeroChair ref={heroChairRef} 
+        <HeroChair 
+        canvasRef={canvasRef}
+        ref={heroChairRef} 
         heroProgress={heroProgress}  
         progress={progress} 
         heroRange={heroRange} 
@@ -132,7 +218,7 @@ const Hero = ({ progress, heroRange, heroTransitionRange, officeRange, afterOffi
         heroChairRef={heroChairRef}/>
         <ShadowPlane />
       </Canvas>
-    </motion.div> 
+     </motion.div> 
   </Suspense>
   </motion.div>
   );

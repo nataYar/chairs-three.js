@@ -1,5 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useSpring, useAnimation,  useMotionValueEvent, useMotionValue  } from "framer-motion";
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import gsap from 'gsap';
+  
+gsap.registerPlugin(ScrollTrigger);
+
 import "../../styles/Hero.scss";
 import "../../styles/IntroText.scss";
 
@@ -8,7 +14,7 @@ const HeroAnimation = ({
   heroRange, 
   heroProgress, 
   isCanvasLoaded,
-
+containerHeroRef
 }) => {
 
   const backgroundScale = useMotionValue(1);
@@ -23,7 +29,24 @@ const HeroAnimation = ({
 
   const animationControls = useAnimation();
   const heroRef = useRef(null);
- const chaRef= useRef(null);
+  const chaRef= useRef(null);
+
+const pinEnd = window.innerHeight * 5.5;
+
+ useGSAP(() => {
+    if (!heroRef.current) return;
+     ScrollTrigger.create({
+       trigger: containerHeroRef.current,
+       start: "top top",
+       end: () => `${pinEnd}`, 
+       pin: heroRef.current,
+      //  pinSpacing: false,
+       scrub: true,
+       markers: true, 
+     });
+  });
+
+
 
   useMotionValueEvent(progress, "change", (latest) => {
     const maxScroll = heroRange[1];
@@ -81,13 +104,6 @@ const HeroAnimation = ({
       return () => unsubscribe();
     }, [heroProgress, isCanvasLoaded, backgroundScale, backgroundTranslateY, animationControls, viewportHeight, isJumping]);
 
-
-
-    
-
-    
-
-    
   return (
     <>
       <div
@@ -101,9 +117,10 @@ const HeroAnimation = ({
           </div>
         </div>
 
-      <motion.div
-        className={`hero-section ${isFixed ? "fixed" : "unfixed"}  ${gradientVisible ? "gradient-visible" : ""}`}
+      <motion.div 
         ref={heroRef}
+        className={`hero-section  ${gradientVisible ? "gradient-visible" : ""}`}
+        
         style={{
           scale: backgroundScale,
           y: backgroundTranslateY,

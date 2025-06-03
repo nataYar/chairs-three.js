@@ -4,7 +4,7 @@
   height: 400vh; 
   width: 100vw;
   z-index: 99;
-  overflow-x: hidden;
+  // overflow-x: hidden;
     .bottom{
       background-color: rgb(0, 0, 0);
       opacity: 1;
@@ -41,7 +41,6 @@
     position: fixed;
     top: 0;
     left: 0;
-    opacity: 1;
     // transition: all 1s ease-in;
   }
 
@@ -86,12 +85,13 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    // overflow-x: hidden;
-    z-index: 99; 
+    // width: 100vw;
+    // height: 100vh;
+    opacity: .4;
+    background-color: aqua;
+    z-index: 99 !important; 
     pointer-events: auto; 
-    transition: all 1s ease-in-out;
+    transition: none;
   }
 
   .no-scroll {
