@@ -6,7 +6,8 @@ import Chair from './Chair';
 const Chair4 = forwardRef((props, ref) => {
     const localRef = useRef(); // Local ref for animation
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
-    const { viewport } = useThree();
+      const { viewport } = useThree();
+      const cachedViewport = useRef({ width: viewport.width, height: viewport.height });
 
     // Initial rotation values
     const baseRotation = [0, 5 * Math.PI / 6, 0]; // tilt, rotation, twist
@@ -14,10 +15,11 @@ const Chair4 = forwardRef((props, ref) => {
     // Scaling and positioning based on device
     const scale = isMobile ? 1 : 1; // Adjust the size
     const position = [
-        viewport.width * -0.5,
-        -viewport.height * 0.55,
-        -3 // Z-position
-    ];
+  +(cachedViewport.current.width * -0.5).toFixed(2),
+  +(-cachedViewport.current.height * 0.55).toFixed(2),
+  -3
+];
+
     
     // State to control shaking
     const [isShaking, setIsShaking] = useState(false);

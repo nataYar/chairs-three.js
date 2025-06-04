@@ -6,17 +6,19 @@ import Chair from './Chair';
 const Chair2 = forwardRef(({ progress }, ref) => {
     const localRef = useRef(); // Local ref for applying animation
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); // Mobile-first design
-    const { viewport } = useThree();
+      const { viewport } = useThree();
+      const cachedViewport = useRef({ width: viewport.width, height: viewport.height });
 
     const rotation = [0.9, 25 * Math.PI / 18, 0.5]; // tilt, rotation, twist
     
     // Scaling and positioning based on device
     const scale = isMobile ? 5 : 5; 
     const position = [
-        viewport.width * 0.9, // 90% of viewport width
-        -viewport.height * -1, // 90% from the top
+        cachedViewport.current.width * 0.9,
+        -cachedViewport.current.height * -1,
         -12
-    ];
+        ];
+
 
     // Ease-in function for smooth transition
     const easeIn = (start, end, t) => start + (end - start) * t * t;

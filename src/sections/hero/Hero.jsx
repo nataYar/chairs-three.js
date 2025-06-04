@@ -66,65 +66,32 @@ const Hero = ({ afterOfficeRef, progress, heroRange, heroTransitionRange, office
 const pinEnd = window.innerHeight * 5.5;
 
 useGSAP(() => {
-  if (!containerHeroRef.current || !canvasRef.current) return;
-
-  const canvas = canvasRef.current;
-
-  const st = ScrollTrigger.create({
-    trigger: containerHeroRef.current,
-    start: "top top",
-    end: `+=${pinEnd}`,
-    pin: canvas,
-    scrub: true,
-    markers: true,
-    // pinSpacing: false,
-
-    onLeave: () => {
-      // Detach from ScrollTrigger's transform/inset
-      gsap.set(canvas, {
-        clearProps: "all",
-      });
-
-      canvas.style.position = "absolute";
-      // canvas.style.top = `-${window.innerHeight}px`;
-      canvas.style.top = `${containerHeroRef.current.offsetTop + pinEnd}px`; // canvas is ok, but disappears
-      // canvas.style.top = `${canvas.getBoundingClientRect().top + window.scrollY}px`; // canvas is ok, but disappears
-// canvas.style.top = "0px";
-
-      canvas.style.left = "0";
-      canvas.style.width = "100%";
-      canvas.style.zIndex = "99"; // Restore z-index manually
-      
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
-
-    },
-
-    onEnterBack: () => {
-      // Reattach to ScrollTrigger-style pinning
-      canvas.style.position = "fixed";
-      canvas.style.top = "0px";
-      canvas.style.left = "0";
-      canvas.style.width = "100%";
-      canvas.style.zIndex = "99";
-    },
+    if (!canvasRef.current) return;
+     ScrollTrigger.create({
+       trigger: containerHeroRef.current,
+       start: "top top",
+       end: () => `${pinEnd}`, 
+       pin: canvasRef.current,
+      //  pinSpacing: false,
+       scrub: true,
+       markers: true, 
+      // onEnter: () => gsap.set(".canvas-container", { x: 0, left: 0, right: 0, marginLeft: 0, marginRight: 0 }),
+      // onLeave: () => gsap.set(".canvas-container", { clearProps: "all" }) 
+     });
+   
   });
-
-  return () => st.kill(); // clean up
-}, []);
 
 
 
 useMotionValueEvent(progress, "change", (latest) => {
   if (canvasRef.current) {
-    console.log("Motion progress:", latest);
-    console.log("Inline styles:");
-    console.log("top:", canvasRef.current.style.top);
-    console.log("position:", canvasRef.current.style.position);
+    // console.log("Motion progress:", latest);
+    // console.log("Inline styles:");
+    // console.log("top:", canvasRef.current.style.top);
+    // console.log("position:", canvasRef.current.style.position);
 
-    console.log("Computed styles:");
-    console.log("top:", getComputedStyle(canvasRef.current).top);
+    // console.log("Computed styles:");
+    // console.log("left:", getComputedStyle(canvasRef.current).left);
     console.log("position:", getComputedStyle(canvasRef.current).position);
   }
 });
@@ -144,18 +111,19 @@ useMotionValueEvent(progress, "change", (latest) => {
       />
        <Suspense fallback={null}>
       
-      <motion.div
-        ref={canvasRef}
-        className="canvas-container"
-        style={{
-          backgroundColor:"red",
-          opacity: 0.5, 
+      <div 
+      ref={canvasRef}
+      class="canvas-container" 
+      style={{
+          // position: "relative",
+          margin: "0 auto",
+          // opacity: 0.5, 
          // position: isPinned ? "fixed" : "absolute",
           // top: isPinned ? 0 : `${pinThreshold}px`,
         //   left: 0,
           width: '100vw',
           height: '100vh',
-          pointerEvents: 'auto',
+          // pointerEvents: 'auto',
         }}
         // animate={canvasAnimationVariants.moveCanvas}
         // transition={{
@@ -163,8 +131,8 @@ useMotionValueEvent(progress, "change", (latest) => {
         //   ease: "easeInOut"
         // }} 
       >
-      <Canvas 
       
+          <Canvas 
         shadows 
         onCreated={() => setIsCanvasLoaded(true)} 
         camera={{
@@ -174,9 +142,9 @@ useMotionValueEvent(progress, "change", (latest) => {
           far: 100,
         }}
         style={{ 
-        // position: 'fixed',
-        // top: 0,
-        // left: 0,
+        position: 'fixed',
+        top: 0,
+        left: 0,
         width: '100%',
         height: '100%',
         zIndex: 99, 
@@ -197,7 +165,7 @@ useMotionValueEvent(progress, "change", (latest) => {
          slidesRange={slidesRange} 
          carouselRange={carouselRange}
         />
-        <Chair1 ref={chairRefs[0].ref}  isMobile={isMobile} />
+        <Chair1 ref={chairRefs[0].ref} progress={progress} isMobile={isMobile} />
         <Chair2 ref={chairRefs[1].ref} progress={heroProgress} isMobile={isMobile}  />
         <Chair3 ref={chairRefs[2].ref}  progress={heroProgress} isMobile={isMobile} />
         <Chair4 ref={chairRefs[3].ref} isMobile={isMobile} />
@@ -218,7 +186,7 @@ useMotionValueEvent(progress, "change", (latest) => {
         heroChairRef={heroChairRef}/>
         <ShadowPlane />
       </Canvas>
-     </motion.div> 
+     </div> 
   </Suspense>
   </motion.div>
   );
@@ -247,8 +215,9 @@ const CameraAnimation = ({ progress, heroRange }) => {
     camera.position.set(0, y, z);
     camera.updateProjectionMatrix();
     camera.lookAt(0, y, z - 1); 
+    // console.log(camera.position)
   });
-
+  
   return null;
 };
 

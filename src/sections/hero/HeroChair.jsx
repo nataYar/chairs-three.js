@@ -22,19 +22,37 @@ const HeroChair = forwardRef((props, ref) => {
   const transitionStartY = useRef(null);
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const { viewport } = useThree();
-const screenWidth = viewport.width;
+  const cachedViewport = useRef({ width: viewport.width, height: viewport.height });
+
 
   // Define rotation
   const rotation = [0.4, 0.3, 0.1];
 
   // Define initial scale and position
   const initialScale = isMobile ? 0.13 : 0.2;
+
   const initialPosition = isMobile
-    ? [viewport.width * 0.85, -viewport.height * -2.8, -25]
-    : [viewport.width * 0, -viewport.height * -4.3, -35];
+    ? [cachedViewport.current.width * 0.85, -cachedViewport.current.height * -2.8, -25]
+    : [cachedViewport.current.width * 0, -cachedViewport.current.height * -4.3, -35];
+
 
   // Use progress to animate Y position and scale
   const easeIn = (start, end, t) => start + (end - start) * t * t;
+
+
+  useMotionValueEvent(progress, "change", (latest) => {
+    if (canvasRef.current) {
+      // console.log("Motion progress:", latest);
+      // console.log("Inline styles:");
+      // console.log("top:", canvasRef.current.style.top);
+      // console.log("position:", canvasRef.current.style.position);
+  
+      // console.log("Computed styles:");
+      // console.log("left:", getComputedStyle(canvasRef.current).left);
+      console.log("Hero chair position:", localRef.current.position.x.toFixed(2), localRef.current.position.y.toFixed(2), localRef.current.position.z);
+    }
+  });
+
 
   useFrame(() => {
   if (!localRef.current) return;

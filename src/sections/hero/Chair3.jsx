@@ -8,7 +8,8 @@ import Chair from './Chair';
 const Chair3 = forwardRef(({ progress }, ref) => {
     const localRef = useRef(); // Local ref for animation
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); // Mobile-first design
-    const { viewport } = useThree();
+      const { viewport } = useThree();
+      const cachedViewport = useRef({ width: viewport.width, height: viewport.height });
     
     // Initial rotation values
     const baseRotation = [0, 0, 0.4]; // Start with no rotation (tilt (x), rotation (y), twist (z))
@@ -16,8 +17,17 @@ const Chair3 = forwardRef(({ progress }, ref) => {
     // Scaling and positioning based on device
     const scale = isMobile ? 0.03 : 0.05; // Adjust the size
     const position = isMobile
-        ? [viewport.width * -0.3, -viewport.height * 0, -2]
-        : [viewport.width * -0.1, -viewport.height * -0.2, -2];
+  ? [
+      +(cachedViewport.current.width * -0.3).toFixed(2),
+      +(cachedViewport.current.height * 0).toFixed(2),
+      -2
+    ]
+  : [
+      +(cachedViewport.current.width * -0.1).toFixed(2),
+      +(cachedViewport.current.height * -0.2).toFixed(2),
+      -2
+    ];
+
 
     // Add animation for rotation along the Y-axis
     useFrame(({ clock }) => {
