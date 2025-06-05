@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { motion, useMotionValueEvent, useSpring, useTransform, useAnimation, useVelocity, useInView  } from "framer-motion";
+import { motion, useSpring, useTransform, useAnimation, useVelocity  } from "framer-motion";
 
 
 import "../../styles/Office.scss";
@@ -17,11 +17,12 @@ const Office = ({ progress, officeRange }) => {
       const value = officeProgress.get();
      
       if (value <= 0.05 || value > 0.6) {
-        setLeftVideoSrc("src/assets/office/glitch.mp4");
-        setRightVideoSrc("src/assets/office/glitch.mp4");
-      } else if (value > 0.3 && value <= 0.6) {
-        setLeftVideoSrc("src/assets/office/office party.mp4");
+       setLeftVideoSrc("src/assets/office/office party.mp4");
         setRightVideoSrc("src/assets/office/cat.mp4");
+      } else if (value > 0.3 && value <= 0.6) {
+         setLeftVideoSrc("src/assets/office/glitch.mp4");
+        setRightVideoSrc("src/assets/office/glitch.mp4");
+        
       }
     };
   
@@ -54,8 +55,8 @@ const Office = ({ progress, officeRange }) => {
     useTransform(officeProgress, [0 + offset, 0.2 + offset, 0.55 + offset, 0.65 + offset], [-2000, 0, 0, -2000]);
   
   const xLine1 = useSpring(createLineX(0), { mass: 3, stiffness: 200, damping: 50 });
-  const xLine2 = useSpring(createLineX(0.05), { mass: 3, stiffness: 200, damping: 50 });
-  const xLine3 = useSpring(createLineX(0.1), { mass: 3, stiffness: 200, damping: 50 });
+  const xLine2 = useSpring(createLineX(0), { mass: 3, stiffness: 200, damping: 50 });
+  const xLine3 = useSpring(createLineX(0.4), { mass: 3, stiffness: 200, damping: 50 });
   
 
   return (

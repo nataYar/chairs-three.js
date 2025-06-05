@@ -54,7 +54,7 @@ const HeroChair = forwardRef((props, ref) => {
   const initialScale = isMobile ? 0.13 : 0.2;
 
   const initialPosition = isMobile
-    ? [cachedViewport.current.width * 0.85, -cachedViewport.current.height * -2.8, -25]
+    ? [cachedViewport.current.width * 0.85, cachedViewport.current.height * 2.8, -25]
     : [cachedViewport.current.width * 0, -cachedViewport.current.height * -4.3, -35];
 
   // Use progress to animate Y position and scale

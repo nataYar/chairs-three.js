@@ -5,7 +5,8 @@ import { motion, useTransform, useSpring, useMotionValueEvent } from "framer-mot
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from 'gsap';
-  
+import * as THREE from 'three';
+
 gsap.registerPlugin(ScrollTrigger);
 
 // Import Components
@@ -246,6 +247,8 @@ const Lighting = ({
     ambientIntensity: 0,
     directionalIntensity: 0,
   });
+  const currentColor = useRef(new THREE.Color('#ffffff'));
+
 
   useFrame(() => {
     const heroVal = hero.get();
@@ -270,19 +273,9 @@ const Lighting = ({
         directionalColor: '#ffffff',
       },
       officeRange: {
-        ambientIntensity: 0.5,
-        directionalIntensity: 9,
-        directionalColor: '#ffffff',
-      },
-      afterOfficeRange: {
-        ambientIntensity: 0.5,
-        directionalIntensity: 9,
-        directionalColor:'#ffffff',
-      },
-      slidesRange: {
-        ambientIntensity: 0.5,
-        directionalIntensity: 9,
-        directionalColor:'#ffffff',
+        ambientIntensity: 0.2,
+        directionalIntensity: 18,
+        directionalColor: '#cdf7ff',
       },
       carouselRange: {
         ambientIntensity: 0.5,
@@ -293,59 +286,50 @@ const Lighting = ({
 
  
       const p = progress.get(); // current scroll progress between 0 and 1
-    
-      const early = (range) => range[0] - (range[1] - range[0]);
+      const officeHalfWay = officeRange[0] + (officeRange[1] - officeRange[0]) * 0.2;
 
       let currentKey = "heroRange"; // fallback
 
-      if (p >= heroRange[0] && p < heroTransitionRange[0]) {
+      if (p < heroTransitionRange[0]) {
         currentKey = "heroRange";
-      } else if (p >= early(heroTransitionRange) && p < early(officeRange)) {
-        currentKey = "heroTransitionRange";
-      } else if (p >= early(officeRange) && p < early(afterOfficeRange)) {
+      } else if (p >= officeHalfWay) {
         currentKey = "officeRange";
-      } else if (p >= early(afterOfficeRange) && p < early(slidesRange)) {
-        currentKey = "afterOfficeRange";
-      } else if (p >= early(slidesRange) && p < early(carouselRange)) {
-        currentKey = "slidesRange";
-      } else if (p >= early(carouselRange)) {
+      } else {
         currentKey = "carouselRange";
       }
 
      
 
       const lerp = (a, b, t) => a + (b - a) * t;
-
-    
       // Use a default if nothing matched
       const preset = lightingPresets[currentKey] || lightingPresets.heroRange;
-      const t = 0.001; // Adjust for speed of transition (smaller = slower)
+      const t = 0.025; // Adjust for speed of transition (smaller = slower)
 
-      // Lerp current values toward target
-      currentLighting.current.ambientIntensity = lerp(
-        currentLighting.current.ambientIntensity,
-        preset.ambientIntensity,
-        t
-      );
-      currentLighting.current.directionalIntensity = lerp(
-        currentLighting.current.directionalIntensity,
-        preset.directionalIntensity,
-        t
-      );
-    
+     // Lerp intensities
+    currentLighting.current.ambientIntensity = lerp(
+      currentLighting.current.ambientIntensity,
+      preset.ambientIntensity,
+      t
+    );
+    currentLighting.current.directionalIntensity = lerp(
+      currentLighting.current.directionalIntensity,
+      preset.directionalIntensity,
+      t
+    );
 
-      if (ambientLightRef.current) {
-        ambientLightRef.current.intensity = preset.ambientIntensity;
-      }
-      if (directionalLightRef.current) {
-        directionalLightRef.current.intensity = preset.directionalIntensity;
-        directionalLightRef.current.color.set(preset.directionalColor);
-      }
+    // Lerp color
+    const targetColor = new THREE.Color(preset.directionalColor);
+    currentColor.current.lerp(targetColor, t);
 
-    
-  
+    // Apply lighting
+    if (ambientLightRef.current) {
+      ambientLightRef.current.intensity = currentLighting.current.ambientIntensity;
+    }
+    if (directionalLightRef.current) {
+      directionalLightRef.current.intensity = currentLighting.current.directionalIntensity;
+      directionalLightRef.current.color.copy(currentColor.current);
+    }
 
-   
   });
   
   return (

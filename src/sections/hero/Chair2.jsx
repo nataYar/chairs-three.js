@@ -14,8 +14,8 @@ const Chair2 = forwardRef(({ progress }, ref) => {
     // Scaling and positioning based on device
     const scale = isMobile ? 5 : 3.5; 
     const position = isMobile ? [
-        cachedViewport.current.width * 0.9,
-        -cachedViewport.current.height * -1,
+        cachedViewport.current.width * 0.5,
+        -cachedViewport.current.height * -1.3,
         -12
         ] : [
         cachedViewport.current.width * 0.1,
@@ -52,7 +52,7 @@ const Chair2 = forwardRef(({ progress }, ref) => {
         let moveZ = 0;
 
         if (progress.get() >= 0.3) {
-            moveX = easeIn(0, (progress.get() - 0.1) * moveSpeed * 2.5, progress.get()); 
+            moveX = easeIn(0, (progress.get() - 0.1) * moveSpeed * 4.5, progress.get()); 
             moveY = easeIn(0, (progress.get() - 0.1) * moveSpeed * 1.8, progress.get()); 
             moveZ = easeIn(0, (progress.get() - 0.1) * moveSpeed * 2.0, progress.get()); 
         }

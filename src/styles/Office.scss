@@ -98,17 +98,17 @@
     pointer-events: none;
     opacity: 1; 
     transition: opacity 1s ease-in-out; 
-   
   }
 }
 
 /* Text within the office content */
 .text-container {
   position: absolute;
-  padding-left: 10px;
+  text-align: center;
+  // padding-left: 10px;
   width: 100%;
   top: 20vh;
-  color: #fff;
+  color: #ffffff;
   z-index: 3; 
     h2{
       font-size: 40px;
