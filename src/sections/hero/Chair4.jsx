@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useState } from 'react';
+import React, { forwardRef, useRef, useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useThree, useFrame } from "@react-three/fiber";
 import Chair from './Chair';
@@ -14,11 +14,25 @@ const Chair4 = forwardRef((props, ref) => {
 
     // Scaling and positioning based on device
     const scale = isMobile ? 1 : 1; // Adjust the size
-    const position = [
-  +(cachedViewport.current.width * -0.5).toFixed(2),
-  +(-cachedViewport.current.height * 0.55).toFixed(2),
-  -3
-];
+    const position =  isMobile ? [
+    +(cachedViewport.current.width * -0.5).toFixed(2),
+    +(-cachedViewport.current.height * 0.55).toFixed(2),
+    -3
+    ] : 
+    [+(cachedViewport.current.width * -0.3).toFixed(2),
+    +(-cachedViewport.current.height * 0.5).toFixed(2),
+    -3]
+    // useEffect(() => {
+    // const handleResize = () => {
+    //     cachedViewport.current = {
+    //     width: viewport.width,
+    //     height: viewport.height,
+    //     };
+    // };
+    // handleResize(); // update once on mount
+    // window.addEventListener("resize", handleResize);
+    // return () => window.removeEventListener("resize", handleResize);
+    // }, [viewport]);
 
     
     // State to control shaking

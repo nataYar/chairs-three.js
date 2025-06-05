@@ -4,7 +4,7 @@
   height: 400vh; 
   width: 100vw;
   z-index: 99;
-  // overflow-x: hidden;
+  // overflow-x: hidden; //messes up absolute for canvas-container
     .bottom{
       background-color: rgb(0, 0, 0);
       opacity: 1;
@@ -100,7 +100,7 @@
 
 @media (min-width: 769px) {
     .hero-section {
-        background-position: center bottom !important;
+        background-position: 50% 80%; //hor and vert positions
         // border: 2px solid rgb(145, 22, 169);
 
         position: fixed !important; /* Keep fixed */

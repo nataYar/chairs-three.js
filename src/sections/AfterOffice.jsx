@@ -24,7 +24,7 @@ const AfterOffice = ({ progress, afterOfficeRange }) => {
             className="carousel-text-container"
             initial={{ opacity: 0, y: "10vh" }}
             style={{
-              opacity: useTransform(currentProgress, [0.2, 0.8], [0, 1]),
+              opacity: useTransform(currentProgress, [0.4, 0.8], [0, 1]),
               y: springY,
             }}
             >

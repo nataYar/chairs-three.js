@@ -14,7 +14,8 @@ const HeroAnimation = ({
   heroRange, 
   heroProgress, 
   isCanvasLoaded,
-containerHeroRef
+  containerHeroRef,
+  isMobile
 }) => {
 
   const backgroundScale = useMotionValue(1);
@@ -42,11 +43,9 @@ const pinEnd = window.innerHeight * 5.5;
        pin: heroRef.current,
       //  pinSpacing: false,
        scrub: true,
-       markers: true, 
+      //  markers: true, 
      });
   });
-
-
 
   useMotionValueEvent(progress, "change", (latest) => {
     const maxScroll = heroRange[1];

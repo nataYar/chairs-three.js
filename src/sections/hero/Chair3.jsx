@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from 'react';
+import React, { forwardRef, useRef, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useThree, useFrame } from "@react-three/fiber";
 import { motion } from 'framer-motion';
@@ -15,7 +15,7 @@ const Chair3 = forwardRef(({ progress }, ref) => {
     const baseRotation = [0, 0, 0.4]; // Start with no rotation (tilt (x), rotation (y), twist (z))
 
     // Scaling and positioning based on device
-    const scale = isMobile ? 0.03 : 0.05; // Adjust the size
+    const scale = isMobile ? 0.03 : 0.04; // Adjust the size
     const position = isMobile
   ? [
       +(cachedViewport.current.width * -0.3).toFixed(2),
@@ -23,38 +23,59 @@ const Chair3 = forwardRef(({ progress }, ref) => {
       -2
     ]
   : [
-      +(cachedViewport.current.width * -0.1).toFixed(2),
-      +(cachedViewport.current.height * -0.2).toFixed(2),
+      +(cachedViewport.current.width * -0.3).toFixed(2),
+      +(cachedViewport.current.height * 0).toFixed(2),
       -2
     ];
+    // useEffect(() => {
+    // const handleResize = () => {
+    //     cachedViewport.current = {
+    //     width: viewport.width,
+    //     height: viewport.height,
+    //     };
+    // };
+    // handleResize(); // update once on mount
+    // window.addEventListener("resize", handleResize);
+    // return () => window.removeEventListener("resize", handleResize);
+    // }, [viewport]);
 
 
     // Add animation for rotation along the Y-axis
     useFrame(({ clock }) => {
-        if (localRef.current) {
-            const time = clock.getElapsedTime();
-            const rotationSpeed = 0.05; // Speed of rotation
-            localRef.current.rotation.y = baseRotation[1] + time * rotationSpeed;
+    if (localRef.current) {
+        const time = clock.getElapsedTime();
+        const rotationSpeed = 0.05;
 
-            // Maintain initial X and Z rotations
-            localRef.current.rotation.x = baseRotation[0]; // Keep initial X rotation
-            localRef.current.rotation.z = baseRotation[2]; // Keep initial Z rotation
+        // Continuous Y rotation
+        localRef.current.rotation.y = baseRotation[1] + time * rotationSpeed;
 
-            const easeIn = (start, end, t) => start + (end - start) * t * t;
+        // Keep original tilt
+        localRef.current.rotation.x = baseRotation[0];
+        localRef.current.rotation.z = baseRotation[2];
 
-            // Calculate movement based on scroll progress
-            const moveSpeed = 1; // Speed of movement per unit of progress
-            let moveX = 0;
-            let moveY = 0;
+        // Scroll-based movement
+        const easeIn = (start, end, t) => start + (end - start) * t * t;
+        const moveSpeed = 1;
 
-            if (progress.get() >= 0.1) {
-                moveX = easeIn(0, (progress.get() - 0.1) * moveSpeed * -1, progress.get() * 1.75); 
-                moveY = easeIn(0, (progress.get() - 0.1) * moveSpeed * -1.5, progress.get() * 1.3);
-            }
-            localRef.current.position.x = position[0] + moveX;
-            localRef.current.position.y = position[1] - moveY;
+        let moveX = 0;
+        let moveY = 0;
+        let moveZ = 0;
+
+        const p = progress.get();
+
+        if (p >= 0.1) {
+            // More dramatic X and Z shifts
+            moveX = easeIn(0, (p - 0.1) * moveSpeed * -2.5, p * 1.2);   // Farther left
+            moveY = easeIn(0, (p - 0.1) * moveSpeed * -1.5, p * 1.3);    // Upward
+            moveZ = easeIn(0, (p - 0.1) * moveSpeed * 4, p * 1.6);       // Toward viewer
         }
-    });
+
+        localRef.current.position.x = position[0] + moveX;
+        localRef.current.position.y = position[1] - moveY;
+        localRef.current.position.z = position[2] + moveZ; 
+    }
+});
+
 
     
 

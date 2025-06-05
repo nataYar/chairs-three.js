@@ -15,18 +15,40 @@ const HeroChair = forwardRef((props, ref) => {
     carouselRange,
     heroChairRef, 
     canvasRef,
+    isMobile,
     ...otherProps } = props;
 
     // console.log(canvasRef.current)
   const localRef = useRef();
   const transitionStartY = useRef(null);
-  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+ 
+  
+  // const { size } = useThree(); // canvas size in pixels
+  // const cachedSize = useRef({ width: size.width, height: size.height });
+
+
   const { viewport } = useThree();
   const cachedViewport = useRef({ width: viewport.width, height: viewport.height });
 
+// useEffect(() => {
+//   let timeout;
+//   const handleResize = () => {
+//     clearTimeout(timeout);
+//     timeout = setTimeout(() => {
+//       cachedSize.current = {
+//         width: size.width,
+//         height: size.height,
+//       };
+//       console.log("Resize complete:", cachedSize.current);
+//     }, 500); // debounce time
+//   };
+
+//   window.addEventListener("resize", handleResize);
+//   return () => window.removeEventListener("resize", handleResize);
+// }, [size]);
 
   // Define rotation
-  const rotation = [0.4, 0.3, 0.1];
+  const rotation = isMobile ?  [0.4, 0.3, 0.1] : [0.2, 0.3, 0];
 
   // Define initial scale and position
   const initialScale = isMobile ? 0.13 : 0.2;
@@ -35,24 +57,8 @@ const HeroChair = forwardRef((props, ref) => {
     ? [cachedViewport.current.width * 0.85, -cachedViewport.current.height * -2.8, -25]
     : [cachedViewport.current.width * 0, -cachedViewport.current.height * -4.3, -35];
 
-
   // Use progress to animate Y position and scale
   const easeIn = (start, end, t) => start + (end - start) * t * t;
-
-
-  useMotionValueEvent(progress, "change", (latest) => {
-    if (canvasRef.current) {
-      // console.log("Motion progress:", latest);
-      // console.log("Inline styles:");
-      // console.log("top:", canvasRef.current.style.top);
-      // console.log("position:", canvasRef.current.style.position);
-  
-      // console.log("Computed styles:");
-      // console.log("left:", getComputedStyle(canvasRef.current).left);
-      console.log("Hero chair position:", localRef.current.position.x.toFixed(2), localRef.current.position.y.toFixed(2), localRef.current.position.z);
-    }
-  });
-
 
   useFrame(() => {
   if (!localRef.current) return;
@@ -65,8 +71,8 @@ const HeroChair = forwardRef((props, ref) => {
   const heroTransitionEnd = heroTransitionRange[1];
   //  const shiftAmount = viewport.width * 0.3;
   const officeHalfWay = officeRange[0] + (officeRange[1] - officeRange[0]) * 0.5;
-  const shiftXOffice = 10;
-  const shiftYOffice = 25;
+  const shiftXOffice = isMobile ? 10 : -3;
+  const shiftYOffice = isMobile ? 25 : 48;
 
   // Animate Y position
   if (p >= heroStart && p < heroTransitionStart) {
@@ -103,8 +109,8 @@ const HeroChair = forwardRef((props, ref) => {
     localRef.current.scale.set(finalScale, finalScale, finalScale);
     localRef.current.rotation.set(rotation[0] - 0.5, rotation[1] + (150 * Math.PI / 180), 0);
     localRef.current.position.set(
-      initialPosition[0] - 10,
-      (transitionStartY.current ?? initialPosition[1]) - 25,
+      initialPosition[0] - shiftXOffice,
+      (transitionStartY.current ?? initialPosition[1]) - shiftYOffice,
       initialPosition[2]
     );
   }

@@ -13,30 +13,32 @@ const Chair1 = forwardRef((props, ref) => {
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
     // Initial rotation based on device type
-    const initialRotation = isMobile
-        ? [0, 13 * Math.PI / 18, 0]
-        : [0, -Math.PI / 3, 0];
+    const initialRotation = [0, 13 * Math.PI / 22, 0]
 
-        useMotionValueEvent(progress, "change", (latest) => {
-    if (localRef.current) {
-      // console.log("Motion progress:", latest);
-      // console.log("Inline styles:");
-      // console.log("top:", canvasRef.current.style.top);
-      // console.log("position:", canvasRef.current.style.position);
-  
-      // console.log("Computed styles:");
-      // console.log("left:", getComputedStyle(canvasRef.current).left);
-    //   console.log("chair 1 position:", localRef.current.position.x.toFixed(2), localRef.current.position.y.toFixed(2), localRef.current.position.z);
-    }
-  });
+//      useEffect(() => {
+//   const handleResize = () => {
+//     cachedViewport.current = {
+//       width: viewport.width,
+//       height: viewport.height,
+//     };
+//   };
+//   handleResize(); // update once on mount
+//   window.addEventListener("resize", handleResize);
+//   return () => window.removeEventListener("resize", handleResize);
+// }, [viewport]);
+
+
 
     // Device-specific position and scale
     const scale = isMobile ? 3 : 3;
     // console.log("Viewport:", viewport); 
 
-    const position = isMobile
-        ? [cachedViewport.current.width  * 0.4, -cachedViewport.current.height  * 0.7, 0]
-        : [cachedViewport.current.width  * 0.3, -cachedViewport.current.height  * 0.4, 0];
+    const position = isMobile ? [cachedViewport.current.width  * 0.4, -cachedViewport.current.height  * 0.7, 0] : [cachedViewport.current.width  * 0.4, -cachedViewport.current.height  * 0.65, -.3];
+       
+
+    // const position = isMobile
+    //     ? [cachedViewport.current.width  * 0.4, -cachedViewport.current.height  * 0.7, 0]
+    //     : [cachedViewport.current.width  * 0.3, -cachedViewport.current.height  * 0.4, 0];
 
 
         // useEffect(() => {

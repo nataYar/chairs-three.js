@@ -82,7 +82,7 @@ const App = () => {
 
   return (
     <div id="smooth-wrapper"> 
-      {/* <ReactLenis root /> */}
+      <ReactLenis root />
       <div
       ref={containerRef}
       className="app-container" 

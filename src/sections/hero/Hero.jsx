@@ -74,7 +74,7 @@ useGSAP(() => {
        pin: canvasRef.current,
       //  pinSpacing: false,
        scrub: true,
-       markers: true, 
+      //  markers: true, 
       // onEnter: () => gsap.set(".canvas-container", { x: 0, left: 0, right: 0, marginLeft: 0, marginRight: 0 }),
       // onLeave: () => gsap.set(".canvas-container", { clearProps: "all" }) 
      });
@@ -183,7 +183,8 @@ useMotionValueEvent(progress, "change", (latest) => {
         afterOfficeRange={afterOfficeRange}
         slidesRange={slidesRange} 
         carouselRange={carouselRange}
-        heroChairRef={heroChairRef}/>
+        heroChairRef={heroChairRef}
+        isMobile={isMobile} />
         <ShadowPlane />
       </Canvas>
      </div> 

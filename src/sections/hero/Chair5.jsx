@@ -1,4 +1,4 @@
-import React, { useRef, forwardRef } from 'react';
+import React, { useRef, forwardRef, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useThree } from "@react-three/fiber";
 import Chair from './Chair';
@@ -8,7 +8,19 @@ const Chair5 = forwardRef((props, ref) => {
     
     const { viewport } = useThree();
     const cachedViewport = useRef({ width: viewport.width, height: viewport.height });
-   
+
+  //   useEffect(() => {
+  //   const handleResize = () => {
+  //     cachedViewport.current = {
+  //       width: viewport.width,
+  //       height: viewport.height,
+  //     };
+  //   };
+  //   handleResize(); // update once on mount
+  //   window.addEventListener("resize", handleResize);
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, [viewport]);
+
     const position = [
       cachedViewport.current.width * -0.37.toFixed(2),
       -cachedViewport.current.height * 0.7.toFixed(2),
