@@ -1,10 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useSpring, useAnimation,  useMotionValueEvent, useMotionValue  } from "framer-motion";
 import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from 'gsap';
-  
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+
 gsap.registerPlugin(ScrollTrigger);
+
 
 import "../../styles/Hero.scss";
 import "../../styles/IntroText.scss";
@@ -30,11 +32,15 @@ const HeroAnimation = ({
 
   const animationControls = useAnimation();
   const heroRef = useRef(null);
-  const chaRef= useRef(null);
+  const textRef= useRef(null);
 
 const pinEnd = window.innerHeight * 5.5;
 
  useGSAP(() => {
+// text animation
+if(!textRef.current) return;
+  
+
     if (!heroRef.current) return;
      ScrollTrigger.create({
        trigger: containerHeroRef.current,
@@ -57,13 +63,13 @@ const pinEnd = window.innerHeight * 5.5;
       setIsFixed(false); 
     }
   
-    if (chaRef.current) {
-      if (latest >= heroRange[1]-0.05 && latest <= heroRange[1]) {
-        chaRef.current.classList.add("padding-right");
-      } else {
-        chaRef.current.classList.remove("padding-right");
-      }
-    }
+    // if (chaRef.current && isMobile) {
+    //   if (latest >= heroRange[1]-0.05 && latest <= heroRange[1]) {
+    //     chaRef.current.classList.add("padding-right");
+    //   } else {
+    //     chaRef.current.classList.remove("padding-right");
+    //   }
+    // }
   });
 
   useMotionValueEvent(progress, "change", (scrollProgress) => {
@@ -87,7 +93,7 @@ const pinEnd = window.innerHeight * 5.5;
         if (!isCanvasLoaded) return;
         const eightyPercentIntoHero = heroRange[0] + (heroRange[1] - heroRange[0]) * 0.8;
 
-        if (scrollProgress >= 0.8 && scrollProgress < 1) {
+        if (scrollProgress >= 0.8 && scrollProgress < 0.95) {
           setIntroTextVisible(true);
         } else {
           setIntroTextVisible(false);
@@ -106,14 +112,14 @@ const pinEnd = window.innerHeight * 5.5;
   return (
     <>
       <div
+      ref={textRef}
         className={`intro-text ${introTextVisible ? "visible" : "hidden"} `}
-        
       >
-          <h2>It all starts with a</h2>
-          <div className="chair-container">
+          <h2>It all starts with a ...</h2>
+          {/* <div className="chair-container">
             <h2 ref={chaRef} className="cha">cha</h2>
             <h2>ir</h2>
-          </div>
+          </div> */}
         </div>
 
       <motion.div 

@@ -4,7 +4,7 @@ import { useScroll, useMotionValueEvent } from "framer-motion";
 
 
 import Hero from "./sections/hero/Hero";
-import Office from "./sections/office/office";
+import Office from "./sections/office/Office";
 import Slides from "./sections/slides/Slides";
 import HeroTransition from "./sections/HeroTransition/HeroTransition";
 

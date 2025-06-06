@@ -52,7 +52,7 @@ const Chair7 = forwardRef((props, ref) => {
             const p = progress.get();
 
             // More exaggerated X movement
-            moveX = easeIn(0, (p - 0.1) * moveSpeed * 5, p); 
+            moveX = easeIn(0, (p - 0.1) * moveSpeed * 15, p); 
 
             // Slightly less Y
             moveY = easeIn(0, (p - 0.1) * moveSpeed * 1.5, p);

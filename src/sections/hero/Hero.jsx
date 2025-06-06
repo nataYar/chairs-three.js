@@ -114,7 +114,7 @@ useMotionValueEvent(progress, "change", (latest) => {
       
       <div 
       ref={canvasRef}
-      class="canvas-container" 
+      className="canvas-container" 
       style={{
           // position: "relative",
           margin: "0 auto",
