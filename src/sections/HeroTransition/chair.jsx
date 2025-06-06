@@ -3,7 +3,7 @@ import React from 'react';
 const C = () => {
   return (
     <svg
-      viewBox="0 12.7 34.3 36.4"
+      viewBox="0 12.2 34 37.5"
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="none"
 
@@ -45,7 +45,7 @@ const A = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 12.7 34.3 36.4"
+      viewBox="0 12.7 41 36.4"
       preserveAspectRatio="none"
 
     >
@@ -64,7 +64,7 @@ const I = () => {
   return (
     <svg  
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 13.4 10 35"
+      viewBox="0 12.7 30 35"
       preserveAspectRatio="none"
 
     >
@@ -79,7 +79,7 @@ const I = () => {
 
 const R = () => (
   <svg
-    viewBox="0 13.4 33 36"
+    viewBox="0 12.7 33 36"
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="none"
 
