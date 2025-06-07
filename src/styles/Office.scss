@@ -1,31 +1,17 @@
-.main-section {
+.main_section {
   position: relative;
-  height: 100vh;
+  height: 200vh;
   width: 100vw;
   background-color: #4451b5;
-}
-
-.black-transition {
-  height: 0vh;
-  width: 100vw;
-  background-color: #000000;
-}
-.black-screen {
-  background-color: #1f1e23;
-  top: 0;
-  left: 0;
-  z-index: 4;
-  height: 100vh;
-  width: 100vw;
-  opacity: 0.3;
-}
-
-.black-screen_transparency{
-  opacity: 0.8;
+  .black_filler{
+    height: 100vh;
+    width: 100vw;
+    background-color: #ce31dc;
+  }
 }
 
 /* Container for videos */
-.pc-container {
+.pc_container {
   position: absolute; /* Positioned relative to .main-section */
   top: 0vh;
   left: 0;
@@ -39,14 +25,14 @@
   position: absolute; /* Positioned relative to .pc-container */
 }
 
-.pc-left {
+.pc_left {
   top: 62vh; /* Fixed position relative to viewport */
   left: 0vw; /* Fixed position relative to viewport */
   width: 47vw; /* Maintain size relative to viewport width */
   height: auto; /* Maintain aspect ratio */
 }
 
-.pc-right {
+.pc_right {
   top: 58vh; /* Fixed position relative to viewport */
   left: 75%; /* Fixed position relative to viewport */
   width: 30vw; /* Maintain size relative to viewport width */
@@ -61,8 +47,10 @@
 }
 
 /* Office Content (background layer) */
-.office-content {
-  position: relative;
+.office_content {
+  position: absolute;
+  top:100vh;
+  left: 0;
   z-index: 2; /* Ensure it's above the videos */
   height: 100vh;
   width: 100%;
@@ -102,7 +90,7 @@
 }
 
 /* Text within the office content */
-.text-container {
+.text_container {
   position: absolute;
   text-align: center;
   // padding-left: 10px;

@@ -61,7 +61,7 @@ function FixedBackgroundPlane({ isInView }) {
   );
 }
 
-const CarouselSection = () => {
+const CarouselSection = ({ isMobile }) => {
   const radius = 41;
   const triggerRef = useRef(null);
   const isInView = useInView(triggerRef);
@@ -87,8 +87,8 @@ const CarouselSection = () => {
         <directionalLight position={[0, 30, -50]} intensity={1.5} />
 
         <EffectComposer disableNormalPass>
-          <Noise opacity={0.6} />
-          <Vignette eskil={false} offset={0.2} darkness={0.6} />
+          <Noise opacity={ isMobile ? 0.5 : 0.3} />
+          <Vignette eskil={false} offset={0.1} darkness={0.6} />
         </EffectComposer>
 
         <Suspense fallback={null}>

@@ -102,7 +102,6 @@
     .hero-section {
         background-position: 50% 80%; //hor and vert positions
         // border: 2px solid rgb(145, 22, 169);
-
         position: fixed !important; /* Keep fixed */
         top: 0;
         left: 0;
@@ -115,5 +114,9 @@
         transform-origin: center;
         transition: all 0.3s ease;
         will-change: transform, scale;
+     
+    }
+    .hero-section_container {
+      // opacity: 0.3;
     }
 }

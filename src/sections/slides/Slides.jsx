@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import BackgroundSlider from './BackgroundSlider'
 import { motion, AnimatePresence, useMotionValueEvent, useSpring, useTransform, useAnimation  } from "framer-motion";
 import "../../styles/Slides.scss";
 
@@ -71,11 +70,11 @@ const [hasSnappedToslides, setHasSnappedToslides] = useState(false);
 
 const backgrounds = [
   {
-    srcLap: "src/assets/slides/office.jpg",
+    src: "src/assets/slides/office.webp",
     srcMob: "src/assets/slides/mob/office-mob.webp",
     overlays: [
       {
-        srcLap: "src/assets/slides/office-top.png",
+        src: "src/assets/slides/office-top.png",
         srcMob: "src/assets/slides/mob/office-cropped.webp",
         zIndex: 3,
         className: ""
@@ -83,12 +82,12 @@ const backgrounds = [
     ],
   },
   {
-    src: "src/assets/slides/art-studio.jpg",
+    src: "src/assets/slides/art-studio.webp",
     srcMob: "src/assets/slides/mob/art-studio-min.webp",
     overlays: []
   },
   {
-    src: "src/assets/slides/underwater-min.jpg",
+    src: "src/assets/slides/underwater.webp",
     srcMob: "src/assets/slides/mob/underwater-min.webp",
     overlays: [
       {
@@ -118,7 +117,7 @@ const backgrounds = [
     ],
   },
   {
-    src: "src/assets/slides/photo-studio.jpg",
+    src: "src/assets/slides/photo-studio.webp",
     srcMob: "src/assets/slides/mob/photo-studio-min.webp",
     overlays: [
       {
@@ -130,12 +129,12 @@ const backgrounds = [
     ],
   },
   {
-    src: "src/assets/slides/car.jpg",
+    src: "src/assets/slides/car.webp",
     srcMob: "src/assets/slides/mob/car-min.webp",
     overlays: []
   },
   {
-    src: "src/assets/slides/jungle.jpg",
+    src: "src/assets/slides/jungle.webp",
     srcMob: "src/assets/slides/mob/jungle-min.webp",
     overlays: [
       {
@@ -147,7 +146,7 @@ const backgrounds = [
     ],
   },
   {
-    src: "src/assets/slides/library.jpg",
+    src: "src/assets/slides/library.webp",
     srcMob: "src/assets/slides/mob/library-min.webp",
     overlays: [
       {
@@ -171,7 +170,7 @@ const backgrounds = [
     ],
   },
   {
-    src: "src/assets/slides/space-red.jpg",
+    src: "src/assets/slides/space-red.webp",
     srcMob: "src/assets/slides/mob/space-red-min.webp",
     overlays: [
       {
@@ -209,14 +208,14 @@ const backgrounds = [
             key={currentIndex}
             className="background"
             style={{ 
-              backgroundImage:`url(${isMobile ? backgrounds[currentIndex].srcMob : backgrounds[currentIndex].srcLap})` 
+              backgroundImage:`url(${isMobile ? backgrounds[currentIndex].srcMob : backgrounds[currentIndex].src})` 
           }}
           >
             {
             (backgrounds[currentIndex].overlays || []).map((overlay, index) => (
               <img 
                 key={index} 
-                src={isMobile ? overlay.srcMob : overlay.srcLap} 
+                src={isMobile ? overlay.srcMob : overlay.src} 
                 alt="Overlay" 
                 style={{zIndex: overlay.zIndex}}
                 className={`overlay-image ${overlay.className || ''}`} 

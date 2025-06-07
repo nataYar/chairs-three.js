@@ -17,10 +17,10 @@ const Office = ({ progress, officeRange }) => {
       const value = officeProgress.get();
      
       if (value <= 0.05 || value > 0.6) {
-       setLeftVideoSrc("src/assets/office/office party.mp4");
+        setLeftVideoSrc("src/assets/office/office party.mp4");
         setRightVideoSrc("src/assets/office/cat.mp4");
       } else if (value > 0.3 && value <= 0.6) {
-         setLeftVideoSrc("src/assets/office/glitch.mp4");
+        setLeftVideoSrc("src/assets/office/glitch.mp4");
         setRightVideoSrc("src/assets/office/glitch.mp4");
         
       }
@@ -62,22 +62,23 @@ const Office = ({ progress, officeRange }) => {
   return (
     <div 
     ref={containerRef} 
-    className='main-section' 
+    className='main_section' 
     >
+      {/* <div className="black_filler"></div> */}
       <div>
-         <div className="pc-container">
-      <div className="pc pc-left">
+         <div className="pc_container">
+      <div className="pc pc_left">
         <video src={leftVideoSrc} autoPlay muted loop></video>
       </div>
-      <div className="pc pc-right">
+      <div className="pc pc_right">
         <video src={rightVideoSrc} autoPlay muted loop></video>
       </div>
     </div>
 
-    <div className='office-content'></div> 
+    <div className='office_content'></div> 
     <motion.div
         ref={textContainerRef}
-        className="text-container"
+        className="text_container"
       >
        
       <motion.h2 style={{ x: xLine1, skewX }}>the backbone</motion.h2>

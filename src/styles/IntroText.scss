@@ -186,3 +186,9 @@
     transform: rotate(90deg); /* Rotate right leg to make it look like it's sitting */
   }
 }
+
+@media (min-width: 769px) {
+  .intro-text {
+    font-size: 25px;
+  }
+}

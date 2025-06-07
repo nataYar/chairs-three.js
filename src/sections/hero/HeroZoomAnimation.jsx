@@ -36,22 +36,20 @@ const HeroAnimation = ({
 
 const pinEnd = window.innerHeight * 5.5;
 
- useGSAP(() => {
-// text animation
-if(!textRef.current) return;
-  
-
-    if (!heroRef.current) return;
-     ScrollTrigger.create({
-       trigger: containerHeroRef.current,
-       start: "top top",
-       end: () => `${pinEnd}`, 
-       pin: heroRef.current,
-      //  pinSpacing: false,
-       scrub: true,
-      //  markers: true, 
-     });
-  });
+//  useGSAP(() => {
+//   // text animation
+//   if(!textRef.current) return;
+//   if (!heroRef.current) return;
+//      ScrollTrigger.create({
+//        trigger: containerHeroRef.current,
+//        start: "top top",
+//        end: () => `${pinEnd}`, 
+//        pin: heroRef.current,
+//       //  pinSpacing: false,
+//        scrub: true,
+//        markers: true, 
+//      });
+//   });
 
   useMotionValueEvent(progress, "change", (latest) => {
     const maxScroll = heroRange[1];
@@ -62,14 +60,6 @@ if(!textRef.current) return;
     } else if (latest >= maxScroll){
       setIsFixed(false); 
     }
-  
-    // if (chaRef.current && isMobile) {
-    //   if (latest >= heroRange[1]-0.05 && latest <= heroRange[1]) {
-    //     chaRef.current.classList.add("padding-right");
-    //   } else {
-    //     chaRef.current.classList.remove("padding-right");
-    //   }
-    // }
   });
 
   useMotionValueEvent(progress, "change", (scrollProgress) => {
@@ -130,7 +120,6 @@ if(!textRef.current) return;
           scale: backgroundScale,
           y: backgroundTranslateY,
           opacity: backgroundOpacity,
-          // opacity: 0.5,
         }}
         animate={animationControls}
       />

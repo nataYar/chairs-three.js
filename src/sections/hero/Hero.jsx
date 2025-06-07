@@ -64,23 +64,22 @@ const Hero = ({ afterOfficeRef, progress, heroRange, heroTransitionRange, office
   // };
 
  const officeHalfWay = officeRange[0] + (officeRange[1] - officeRange[0]) * 0.5;
-const pinEnd = window.innerHeight * 5.5;
+const pinEnd = window.innerHeight * 4;
 
-useGSAP(() => {
-    if (!canvasRef.current) return;
-     ScrollTrigger.create({
-       trigger: containerHeroRef.current,
-       start: "top top",
-       end: () => `${pinEnd}`, 
-       pin: canvasRef.current,
-      //  pinSpacing: false,
-       scrub: true,
-      //  markers: true, 
-      // onEnter: () => gsap.set(".canvas-container", { x: 0, left: 0, right: 0, marginLeft: 0, marginRight: 0 }),
-      // onLeave: () => gsap.set(".canvas-container", { clearProps: "all" }) 
-     });
+// useGSAP(() => {
+//     if (!canvasRef.current) return;
+//      ScrollTrigger.create({
+//        trigger: containerHeroRef.current,
+//        start: "top top",
+//        end: () => `${pinEnd}`, 
+//        pin: canvasRef.current,
+//       //  pinSpacing: false,
+//        scrub: true, 
+// markers: true;
+
+//      });
    
-  });
+//   });
 
 
 

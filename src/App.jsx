@@ -35,17 +35,17 @@ const App = () => {
   // const [slidesRange, setSlidesRange] = useState([0, 1]);
   // const [carouselRange, setCarouselRange] = useState([0, 1]);
 
-  const [heroRange, setHeroRange] = useState([0, 0.43]);
-  const [heroTransitionRange, setHeroTransitionRange] = useState([0.32, 0.59]);
-  const [officeRange, setOfficeRange] = useState([0.489, 0.7]);
+  const [heroRange, setHeroRange] = useState([0, 0.412]);
+  const [heroTransitionRange, setHeroTransitionRange] = useState([0.309, 0.721]);
+  const [officeRange, setOfficeRange] = useState([0.75, 0.825]);
   const [afterOfficeRange, setAfterOfficeRange] =  useState([0.53, 0.77]);
  
   const [slidesRange, setSlidesRange] = useState([0.65, 0.88]);
   const [carouselRange, setCarouselRange] = useState([0.79, 1]);
   
-  // useMotionValueEvent(scrollYProgress, "change", (latest) => {
-  //   console.log("scrollYProgress changed:", latest);
-  // });
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    console.log("scrollYProgress changed:", latest);
+  });
   
   // custom hook for mob/laptop window size
   const useMediaQuery = (query) => {
@@ -105,7 +105,7 @@ const App = () => {
      <div className="hero_transition" ref={heroTransitionRef} >
         <HeroTransition progress={scrollYProgress}  
         heroTransitionRange={heroTransitionRange}
-       
+        containerRef={heroTransitionRef} 
         />
       </div>
 
@@ -127,17 +127,13 @@ const App = () => {
        */}
 
       <div ref={slidesRef}>
-        <Slides progress={scrollYProgress} slidesRange={slidesRange} isMobile={isMobile}/>
+        <Slides progress={scrollYProgress} slidesRange={slidesRange} isMobile={isMobile} />
       </div>
 
       <div ref={carouselRef}>
-        <CarouselSection /> 
+        <CarouselSection isMobile={isMobile} /> 
       </div>
-      
-     
-     
-  
-     
+
     </div>
   </div>
   );

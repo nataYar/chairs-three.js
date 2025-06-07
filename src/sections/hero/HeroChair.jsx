@@ -1,5 +1,4 @@
-import React, { forwardRef, useEffect, useRef } from "react";
-import { useMediaQuery } from "react-responsive";
+import React, { forwardRef, useRef } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { useMotionValueEvent } from "framer-motion";
 import Chair from "./Chair";

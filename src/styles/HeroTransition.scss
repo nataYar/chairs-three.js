@@ -1,3 +1,9 @@
+// .hero_transition_container {
+//   position: relative;
+//   width: 100vw;
+//   height: 200vh;
+//  background-color: blue;
+// }
 .hero-wrapper {
   display: grid;
   grid-template-rows: repeat(4, 1fr);
@@ -5,9 +11,11 @@
   height: 100vh;
   margin: 0;
   padding: 0;
-  
-  position: relative;
-  // background-color: bisque;
+
+  position: absolute;
+  bottom: 0;
+  background-color: bisque;
+  z-index: 98;
 }
 
 .slice {
