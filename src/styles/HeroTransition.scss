@@ -5,20 +5,22 @@
   height: 100vh;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  
   position: relative;
-  background-color: bisque;
+  // background-color: bisque;
 }
 
 .slice {
-    position: absolute;
-    // top: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
   // display: grid;
   // grid-template-columns: repeat(5, 1fr); 
-  background-color: blue;
   width: 100%;
   height: 25%; 
-  transform-origin: bottom; 
+  display: flex;
+  flex-direction: row;
+  // transform-origin: bottom; 
 }
 
 .word-svg {
@@ -27,49 +29,59 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-
-  // background-color: violet;
-
+  // overflow: hidden;
 }
 
-.word-svg > div{
-  flex: 1 1 20%; /* 5 letters = ~20% each */
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-//  background-color: yellow;
 
-}
+// .word-svg svg {
+//   width: 20%;;
+//   flex: 1 1 20%; 
+//   height: 100%;
+ 
+//   // background-color: yellow;
+//   transform: translateY(62%);
 
-.word-svg svg { //letter
-width: 95% !important; /* Force full width */
-  height: 100% !important; 
+// }
+
+.word-svg svg { 
+  width: 100%; 
+  height: 400% ; 
   display: block;
-  // background-color: steelblue;
+  // transform-origin: top;
+  // transform: translateY(62%);
 }
 
 .slice-index-0 {
-  // clip-path: inset(0% 0% 75% 0%);
   top: 0%;
 }
 .slice-index-1 {
-  // clip-path: inset(25% 0% 50% 0%);
   top: 25%;
 }
 .slice-index-2 {
-  // clip-path: inset(50% 0% 25% 0%);
   top: 50%;
 }
 .slice-index-3 {
-  // clip-path: inset(75% 0% 0% 0%);
   top: 75%;
-  
 }
 
 
+// .slice-index-0 .word-svg svg {
+//   transform: translateY(37%);
+// }
+// .slice-index-1 .word-svg svg {
+//   transform: translateY(12%);
+// }
+// .slice-index-2 .word-svg svg {
+//   transform: translateY(-13%);
+// }
+// .slice-index-3 .word-svg svg {
+//   transform: translateY(-38%);
+// }
+
+
+
 /* Add this temporarily to debug */
-.slice-index-0 { background-color: rgba(255, 0, 0, 0.5); }
-.slice-index-1 { background-color: rgba(0, 255, 0, 0.5); }
-.slice-index-2 { background-color: rgba(0, 0, 255, 0.5); }
-.slice-index-3 { background-color: rgba(255, 255, 0, 0.5); }
+// .slice-index-0 { background-color: rgba(255, 0, 0, 0.5); }
+// .slice-index-1 { background-color: rgba(0, 255, 0, 0.5); }
+// .slice-index-2 { background-color: rgba(0, 0, 255, 0.5); }
+// .slice-index-3 { background-color: rgba(255, 255, 0, 0.5); }

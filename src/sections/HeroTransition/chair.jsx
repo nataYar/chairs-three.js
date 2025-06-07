@@ -60,26 +60,39 @@ const A = () => {
 };
 
 
-const I = () => {
-  return (
-    <svg  
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 12.7 30 35"
+    const I = () => {
+      return (
+    <svg
+      viewBox="0 12.7 15.5 36.399998"
       preserveAspectRatio="none"
-
-    >
-        <g>
-            <path d="M0 48.40L0 13.40L9.90 13.40L9.90 48.40L0 48.40Z"
-               fill="#FFFFFF"
-           />
-      </g>
+      xmlns="http://www.w3.org/2000/svg">
+        <path
+        d="m 5,48.399999 v -35 H 10.7 v 35 z"
+         fill="#FFFFFF"/>
     </svg>
-  )
-}
+
+    )}
+
+// const I = () => {
+//   return (
+//     <svg  
+//       xmlns="http://www.w3.org/2000/svg"
+//       viewBox="0 12.7 30 35"
+//       preserveAspectRatio="none"
+
+//     >
+//         <g>
+//             <path d="M0 48.40L0 13.40L9.90 13.40L9.90 48.40L0 48.40Z"
+//                fill="#FFFFFF"
+//            />
+//       </g>
+//     </svg>
+//   )
+// }
 
 const R = () => (
   <svg
-    viewBox="0 12.7 33 36"
+    viewBox="0 12.7 33 36.399998"
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="none"
 

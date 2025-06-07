@@ -93,7 +93,7 @@ useMotionValueEvent(progress, "change", (latest) => {
 
     // console.log("Computed styles:");
     // console.log("left:", getComputedStyle(canvasRef.current).left);
-    console.log("position:", getComputedStyle(canvasRef.current).position);
+    // console.log("position:", getComputedStyle(canvasRef.current).position);
   }
 });
 

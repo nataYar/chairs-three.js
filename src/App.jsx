@@ -43,9 +43,9 @@ const App = () => {
   const [slidesRange, setSlidesRange] = useState([0.65, 0.88]);
   const [carouselRange, setCarouselRange] = useState([0.79, 1]);
   
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    console.log("scrollYProgress changed:", latest);
-  });
+  // useMotionValueEvent(scrollYProgress, "change", (latest) => {
+  //   console.log("scrollYProgress changed:", latest);
+  // });
   
   // custom hook for mob/laptop window size
   const useMediaQuery = (query) => {
