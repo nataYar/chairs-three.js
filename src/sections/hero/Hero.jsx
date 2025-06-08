@@ -125,6 +125,7 @@ useMotionValueEvent(progress, "change", (latest) => {
          // position: isPinned ? "fixed" : "absolute",
           // top: isPinned ? 0 : `${pinThreshold}px`,
         //   left: 0,
+       
           width: '100vw',
           height: '100vh',
           pointerEvents: 'auto',

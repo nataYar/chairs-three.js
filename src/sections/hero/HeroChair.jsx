@@ -1,6 +1,6 @@
 import React, { forwardRef, useRef } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
-import { useMotionValueEvent } from "framer-motion";
+import { useMotionValueEvent, useTransform } from "framer-motion";
 import Chair from "./Chair";
 
 const HeroChair = forwardRef((props, ref) => {
@@ -58,61 +58,61 @@ const HeroChair = forwardRef((props, ref) => {
 
   // Use progress to animate Y position and scale
   const easeIn = (start, end, t) => start + (end - start) * t * t;
+  const heroTransition = useTransform(progress, heroTransitionRange , [0, 1]); 
+  
+  const heroTransitionRef = useRef(0);
+  const tHeroTransition = heroTransitionRef.current;
+
+  useMotionValueEvent(heroTransition, "change", (latest) => {
+    heroTransitionRef.current = latest;
+  });
+
+  const lastPhase = useRef(null);
+const scalePhaseStartY = useRef(null); 
 
   useFrame(() => {
   if (!localRef.current) return;
-  const p = typeof progress === "number" ? progress : progress.get();
-  const heroStart = heroRange[0];
-  const heroEnd = heroRange[1];
 
-  const heroTransitionStart = heroTransitionRange[0] + (heroTransitionRange[1] - heroTransitionRange[0]) * 0.4;
-  const heroTransitionEnd = heroTransitionRange[1];
-  //  const shiftAmount = viewport.width * 0.3;
-  const officeHalfWay = officeRange[0] + (officeRange[1] - officeRange[0]) * 0.5;
-  const shiftXOffice = isMobile ? 10 : -3;
-  const shiftYOffice = isMobile ? 25 : 48;
+  const t = heroTransitionRef.current;
+const finalY = -10;
+  // Phase 1: rotate & descend
+  if (t >= 0 && t < 0.474) {
+    const p = t / 0.474;
+    localRef.current.rotation.y = rotation[1] + p * Math.PI;
 
-  // Animate Y position
-  if (p >= heroStart && p < heroTransitionStart) {
-    const moveY = easeIn(0, -20, heroProgress.get());
-    localRef.current.position.y = initialPosition[1] + moveY;
+    localRef.current.position.y = initialPosition[1] + (finalY - initialPosition[1]) * p;
+    localRef.current.scale.set(initialScale, initialScale, initialScale);
+
+    lastPhase.current = "rotate";
   }
 
-  else if (p >= heroTransitionStart && p <= heroTransitionEnd) {
-    const t = (p - heroTransitionStart) / (heroTransitionEnd - heroTransitionStart);
+  // Phase 2: scale up and descend
+  else if (t >= 0.474 && t < 0.7) {
+    const start = 0.474;
+    const end = 0.7;
+    const p = (t - start) / (end - start);
+    const eased = p * p;
 
-    // Rotation
-    const spinAmount = 150 * (Math.PI / 180); // 150 degrees
-    localRef.current.rotation.y = rotation[1] + t * spinAmount; 
+    if (lastPhase.current !== 'scaleUp') {
+      scalePhaseStartY.current = localRef.current.position.y;
+      lastPhase.current = 'scaleUp';
+    }
 
-    // Scale
-    const finalScale = initialScale * 1.5;
-    const scale = initialScale + (finalScale - initialScale) * t;
+    const bigScale = 1.1;
+    const scale = initialScale + (bigScale - initialScale) * eased;
     localRef.current.scale.set(scale, scale, scale);
 
-    // move down and further left
-    localRef.current.position.x = initialPosition[0] - t * shiftXOffice;
-    localRef.current.rotation.x = rotation[0] - t * 0.5;
-    localRef.current.rotation.z = localRef.current.rotation.z * (1 - t);
-    // Store current Y only once at start of transition
-    if (transitionStartY.current === null) {
-      transitionStartY.current = localRef.current.position.y;
-    }
-    const baseY = transitionStartY.current;
-    // Move from baseY down by up to 2 units
-    localRef.current.position.y = baseY - t * shiftYOffice;
-  } 
-   else if (p >= officeHalfWay) {
-    const finalScale = initialScale * 1.5;
-    localRef.current.scale.set(finalScale, finalScale, finalScale);
-    localRef.current.rotation.set(rotation[0] - 0.5, rotation[1] + (150 * Math.PI / 180), 0);
-    localRef.current.position.set(
-      initialPosition[0] - shiftXOffice,
-      (transitionStartY.current ?? initialPosition[1]) - shiftYOffice,
-      initialPosition[2]
-    );
+    const baseZ = initialPosition[2];
+    const compensationZ = baseZ - (scale - initialScale) * 1;
+    localRef.current.position.z = compensationZ;
+
+    const baseY = scalePhaseStartY.current;
+    const finalY = baseY - 50;
+    localRef.current.position.y = baseY + (finalY - baseY) * eased;
   }
 });
+
+
 
 
   return (
