@@ -28,10 +28,10 @@ useGSAP(() => {
   const trigger = ScrollTrigger.create({
     trigger: wrapperRef.current,
     start: "top top",         // when wrapper's top hits viewport top
-    end: "+=100%",            // pin for 100vh scroll
-    // scrub: 1,
+    end: "+=100%",            // pin for 200vh scroll
+    scrub: 1,
     pin: wrapperRef.current,
-    // markers: true,
+    markers: true,
     onUpdate: (self) => {
       progress.set(self.progress);
     },
@@ -100,15 +100,16 @@ const letters = [C, H, A, I, R];
 
 const slicePositions = ["0%", "25%", "50%", "75%"];
 
-const baseStart = 0.3;
-const baseEnd = 0.5;
+const baseStart = 0.1;
+const baseEnd = 0.4;
 const staggerStep = 0.0025; 
 // const staggerStep = 0; 
 const sliceTargets = [145, 45, -55, -155]; // in %, for each slice row
 
 
   return (
-    <div className="hero_transition_container">
+    <>
+      {/* <div style={{ height: "100vh" }} /> */}
       <div ref={wrapperRef} className="hero-wrapper">
   
       {slicePositions.map((top, idx) => {
@@ -133,7 +134,7 @@ const sliceTargets = [145, 45, -55, -155]; // in %, for each slice row
             baseStart + idx * staggerStep,
             baseEnd + idx * staggerStep + lastLetterOffset
           ],
-          ["450vw", "100vw"]
+          ["400vw", "100vw"]
         );
         const widthValue = useSpring(rawWidth, {
           stiffness: 100,
@@ -185,7 +186,7 @@ const sliceTargets = [145, 45, -55, -155]; // in %, for each slice row
           );
         })}
       </div>
-    </div>
+    </>
   
   )
 };

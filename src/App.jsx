@@ -35,9 +35,9 @@ const App = () => {
   // const [slidesRange, setSlidesRange] = useState([0, 1]);
   // const [carouselRange, setCarouselRange] = useState([0, 1]);
 
-  const [heroRange, setHeroRange] = useState([0, 0.412]);
-  const [heroTransitionRange, setHeroTransitionRange] = useState([0.309, 0.721]);
-  const [officeRange, setOfficeRange] = useState([0.75, 0.825]);
+  const [heroRange, setHeroRange] = useState([0, 0.316]);
+  const [heroTransitionRange, setHeroTransitionRange] = useState([0.317, .624]);
+  const [officeRange, setOfficeRange] = useState([0.5511, 0.825]);
   const [afterOfficeRange, setAfterOfficeRange] =  useState([0.53, 0.77]);
  
   const [slidesRange, setSlidesRange] = useState([0.65, 0.88]);
@@ -81,7 +81,7 @@ const App = () => {
   const SLIDES = Array.from(Array(SLIDE_COUNT).keys())
 
   return (
-    <div id="smooth-wrapper"> 
+    <> 
       <ReactLenis root />
       <div
       ref={containerRef}
@@ -135,7 +135,7 @@ const App = () => {
       </div>
 
     </div>
-  </div>
+  </>
   );
 };
 

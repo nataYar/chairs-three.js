@@ -51,6 +51,10 @@ const Hero = ({ afterOfficeRef, progress, heroRange, heroTransitionRange, office
   //     return () => unsubscribe();
   //   }, [heroProgress]);
 
+    useMotionValueEvent(heroProgress, "change", (latest) => {
+        console.log("heroProgress changed:", latest);
+      });
+
   const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
 
   // const canvasAnimationVariants = {
@@ -123,7 +127,7 @@ useMotionValueEvent(progress, "change", (latest) => {
         //   left: 0,
           width: '100vw',
           height: '100vh',
-          // pointerEvents: 'auto',
+          pointerEvents: 'auto',
         }}
         // animate={canvasAnimationVariants.moveCanvas}
         // transition={{
@@ -147,7 +151,7 @@ useMotionValueEvent(progress, "change", (latest) => {
         left: 0,
         width: '100%',
         height: '100%',
-        zIndex: 99, 
+        zIndex: 100, 
         pointerEvents: 'auto',
         }}>
             

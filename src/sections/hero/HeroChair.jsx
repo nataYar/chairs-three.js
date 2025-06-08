@@ -61,7 +61,6 @@ const HeroChair = forwardRef((props, ref) => {
 
   useFrame(() => {
   if (!localRef.current) return;
-// console.log(localRef.current.position)
   const p = typeof progress === "number" ? progress : progress.get();
   const heroStart = heroRange[0];
   const heroEnd = heroRange[1];

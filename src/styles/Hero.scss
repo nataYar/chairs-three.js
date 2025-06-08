@@ -3,18 +3,8 @@
   position: relative;
   height: 400vh; 
   width: 100vw;
-  z-index: 99;
-  // overflow-x: hidden; //messes up absolute for canvas-container
-    .bottom{
-      background-color: rgb(0, 0, 0);
-      opacity: 1;
-      position: absolute;
-      bottom: 0;
-      height: 0px; 
-      width: 100vw;
-      z-index: 99;
-      overflow: hidden; 
-     }
+  // z-index: 99;
+  // opacity: 0.8;
   }
 
   .hero-section_sibling{
@@ -50,16 +40,22 @@
   }
 
   .hero-section {
-    overflow-x: hidden;
+        position: fixed !important; /* Keep fixed */
+        top: 0;
+        left: 0;
+        z-index: 1; 
+        
+        background-attachment: fixed;
+        
+        transition: all 0.3s ease;
     height: 100vh;
     width: 100vw;
     background-image: url('src/assets/chairs/hero_chairs.jpeg');
     background-position:top;
     background-repeat: no-repeat;
-    // background-attachment: fixed;
+
     background-size: cover;
     transform-origin: top;
-    
   }
 
   .hero-section::after {
@@ -89,7 +85,7 @@
     padding: 0 !important;
     // opacity: .4;
     // background-color: aqua;
-    z-index: 99 !important; 
+    z-index: 100 !important; 
     pointer-events: auto; 
     // transition: none !important;
   }
@@ -105,7 +101,7 @@
         position: fixed !important; /* Keep fixed */
         top: 0;
         left: 0;
-        z-index: 1; 
+        // z-index: 1; 
         height: 100vh;
         width: 100vw;
         background-repeat: no-repeat;
@@ -113,10 +109,8 @@
         background-size: cover;
         transform-origin: center;
         transition: all 0.3s ease;
-        will-change: transform, scale;
+        // will-change: transform, scale;
      
     }
-    .hero-section_container {
-      // opacity: 0.3;
-    }
+    
 }
