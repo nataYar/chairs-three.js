@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useEffect } from 'react';
+import React, { forwardRef, useRef, useEffect, useMemo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useThree, useFrame } from "@react-three/fiber";
 import { motion } from 'framer-motion';
@@ -9,7 +9,7 @@ const Chair3 = forwardRef(({ progress }, ref) => {
     const localRef = useRef(); // Local ref for animation
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); // Mobile-first design
       const { viewport } = useThree();
-      const cachedViewport = useRef({ width: viewport.width, height: viewport.height });
+      
     
     // Initial rotation values
     const baseRotation = [0, 0, 0.4]; // Start with no rotation (tilt (x), rotation (y), twist (z))
@@ -18,28 +18,16 @@ const Chair3 = forwardRef(({ progress }, ref) => {
     const scale = isMobile ? 0.03 : 0.04; // Adjust the size
     const position = isMobile
   ? [
-      +(cachedViewport.current.width * -0.3).toFixed(2),
-      +(cachedViewport.current.height * 0).toFixed(2),
+      +(viewport.width * -0.3).toFixed(2),
+      +(viewport.height * 0).toFixed(2),
       -2
     ]
   : [
-      +(cachedViewport.current.width * -0.3).toFixed(2),
-      +(cachedViewport.current.height * 0).toFixed(2),
+      +(viewport.width * -0.3).toFixed(2),
+      +(viewport.height * 0).toFixed(2),
       -2
     ];
-    // useEffect(() => {
-    // const handleResize = () => {
-    //     cachedViewport.current = {
-    //     width: viewport.width,
-    //     height: viewport.height,
-    //     };
-    // };
-    // handleResize(); // update once on mount
-    // window.addEventListener("resize", handleResize);
-    // return () => window.removeEventListener("resize", handleResize);
-    // }, [viewport]);
-
-
+  
     // Add animation for rotation along the Y-axis
     useFrame(({ clock }) => {
     if (localRef.current) {

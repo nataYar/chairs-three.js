@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from 'gsap';
 import * as THREE from 'three';
 
+
 gsap.registerPlugin(ScrollTrigger);
 
 // Import Components
@@ -43,6 +44,16 @@ const Hero = ({ afterOfficeRef, progress, heroRange, heroTransitionRange, office
   ]);
 
   const heroProgress = useTransform(progress, heroRange, [0, 1]); 
+  const heroTransition = useTransform(progress, heroTransitionRange, [0, 1]);
+
+  const canvasTranslateY = useTransform(heroTransition, [0, 0.7, 1], ["0vh", "0vh", "-100vh"]);
+  const blackOverlayOpacityRaw = useTransform(heroTransition, [0.65, 1], [0, 1]);
+
+const blackOverlayOpacity = useSpring(blackOverlayOpacityRaw, {
+  duration: 1,
+  ease: [0.25, 0.1, 0.25, 1], // easeInOut
+});
+
 
   //  useEffect(() => {
   //     const unsubscribe = heroProgress.on("change", (latest) => {
@@ -51,9 +62,9 @@ const Hero = ({ afterOfficeRef, progress, heroRange, heroTransitionRange, office
   //     return () => unsubscribe();
   //   }, [heroProgress]);
 
-    useMotionValueEvent(heroProgress, "change", (latest) => {
-        console.log("heroProgress changed:", latest);
-      });
+    // useMotionValueEvent(heroProgress, "change", (latest) => {
+    //     console.log("heroProgress changed:", latest);
+    //   });
 
   const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
 
@@ -100,107 +111,144 @@ useMotionValueEvent(progress, "change", (latest) => {
   }
 });
 
+//  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 }); // NEW: Use useState for reactivity
+
+
+
+// const CanvasSizeTracker = ({ onResize }) => {
+//   const { camera, size } = useThree();
+
+//   useEffect(() => {
+//   camera.aspect = size.width / size.height;
+//   camera.updateProjectionMatrix();
+//   if (onResize) onResize({ width: size.width, height: size.height });
+// }, [camera, size, onResize]);
+
+
+//   return null;
+// };
+
+
+// const handleCanvasResize = debounce(({ width, height }) => {
+//   setCanvasSize({ width, height });
+//   console.log("Canvas resized:", width, height);
+// }, 100);
+
+
+  // useEffect(() => {
+  //   console.log(canvasSize);
+  // }, [canvasSize]);
+
+
   return (
     <motion.div className="hero-section_container"
       ref={containerHeroRef}
       >
-      <HeroZoomAnimation 
-      progress={progress}
-      isNonFixedDelayed={isNonFixedDelayed}
-      heroProgress={heroProgress}
-      heroRange={heroRange}
-      isMobile={isMobile}
-      containerHeroRef={containerHeroRef}
-      isCanvasLoaded={isCanvasLoaded} 
-      />
-       <Suspense fallback={null}>
-      
-      <div 
-      ref={canvasRef}
-      className="canvas-container" 
-      style={{
-          // position: "relative",
-          margin: "0 auto",
-          // opacity: 0.5, 
-         // position: isPinned ? "fixed" : "absolute",
-          // top: isPinned ? 0 : `${pinThreshold}px`,
-        //   left: 0,
-       
-          width: '100vw',
-          height: '100vh',
-          pointerEvents: 'auto',
-        }}
-        // animate={canvasAnimationVariants.moveCanvas}
-        // transition={{
-        //   duration: 0.1, 
-        //   ease: "easeInOut"
-        // }} 
-      >
-      
-          <Canvas 
-        shadows 
-        onCreated={() => setIsCanvasLoaded(true)} 
-        camera={{
-          position: [0, 0, 5],
-          fov: 75,
-          near: 0.1,
-          far: 100,
-        }}
-        style={{ 
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: 100, 
-        pointerEvents: 'auto',
-        }}>
-            
-      <CameraAnimation progress={progress} 
-        heroRange={heroRange} 
-        isMobile={isMobile} />
-    
-      <Lighting 
+        <HeroZoomAnimation 
+        progress={progress}
+        isNonFixedDelayed={isNonFixedDelayed}
+        heroProgress={heroProgress}
+        heroRange={heroRange}
         isMobile={isMobile}
-        progress={progress} 
-        heroRange={heroRange}  
-        heroTransitionRange={heroTransitionRange}
-         officeRange={officeRange}
-         afterOfficeRange={afterOfficeRange}
-         slidesRange={slidesRange} 
-         carouselRange={carouselRange}
+        containerHeroRef={containerHeroRef}
+        isCanvasLoaded={isCanvasLoaded} 
         />
-        <Chair1 ref={chairRefs[0].ref} progress={progress} isMobile={isMobile} />
-        <Chair2 ref={chairRefs[1].ref} progress={heroProgress} isMobile={isMobile}  />
-        <Chair3 ref={chairRefs[2].ref}  progress={heroProgress} isMobile={isMobile} />
-        <Chair4 ref={chairRefs[3].ref} isMobile={isMobile} />
-        <Chair5 ref={chairRefs[4].ref}  isMobile={isMobile} />
-        <Chair6 ref={chairRefs[5].ref} progress={heroProgress} isMobile={isMobile} />
-        <Chair7 ref={chairRefs[6].ref} progress={heroProgress} isMobile={isMobile} />
-        <HeroChair 
-        canvasRef={canvasRef}
-        ref={heroChairRef} 
-        heroProgress={heroProgress}  
-        progress={progress} 
-        heroRange={heroRange} 
-        heroTransitionRange={heroTransitionRange}
-        officeRange={officeRange}
-        afterOfficeRange={afterOfficeRange}
-        slidesRange={slidesRange} 
-        carouselRange={carouselRange}
-        heroChairRef={heroChairRef}
-        isMobile={isMobile} />
-        <ShadowPlane />
-      </Canvas>
-     </div> 
-  </Suspense>
-  </motion.div>
+        <Suspense fallback={null}>
+        
+        <motion.div
+          ref={canvasRef}
+          className="canvas-container"
+          style={{
+            position: "relative",
+            margin: "0 auto",
+            width: "100vw",
+            height: "100vh",
+            pointerEvents: "auto",
+            y: canvasTranslateY, // ← Magic happens here
+          }}
+        >
+        <Canvas 
+          shadows 
+          onCreated={() => setIsCanvasLoaded(true)} 
+          camera={{
+            position: [0, 0, 5],
+            fov: 75,
+            near: 0.1,
+            far: 100,
+          }}
+          style={{ 
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 100, 
+          pointerEvents: 'auto',
+          }}>
+
+        {/* <CanvasSizeTracker onResize={handleCanvasResize} /> */}
+        <CameraAnimation progress={progress} 
+          heroRange={heroRange} 
+          isMobile={isMobile} />
+    
+
+        <Lighting 
+          isMobile={isMobile}
+          progress={progress} 
+          heroRange={heroRange}  
+          heroTransitionRange={heroTransitionRange}
+          officeRange={officeRange}
+          afterOfficeRange={afterOfficeRange}
+          slidesRange={slidesRange} 
+          carouselRange={carouselRange}
+          />
+          <Chair1 ref={chairRefs[0].ref} progress={progress} isMobile={isMobile} />
+          <Chair2 ref={chairRefs[1].ref} progress={heroProgress} isMobile={isMobile} />
+           <Chair3 ref={chairRefs[2].ref}  progress={heroProgress} isMobile={isMobile} />
+          <Chair4 ref={chairRefs[3].ref} isMobile={isMobile} />
+          <Chair5 ref={chairRefs[4].ref}  isMobile={isMobile} />
+          <Chair6 ref={chairRefs[5].ref} progress={heroProgress} isMobile={isMobile} />
+          <Chair7 ref={chairRefs[6].ref} progress={heroProgress} isMobile={isMobile} /> 
+          <HeroChair 
+            canvasRef={canvasRef}
+            ref={heroChairRef} 
+            heroProgress={heroProgress}  
+            progress={progress} 
+            heroRange={heroRange} 
+            heroTransitionRange={heroTransitionRange}
+            officeRange={officeRange}
+            afterOfficeRange={afterOfficeRange}
+            slidesRange={slidesRange} 
+            carouselRange={carouselRange}
+            heroChairRef={heroChairRef}
+            isMobile={isMobile} 
+            />
+          <ShadowPlane />
+        </Canvas>
+      </motion.div> 
+    </Suspense>
+    {/* <motion.div
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      height: '100vh',
+      backgroundColor: 'green',
+      opacity: blackOverlayOpacity,
+      pointerEvents: 'none',
+      zIndex: 999, // make sure it's on top
+    }}
+  /> */}
+
+</motion.div>
   );
 };
 
-
 const CameraAnimation = ({ progress, heroRange }) => {
-  const { camera } = useThree();
+  const { camera, size } = useThree();
+  const aspect = size.width / size.height;
+
   const clampedProgress = useTransform(progress, heroRange, [0, 1], { clamp: true });
   const smoothProgress = useSpring(clampedProgress, {
     stiffness: 80,
@@ -208,11 +256,13 @@ const CameraAnimation = ({ progress, heroRange }) => {
     ease: 'easeInOut'
   });
 
-  // Step 3: Map the smooth progress to Y and Z values
   const yValue = useTransform(smoothProgress, [0, 1], [0, 3.2]);
-  const zValue = useTransform(smoothProgress, [0, 1], [5, 2]);
 
-  
+  // Adjust Z range based on aspect
+  const baseZ = aspect > 1 ? 5 / aspect : 5;
+  const zoomZ = aspect > 1 ? 2 / aspect : 2;
+  const zValue = useTransform(smoothProgress, [0, 1], [baseZ, zoomZ]);
+
   useFrame(() => {
     const y = yValue.get();
     const z = zValue.get();
@@ -220,12 +270,41 @@ const CameraAnimation = ({ progress, heroRange }) => {
     if (typeof y !== 'number' || typeof z !== 'number') return;
     camera.position.set(0, y, z);
     camera.updateProjectionMatrix();
-    camera.lookAt(0, y, z - 1); 
-    // console.log(camera.position)
+    camera.lookAt(0, y, z - 1);
   });
-  
+
   return null;
 };
+
+
+// OLD ONE
+// const CameraAnimation = ({ progress, heroRange }) => {
+//   const { camera } = useThree();
+//   const clampedProgress = useTransform(progress, heroRange, [0, 1], { clamp: true });
+//   const smoothProgress = useSpring(clampedProgress, {
+//     stiffness: 80,
+//     damping: 20,
+//     ease: 'easeInOut'
+//   });
+
+//   // Step 3: Map the smooth progress to Y and Z values
+//   const yValue = useTransform(smoothProgress, [0, 1], [0, 3.2]);
+//   const zValue = useTransform(smoothProgress, [0, 1], [5, 2]);
+
+  
+//   useFrame(() => {
+//     const y = yValue.get();
+//     const z = zValue.get();
+
+//     if (typeof y !== 'number' || typeof z !== 'number') return;
+//     camera.position.set(0, y, z);
+//     camera.updateProjectionMatrix();
+//     camera.lookAt(0, y, z - 1); 
+//     // console.log(camera.position)
+//   });
+  
+//   return null;
+// };
 
 const Lighting = ({
   progress,

@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useState, useEffect } from 'react';
+import React, { forwardRef, useRef, useState, useEffect, useMemo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useThree, useFrame } from "@react-three/fiber";
 import Chair from './Chair';
@@ -7,34 +7,75 @@ const Chair4 = forwardRef((props, ref) => {
     const localRef = useRef(); // Local ref for animation
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
       const { viewport } = useThree();
-      const cachedViewport = useRef({ width: viewport.width, height: viewport.height });
 
     // Initial rotation values
     const baseRotation = [0, 5 * Math.PI / 6, 0]; // tilt, rotation, twist
 
-    // Scaling and positioning based on device
-    const scale = isMobile ? 1 : 1; // Adjust the size
-    const position =  isMobile ? [
-    +(cachedViewport.current.width * -0.5).toFixed(2),
-    +(-cachedViewport.current.height * 0.55).toFixed(2),
-    -3
-    ] : 
-    [+(cachedViewport.current.width * -0.3).toFixed(2),
-    +(-cachedViewport.current.height * 0.5).toFixed(2),
-    -3]
-    // useEffect(() => {
-    // const handleResize = () => {
-    //     cachedViewport.current = {
-    //     width: viewport.width,
-    //     height: viewport.height,
-    //     };
-    // };
-    // handleResize(); // update once on mount
-    // window.addEventListener("resize", handleResize);
-    // return () => window.removeEventListener("resize", handleResize);
-    // }, [viewport]);
+// Inside your component
 
-    
+const scale = useMemo(() => 1, []); // same for both mobile and desktop, no need for dependency
+
+// const position = useMemo(() => {
+//   const width = viewport.width;
+//   const height = viewport.height;
+
+//   const x = isMobile 
+//     ? +(width * -0.5).toFixed(2) 
+//     : +(width * -0.3).toFixed(2);
+
+//   const y = isMobile 
+//     ? +(-height * 0.55).toFixed(2) 
+//     : +(-height * 0.5).toFixed(2);
+
+//   const z = -3;
+
+//   return [x, y, z];
+// }, [viewport.width, viewport.height, isMobile]);
+
+const { size } = useThree(); 
+const aspect = size.width / size.height;
+// const safeAspect = Math.min(Math.max(aspect, 1), 2);
+// const roundedAspect = Math.floor(safeAspect * 10) / 10;
+const roundedAspect = Math.floor(aspect * 10) / 10;
+
+const position = useMemo(() => {
+  // You can tweak these constants as needed
+  const x = isMobile
+    ? -roundedAspect * 3.5
+    : -roundedAspect * 3;
+
+  const y = isMobile
+    ? -3.2 
+    : -3;
+
+  const z = -3;
+
+  return [x, y, z];
+}, [isMobile, roundedAspect]);
+
+
+// const position = useMemo(() => {
+//   const width = viewport.width;
+//   const height = viewport.height;
+//   const x = isMobile ? parseFloat(+(width * -0.5).toFixed(2) ) : parseFloat(+(width * -0.3).toFixed(2));
+
+//   const y = isMobile
+//     ? -height * 0.55
+//     : -height * 0.5;
+//   const z = -3;
+//   return [x, y, z];
+// }, [viewport.width, viewport.height, isMobile]);
+
+
+
+useEffect(() => {
+  console.log("aspect", roundedAspect);
+}, [roundedAspect]);
+
+useEffect(() => {
+    console.log(`chair4 ${position}`);
+}, [position]);
+
     // State to control shaking
     const [isShaking, setIsShaking] = useState(false);
 

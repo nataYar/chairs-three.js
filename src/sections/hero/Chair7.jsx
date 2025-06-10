@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useEffect } from 'react';
+import React, { forwardRef, useRef, useMemo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useThree, useFrame } from "@react-three/fiber";
 import Chair from './Chair';
@@ -7,15 +7,18 @@ const Chair7 = forwardRef((props, ref) => {
     const localRef = useRef(); // Local ref for applying animation
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); 
       const { viewport } = useThree();
-      const cachedViewport = useRef({ width: viewport.width, height: viewport.height });
 
     const rotation = [-1.3, -25 * Math.PI / 18, -0.6]; // tilt, rotation, twist
     
-    const scale = isMobile ? 1 : 1.5; 
-    const position = isMobile ?  [ cachedViewport.current.width.toFixed(2) * 0.9, -cachedViewport.current.height.toFixed(2) * -0.3, -7
-    ] : 
-     [ cachedViewport.current.width.toFixed(2) * 0.9, -cachedViewport.current.height.toFixed(2) * -0.3, -7
-    ];
+    const scale = useMemo(() => (isMobile ? 1 : 1.5), [isMobile]);
+
+    const position = useMemo(() => {
+        const x = +(viewport.width * 0.9).toFixed(2);
+        const y = +(-viewport.height * -0.3).toFixed(2); // equivalent to just 0.3 * height
+        const z = -7;
+
+        return [x, y, z];
+        }, [viewport.width, viewport.height, isMobile]);
 
     // useEffect(() => {
     //     const handleResize = () => {

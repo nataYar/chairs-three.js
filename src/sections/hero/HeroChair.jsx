@@ -1,6 +1,8 @@
-import React, { forwardRef, useRef } from "react";
+import React, { forwardRef, useRef, useEffect, useMemo } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { useMotionValueEvent, useTransform } from "framer-motion";
+import { damp } from 'maath/easing';
+
 import Chair from "./Chair";
 
 const HeroChair = forwardRef((props, ref) => {
@@ -21,40 +23,39 @@ const HeroChair = forwardRef((props, ref) => {
   const localRef = useRef();
   const transitionStartY = useRef(null);
  
-  
-  // const { size } = useThree(); // canvas size in pixels
-  // const cachedSize = useRef({ width: size.width, height: size.height });
-
 
   const { viewport } = useThree();
-  const cachedViewport = useRef({ width: viewport.width, height: viewport.height });
-
-// useEffect(() => {
-//   let timeout;
-//   const handleResize = () => {
-//     clearTimeout(timeout);
-//     timeout = setTimeout(() => {
-//       cachedSize.current = {
-//         width: size.width,
-//         height: size.height,
-//       };
-//       console.log("Resize complete:", cachedSize.current);
-//     }, 500); // debounce time
-//   };
-
-//   window.addEventListener("resize", handleResize);
-//   return () => window.removeEventListener("resize", handleResize);
-// }, [size]);
 
   // Define rotation
   const rotation = isMobile ?  [0.4, 0.3, 0.1] : [0.2, 0.3, 0];
 
   // Define initial scale and position
-  const initialScale = isMobile ? 0.13 : 0.2;
+  const initialScale = useMemo(() => (isMobile ? 0.13 : 0.2), [isMobile]);
 
-  const initialPosition = isMobile
-    ? [cachedViewport.current.width * 0.85, cachedViewport.current.height * 2.8, -25]
-    : [cachedViewport.current.width * 0, -cachedViewport.current.height * -4.3, -35];
+  const initialPosition = useMemo(() => {
+    const width = viewport.width;
+    const height = viewport.height;
+    const x = isMobile ?
+      parseFloat(width * 0.2).toFixed(2)  : 
+      0;
+    
+    const y = isMobile ? 
+      parseFloat((height * 2.8).toFixed(2)) : 
+      parseFloat(height * 5).toFixed(2);
+    const z = isMobile ?  -25 : -35;
+  
+    return [x, y, z];
+  }, [viewport.width, viewport.height, isMobile]);
+
+
+//   const initialPosition = useMemo(() => {
+//   const x = isMobile ? (viewport.width * 0.2).toFixed(2)  : 0; // right-shifted for mobile, centered for desktop
+//   const y = isMobile ? (viewport.height * 2.8).toFixed(2) : (viewport.height * 5).toFixed(2);
+//   const z = isMobile ? -25 : -35;
+
+//   return [x, y, z];
+// }, [viewport.width, viewport.height, isMobile]);
+
 
   // Use progress to animate Y position and scale
   const easeIn = (start, end, t) => start + (end - start) * t * t;
@@ -67,52 +68,55 @@ const HeroChair = forwardRef((props, ref) => {
     heroTransitionRef.current = latest;
   });
 
-  const lastPhase = useRef(null);
-const scalePhaseStartY = useRef(null); 
+  const lerp = (start, end, t) => start * (1 - t) + end * t;
 
-  useFrame(() => {
+  // Pre-calculate constants outside the useFrame loop
+  const rotationStart = rotation[1];
+  const rotationEnd = rotation[1] + Math.PI;
+  const posYStart = initialPosition[1];
+  const posYEnd = -10;
+
+  useFrame((state, delta) => {
   if (!localRef.current) return;
 
   const t = heroTransitionRef.current;
-const finalY = -10;
-  // Phase 1: rotate & descend
+
+  const obj = localRef.current;
+  const bigScale = 1.1;
+
+  // ROTATION PHASE (0 to ~0.474)
   if (t >= 0 && t < 0.474) {
     const p = t / 0.474;
-    localRef.current.rotation.y = rotation[1] + p * Math.PI;
 
-    localRef.current.position.y = initialPosition[1] + (finalY - initialPosition[1]) * p;
-    localRef.current.scale.set(initialScale, initialScale, initialScale);
+    const targetY = lerp(posYStart, posYEnd, p * p); // eased Y
+    const targetRotY = lerp(rotationStart, rotationEnd, p * p);
 
-    lastPhase.current = "rotate";
+    damp(obj.position, "y", targetY, 0.3, delta);
+    damp(obj.rotation, "y", targetRotY, 0.3, delta);
+    damp(obj.scale, "x", initialScale, 0.3, delta);
+    damp(obj.scale, "y", initialScale, 0.3, delta);
+    damp(obj.scale, "z", initialScale, 0.3, delta);
   }
 
-  // Phase 2: scale up and descend
+  // SCALE-UP PHASE (~0.474 to 0.7)
   else if (t >= 0.474 && t < 0.7) {
     const start = 0.474;
     const end = 0.7;
     const p = (t - start) / (end - start);
     const eased = p * p;
 
-    if (lastPhase.current !== 'scaleUp') {
-      scalePhaseStartY.current = localRef.current.position.y;
-      lastPhase.current = 'scaleUp';
-    }
-
-    const bigScale = 1.1;
     const scale = initialScale + (bigScale - initialScale) * eased;
-    localRef.current.scale.set(scale, scale, scale);
+    const targetZ = initialPosition[2] - (scale - initialScale); // compensation
+    const targetY = posYEnd - 50 * eased;
 
-    const baseZ = initialPosition[2];
-    const compensationZ = baseZ - (scale - initialScale) * 1;
-    localRef.current.position.z = compensationZ;
+    damp(obj.scale, "x", scale, 0.3, delta);
+    damp(obj.scale, "y", scale, 0.3, delta);
+    damp(obj.scale, "z", scale, 0.3, delta);
 
-    const baseY = scalePhaseStartY.current;
-    const finalY = baseY - 50;
-    localRef.current.position.y = baseY + (finalY - baseY) * eased;
+    damp(obj.position, "y", targetY, 0.3, delta);
+    damp(obj.position, "z", targetZ, 0.3, delta);
   }
 });
-
-
 
 
   return (

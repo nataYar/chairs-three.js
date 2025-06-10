@@ -16,9 +16,9 @@ const HeroTransition = ({ progress, heroTransitionRange, containerRef  }) => {
   
    const animationProgress = useTransform(heroTransition, [0.2, 0.6], [0, 1]);
 
-useMotionValueEvent(heroTransition, "change", (latest) => {
-    console.log("heroTransition changed:", latest);
-  });
+// useMotionValueEvent(heroTransition, "change", (latest) => {
+//     console.log("heroTransition changed:", latest);
+//   });
   
   const pinEnd = window.innerHeight * 5; // Adjust based on your design
 
@@ -31,7 +31,7 @@ useGSAP(() => {
     end: "+=100%",            // pin for 200vh scroll
     scrub: 1,
     pin: wrapperRef.current,
-    markers: true,
+    // markers: true,
     onUpdate: (self) => {
       progress.set(self.progress);
     },

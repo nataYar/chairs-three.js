@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useEffect } from 'react';
+import React, { forwardRef, useRef, useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useMediaQuery } from 'react-responsive';
 import { useThree } from '@react-three/fiber';
@@ -8,46 +8,41 @@ import Chair from './Chair';
 const Chair1 = forwardRef((props, ref) => {
     const {progress, ...otherProps} = props; 
     const localRef = useRef();
-      const { viewport } = useThree();
-      const cachedViewport = useRef({ width: viewport.width, height: viewport.height });
+    const { viewport } = useThree();
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
     // Initial rotation based on device type
     const initialRotation = [0, 13 * Math.PI / 22, 0]
 
-//      useEffect(() => {
-//   const handleResize = () => {
-//     cachedViewport.current = {
-//       width: viewport.width,
-//       height: viewport.height,
-//     };
-//   };
-//   handleResize(); // update once on mount
-//   window.addEventListener("resize", handleResize);
-//   return () => window.removeEventListener("resize", handleResize);
-// }, [viewport]);
-
-
-
     // Device-specific position and scale
-    const scale = isMobile ? 3 : 3;
-    // console.log("Viewport:", viewport); 
+   
+      const scale = useMemo(() => (isMobile ? 3 : 3), [isMobile]);
+    
 
-    const position = isMobile ? [cachedViewport.current.width  * 0.4, -cachedViewport.current.height  * 0.7, 0] : [cachedViewport.current.width  * 0.4, -cachedViewport.current.height  * 0.65, -.3];
+    // const position = useMemo(() => {
+    //     const x = (viewport.width * 0.4).toFixed(2);
+    //     const y = isMobile ? (-viewport.height * 0.7).toFixed(2) : (-viewport.height * 0.65).toFixed(2);
+    //     const z = isMobile ? 0 : -0.3;
+
+    //     return [x, y, z];
+    //     }, [viewport.width, viewport.height, isMobile]);
        
+const position = useMemo(() => {
+  const width = viewport.width;
+  const height = viewport.height;
+//   const x = parseFloat((width * 0.4).toFixed(2));
+  const x = 3;
+  const y = -5;
 
-    // const position = isMobile
-    //     ? [cachedViewport.current.width  * 0.4, -cachedViewport.current.height  * 0.7, 0]
-    //     : [cachedViewport.current.width  * 0.3, -cachedViewport.current.height  * 0.4, 0];
 
+//   const y = isMobile ? parseFloat((-height * 0.7).toFixed(2)) : parseFloat((-height * 0.65).toFixed(2));
+  const z = isMobile ? 0 : -0.3;
 
-        // useEffect(() => {
-        //     if (!initialized.current && localRef.current) {
-        //         console.log("Setting initial position for chair:", index, position); // Debugging
-        //         setInitialPosition(index, position); // Use index to update the parent
-        //         initialized.current = true; // Mark as initialized
-        //     }
-        // }, [index, position, setInitialPosition]);
+  return [x, y, z];
+}, [viewport.width, viewport.height, isMobile]);
+
+ 
+// useEffect(() => {console.log(position)}), [position];
 
     // Rocking animation
     useFrame(({ clock }) => {

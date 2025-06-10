@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useEffect } from 'react';
+import React, { forwardRef, useRef, useEffect, useMemo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useThree, useFrame } from "@react-three/fiber";
 import Chair from './Chair';
@@ -6,23 +6,38 @@ import Chair from './Chair';
 const Chair2 = forwardRef(({ progress }, ref) => {
     const localRef = useRef(); // Local ref for applying animation
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); // Mobile-first design
-      const { viewport } = useThree();
-      const cachedViewport = useRef({ width: viewport.width, height: viewport.height });
+    const { viewport } = useThree();
+     
 
     const rotation = [-3, 25 * Math.PI / 18, 0.5]; // tilt, rotation, twist
     
     // Scaling and positioning based on device
-    const scale = isMobile ? 5 : 3.5; 
-    const position = isMobile ? [
-        cachedViewport.current.width * 0.5,
-        -cachedViewport.current.height * -1.3,
-        -12
-        ] : [
-        cachedViewport.current.width * 0.1,
-        -cachedViewport.current.height * -0.7,
-        -2
-        ] ;
-        
+    const scale = useMemo(() => (isMobile ? 5 : 3.5), [isMobile]);
+    
+    //   const position = useMemo(() => {
+    //     const x = isMobile 
+    //         ? +(viewport.width * 0.5).toFixed(2) 
+    //         : +(viewport.width * 0.1).toFixed(2);
+    //     const y = isMobile 
+    //         ? +(viewport.height * -1.3).toFixed(2) 
+    //         : +(-viewport.height *  -0.7).toFixed(2); 
+    //     const z = isMobile ? -12 : -2;
+
+    //     return [x, y, z];
+    //     }, [viewport.width, viewport.height, isMobile]);
+
+const position = useMemo(() => {
+  const width = viewport.width;
+  const height = viewport.height;
+  const x = isMobile ? parseFloat((width * 0.5).toFixed(2)) : parseFloat((width * 0.1).toFixed(2));
+
+  const y = isMobile
+    ? parseFloat((height * 1.3).toFixed(2))
+    : parseFloat((height *  0.7).toFixed(2));
+  const z = isMobile ? -12 : -2;
+  return [x, y, z];
+}, [viewport.width, viewport.height, isMobile]);
+
     // useEffect(() => {
     // const handleResize = () => {
     //     cachedViewport.current = {
@@ -66,26 +81,6 @@ const Chair2 = forwardRef(({ progress }, ref) => {
             localRef.current.position.y = position[1];
             localRef.current.position.z = position[2];
         }
-
-        // const time = performance.now() / 1000;
-        // localRef.current.rotation.x = rotation[0] + Math.sin(time * 1.7) * 0.02;
-        // localRef.current.rotation.y = rotation[1] + Math.cos(time * 1.3) * 0.04;
-        // localRef.current.rotation.z = rotation[2] + Math.sin(time * 1.7) * 0.03;
-
-        // const moveSpeed = 1;
-        // let moveX = 0;
-        // let moveY = 0;
-        // let moveZ = 0;
-
-        // if (progress.get() >= 0.3) {
-        //     moveX = easeIn(0, (progress.get() - 0.1) * moveSpeed * 4.5, progress.get() * 1.2); 
-        //     moveY = easeIn(0, (progress.get() - 0.1) * moveSpeed * 1.8, progress.get()); 
-        //     moveZ = easeIn(0, (progress.get() - 0.1) * moveSpeed * 2.0, progress.get()); 
-        // }
-
-        // localRef.current.position.x = position[0] + moveX;
-        // localRef.current.position.y = position[1] + moveY;
-        // localRef.current.position.z = position[2] + moveZ;
     }
 });
 

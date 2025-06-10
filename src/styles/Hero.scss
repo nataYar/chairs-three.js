@@ -85,7 +85,7 @@
     padding: 0 !important;
     // opacity: .6;
     // background-color: aqua;
-    z-index: 100 !important; 
+    z-index: 90 ; 
     pointer-events: auto; 
     // transition: none !important;
   }
@@ -110,7 +110,6 @@
         transform-origin: center;
         transition: all 0.3s ease;
         // will-change: transform, scale;
-     
     }
     
 }
