@@ -3,26 +3,44 @@ import { useMediaQuery } from 'react-responsive';
 import { useThree, useFrame } from "@react-three/fiber";
 import Chair from './Chair';
 
-const Chair6 = forwardRef(({ progress }, ref) => {
+const Chair6 = forwardRef((props, ref) => {
+    const {progress, isMobile, aspect, ...otherProps} = props; 
     const localRef = useRef();
-    const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); 
-      const { viewport } = useThree();
-     
 
-    const rotation = isMobile ? [0, Math.PI / 3, 0] : [0, Math.PI / 4, 0] // tilt, rotation, twist
-    const scale = useMemo(() => (isMobile ? 3.3 : 3.4), [isMobile]);
+    const rotation = isMobile ? [0, Math.PI / 3, 0] : [0, Math.PI / 2.5, 0] // tilt, rotation, twist
 
-    // Initial position values (X, Y, Z)
-  const initialPosition = useMemo(() => {
-    const x = isMobile 
-      ? +(viewport.width * 0.8).toFixed(2) 
-      : +(viewport.width * 0.25).toFixed(2);
+    const scale = useMemo(() => (isMobile ? 3 : 3), [isMobile]);
 
-    const y = +(-viewport.height * 0.75).toFixed(2);
-    const z = isMobile ? -5 : -3;
+   
+    const initialPosition = useMemo(() => {
+      const x = isMobile
+        ? aspect * 5.2
+        : aspect * 3.5
+    
+        // Y hardcoded for stability
+      const y = isMobile
+        ? -4.5 
+        : -3.9;
 
-    return [x, y, z];
-  }, [viewport.width, viewport.height, isMobile]);
+      const z = isMobile
+        ? -3.5 
+        : -2;
+      return [x, y, z];
+    }, [isMobile, aspect]);
+
+   
+      //  const rotation = [0, isMobile ? 25 * Math.PI / 18 : Math.PI / 2, 0];
+
+  //   const initialPosition = useMemo(() => {
+  //   const x = isMobile 
+  //     ? +(viewport.width * 0.8).toFixed(2) 
+  //     : +(viewport.width * 0.25).toFixed(2);
+
+  //   const y = +(-viewport.height * 0.75).toFixed(2);
+  //   const z = isMobile ? -5 : -3;
+
+  //   return [x, y, z];
+  // }, [viewport.width, viewport.height, isMobile]);
 
 
     // Use scroll progress to animate the X position (moving right and towards the viewer)

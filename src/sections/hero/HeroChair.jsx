@@ -17,14 +17,9 @@ const HeroChair = forwardRef((props, ref) => {
     heroChairRef, 
     canvasRef,
     isMobile,
+    aspect,
     ...otherProps } = props;
-
-    // console.log(canvasRef.current)
   const localRef = useRef();
-  const transitionStartY = useRef(null);
- 
-
-  const { viewport } = useThree();
 
   // Define rotation
   const rotation = isMobile ?  [0.4, 0.3, 0.1] : [0.2, 0.3, 0];
@@ -32,37 +27,22 @@ const HeroChair = forwardRef((props, ref) => {
   // Define initial scale and position
   const initialScale = useMemo(() => (isMobile ? 0.13 : 0.2), [isMobile]);
 
-  const initialPosition = useMemo(() => {
-    const width = viewport.width;
-    const height = viewport.height;
-    const x = isMobile ?
-      parseFloat(width * 0.2).toFixed(2)  : 
-      0;
-    
-    const y = isMobile ? 
-      parseFloat((height * 2.8).toFixed(2)) : 
-      parseFloat(height * 5).toFixed(2);
-    const z = isMobile ?  -25 : -35;
+   const initialPosition = useMemo(() => {
+          const x = isMobile
+          ? aspect * 1.5
+          : aspect * 1.5
   
-    return [x, y, z];
-  }, [viewport.width, viewport.height, isMobile]);
+          const y = isMobile
+              ? 23 
+              : 28
+          const z = isMobile ?  -25 : -35;
+  
+          return [x, y, z];
+      }, [isMobile, aspect]);
 
-
-//   const initialPosition = useMemo(() => {
-//   const x = isMobile ? (viewport.width * 0.2).toFixed(2)  : 0; // right-shifted for mobile, centered for desktop
-//   const y = isMobile ? (viewport.height * 2.8).toFixed(2) : (viewport.height * 5).toFixed(2);
-//   const z = isMobile ? -25 : -35;
-
-//   return [x, y, z];
-// }, [viewport.width, viewport.height, isMobile]);
-
-
-  // Use progress to animate Y position and scale
-  const easeIn = (start, end, t) => start + (end - start) * t * t;
   const heroTransition = useTransform(progress, heroTransitionRange , [0, 1]); 
   
   const heroTransitionRef = useRef(0);
-  const tHeroTransition = heroTransitionRef.current;
 
   useMotionValueEvent(heroTransition, "change", (latest) => {
     heroTransitionRef.current = latest;
@@ -109,9 +89,9 @@ const HeroChair = forwardRef((props, ref) => {
     const targetZ = initialPosition[2] - (scale - initialScale); // compensation
     const targetY = posYEnd - 50 * eased;
 
-    damp(obj.scale, "x", scale, 0.3, delta);
-    damp(obj.scale, "y", scale, 0.3, delta);
-    damp(obj.scale, "z", scale, 0.3, delta);
+    damp(obj.scale, "x", scale, 0.1, delta);
+    damp(obj.scale, "y", scale, 0.1, delta);
+    damp(obj.scale, "z", scale, 0.1, delta);
 
     damp(obj.position, "y", targetY, 0.3, delta);
     damp(obj.position, "z", targetZ, 0.3, delta);

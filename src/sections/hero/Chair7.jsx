@@ -4,34 +4,27 @@ import { useThree, useFrame } from "@react-three/fiber";
 import Chair from './Chair';
 
 const Chair7 = forwardRef((props, ref) => {
-    const localRef = useRef(); // Local ref for applying animation
-    const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); 
-      const { viewport } = useThree();
-
+    const {progress, isMobile, aspect, ...otherProps} = props; 
+    const localRef = useRef();
+   
     const rotation = [-1.3, -25 * Math.PI / 18, -0.6]; // tilt, rotation, twist
     
-    const scale = useMemo(() => (isMobile ? 1 : 1.5), [isMobile]);
+    const scale = useMemo(() => (isMobile ? 1 : 1), [isMobile]);
 
-    const position = useMemo(() => {
-        const x = +(viewport.width * 0.9).toFixed(2);
-        const y = +(-viewport.height * -0.3).toFixed(2); // equivalent to just 0.3 * height
-        const z = -7;
+
+     const position = useMemo(() => {
+        const x = isMobile
+        ? aspect * 6.5
+        : aspect * 4.5
+
+
+        const y = isMobile
+            ? 2.8 
+            : 3 
+        const z = isMobile ? -7 : -7;
 
         return [x, y, z];
-        }, [viewport.width, viewport.height, isMobile]);
-
-    // useEffect(() => {
-    //     const handleResize = () => {
-    //         cachedViewport.current = {
-    //         width: viewport.width,
-    //         height: viewport.height,
-    //         };
-    //     };
-    //     handleResize(); // update once on mount
-    //     window.addEventListener("resize", handleResize);
-    //     return () => window.removeEventListener("resize", handleResize);
-    //     }, [viewport]);
-
+    }, [isMobile, aspect]);
 
     // Ease-in function for smooth transition
     const easeIn = (start, end, t) => start + (end - start) * t * t;

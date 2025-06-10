@@ -26,8 +26,8 @@ import "../../styles/Hero.scss";
 
 const Hero = ({ afterOfficeRef, progress, heroRange, heroTransitionRange, officeRange, afterOfficeRange, slidesRange, carouselRange, isMobile }) => {
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false);
-
   const [isNonFixedDelayed, setIsNonFixedDelayed] = useState(false); 
+  const [aspect, setAspect] = useState(1.2); // Default fallback
   const containerHeroRef = useRef(null);
 
   const heroChairRef = useRef(null);
@@ -54,18 +54,6 @@ const blackOverlayOpacity = useSpring(blackOverlayOpacityRaw, {
   ease: [0.25, 0.1, 0.25, 1], // easeInOut
 });
 
-
-  //  useEffect(() => {
-  //     const unsubscribe = heroProgress.on("change", (latest) => {
-  //       console.log("heroProgress:", latest);
-  //     });
-  //     return () => unsubscribe();
-  //   }, [heroProgress]);
-
-    // useMotionValueEvent(heroProgress, "change", (latest) => {
-    //     console.log("heroProgress changed:", latest);
-    //   });
-
   const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
 
   // const canvasAnimationVariants = {
@@ -91,11 +79,8 @@ const pinEnd = window.innerHeight * 4;
 //       //  pinSpacing: false,
 //        scrub: true, 
 // markers: true;
-
 //      });
-   
 //   });
-
 
 
 useMotionValueEvent(progress, "change", (latest) => {
@@ -111,34 +96,18 @@ useMotionValueEvent(progress, "change", (latest) => {
   }
 });
 
-//  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 }); // NEW: Use useState for reactivity
+const AspectProvider = ({ setAspect }) => {
+  const { size } = useThree();
+  useEffect(() => {
+    const aspect = size.width / size.height;
+    // const safeAspect = Math.min(Math.max(aspect, 1), 2);
+    // const roundedAspect = Math.floor(safeAspect * 10) / 10;
+    const rounded = Math.floor(aspect * 10) / 10;
+    setAspect(rounded);
+  }, [size, setAspect]);
 
-
-
-// const CanvasSizeTracker = ({ onResize }) => {
-//   const { camera, size } = useThree();
-
-//   useEffect(() => {
-//   camera.aspect = size.width / size.height;
-//   camera.updateProjectionMatrix();
-//   if (onResize) onResize({ width: size.width, height: size.height });
-// }, [camera, size, onResize]);
-
-
-//   return null;
-// };
-
-
-// const handleCanvasResize = debounce(({ width, height }) => {
-//   setCanvasSize({ width, height });
-//   console.log("Canvas resized:", width, height);
-// }, 100);
-
-
-  // useEffect(() => {
-  //   console.log(canvasSize);
-  // }, [canvasSize]);
-
+  return null;
+};
 
   return (
     <motion.div className="hero-section_container"
@@ -185,30 +154,29 @@ useMotionValueEvent(progress, "change", (latest) => {
           zIndex: 100, 
           pointerEvents: 'auto',
           }}>
-
-        {/* <CanvasSizeTracker onResize={handleCanvasResize} /> */}
-        <CameraAnimation progress={progress} 
+          <AspectProvider setAspect={setAspect} />
+          <CameraAnimation progress={progress} 
           heroRange={heroRange} 
           isMobile={isMobile} />
     
 
-        <Lighting 
-          isMobile={isMobile}
-          progress={progress} 
-          heroRange={heroRange}  
-          heroTransitionRange={heroTransitionRange}
-          officeRange={officeRange}
-          afterOfficeRange={afterOfficeRange}
-          slidesRange={slidesRange} 
-          carouselRange={carouselRange}
-          />
-          <Chair1 ref={chairRefs[0].ref} progress={progress} isMobile={isMobile} />
-          <Chair2 ref={chairRefs[1].ref} progress={heroProgress} isMobile={isMobile} />
-           <Chair3 ref={chairRefs[2].ref}  progress={heroProgress} isMobile={isMobile} />
-          <Chair4 ref={chairRefs[3].ref} isMobile={isMobile} />
-          <Chair5 ref={chairRefs[4].ref}  isMobile={isMobile} />
-          <Chair6 ref={chairRefs[5].ref} progress={heroProgress} isMobile={isMobile} />
-          <Chair7 ref={chairRefs[6].ref} progress={heroProgress} isMobile={isMobile} /> 
+          <Lighting 
+            isMobile={isMobile}
+            progress={progress} 
+            heroRange={heroRange}  
+            heroTransitionRange={heroTransitionRange}
+            officeRange={officeRange}
+            afterOfficeRange={afterOfficeRange}
+            slidesRange={slidesRange} 
+            carouselRange={carouselRange}
+            />
+          <Chair1 ref={chairRefs[0].ref} progress={progress} isMobile={isMobile} aspect={aspect}/>
+          <Chair2 ref={chairRefs[1].ref} progress={heroProgress} isMobile={isMobile} aspect={aspect}/>
+           <Chair3 ref={chairRefs[2].ref}  progress={heroProgress} isMobile={isMobile} aspect={aspect}/>
+          <Chair4 ref={chairRefs[3].ref} isMobile={isMobile}aspect={aspect}/>
+          <Chair5 ref={chairRefs[4].ref}  isMobile={isMobile} aspect={aspect}/>
+          <Chair6 ref={chairRefs[5].ref} progress={heroProgress} isMobile={isMobile} aspect={aspect}/>
+          <Chair7 ref={chairRefs[6].ref} progress={heroProgress} isMobile={isMobile} aspect={aspect}/> 
           <HeroChair 
             canvasRef={canvasRef}
             ref={heroChairRef} 
@@ -222,6 +190,7 @@ useMotionValueEvent(progress, "change", (latest) => {
             carouselRange={carouselRange}
             heroChairRef={heroChairRef}
             isMobile={isMobile} 
+            aspect={aspect}
             />
           <ShadowPlane />
         </Canvas>
@@ -244,6 +213,10 @@ useMotionValueEvent(progress, "change", (latest) => {
 </motion.div>
   );
 };
+
+
+
+
 
 const CameraAnimation = ({ progress, heroRange }) => {
   const { camera, size } = useThree();

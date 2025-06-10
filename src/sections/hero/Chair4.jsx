@@ -4,16 +4,18 @@ import { useThree, useFrame } from "@react-three/fiber";
 import Chair from './Chair';
 
 const Chair4 = forwardRef((props, ref) => {
+    const {isMobile, aspect, ...otherProps} = props; // Destructure isMobile and aspect from props
     const localRef = useRef(); // Local ref for animation
-    const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
-      const { viewport } = useThree();
+  
 
     // Initial rotation values
     const baseRotation = [0, 5 * Math.PI / 6, 0]; // tilt, rotation, twist
 
 // Inside your component
 
-const scale = useMemo(() => 1, []); // same for both mobile and desktop, no need for dependency
+// const scale = useMemo(() => 1, []); 
+
+ const scale = useMemo(() => (isMobile ? 1 : 1.1), [isMobile]);
 
 // const position = useMemo(() => {
 //   const width = viewport.width;
@@ -32,45 +34,25 @@ const scale = useMemo(() => 1, []); // same for both mobile and desktop, no need
 //   return [x, y, z];
 // }, [viewport.width, viewport.height, isMobile]);
 
-const { size } = useThree(); 
-const aspect = size.width / size.height;
-// const safeAspect = Math.min(Math.max(aspect, 1), 2);
-// const roundedAspect = Math.floor(safeAspect * 10) / 10;
-const roundedAspect = Math.floor(aspect * 10) / 10;
+
 
 const position = useMemo(() => {
-  // You can tweak these constants as needed
   const x = isMobile
-    ? -roundedAspect * 3.5
-    : -roundedAspect * 3;
+    ? -aspect * 3.2
+    : -aspect * 1.7;
 
+    // Y hardcoded for stability
   const y = isMobile
     ? -3.2 
-    : -3;
-
+    : -2.6;
   const z = -3;
-
   return [x, y, z];
-}, [isMobile, roundedAspect]);
-
-
-// const position = useMemo(() => {
-//   const width = viewport.width;
-//   const height = viewport.height;
-//   const x = isMobile ? parseFloat(+(width * -0.5).toFixed(2) ) : parseFloat(+(width * -0.3).toFixed(2));
-
-//   const y = isMobile
-//     ? -height * 0.55
-//     : -height * 0.5;
-//   const z = -3;
-//   return [x, y, z];
-// }, [viewport.width, viewport.height, isMobile]);
-
+}, [isMobile, aspect]);
 
 
 useEffect(() => {
-  console.log("aspect", roundedAspect);
-}, [roundedAspect]);
+  console.log("aspect", aspect);
+}, [aspect]);
 
 useEffect(() => {
     console.log(`chair4 ${position}`);

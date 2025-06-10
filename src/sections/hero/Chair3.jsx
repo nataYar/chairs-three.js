@@ -5,28 +5,29 @@ import { motion } from 'framer-motion';
 
 import Chair from './Chair';
 
-const Chair3 = forwardRef(({ progress }, ref) => {
+const Chair3 = forwardRef((props, ref) => {
+    const {progress, isMobile, aspect, ...otherProps} = props; 
     const localRef = useRef(); // Local ref for animation
-    const isMobile = useMediaQuery({ query: '(max-width: 768px)' }); // Mobile-first design
-      const { viewport } = useThree();
-      
-    
+   
     // Initial rotation values
-    const baseRotation = [0, 0, 0.4]; // Start with no rotation (tilt (x), rotation (y), twist (z))
+    const baseRotation = [0.2, 0, 0.5]; // Start with no rotation (tilt (x), rotation (y), twist (z))
 
     // Scaling and positioning based on device
-    const scale = isMobile ? 0.03 : 0.04; // Adjust the size
-    const position = isMobile
-  ? [
-      +(viewport.width * -0.3).toFixed(2),
-      +(viewport.height * 0).toFixed(2),
-      -2
-    ]
-  : [
-      +(viewport.width * -0.3).toFixed(2),
-      +(viewport.height * 0).toFixed(2),
-      -2
-    ];
+    const scale = isMobile ? 0.05 : 0.05; // Adjust the size
+
+    const position = useMemo(() => {
+            const x = isMobile
+            ? -aspect * 5
+            : -aspect * 3.5;
+    
+    
+           const y = isMobile
+                ? 2.2 
+                : 4;
+            const z = isMobile ? -8 : -9;
+    
+            return [x, y, z];
+            }, [isMobile, aspect]);
   
     // Add animation for rotation along the Y-axis
     useFrame(({ clock }) => {
@@ -53,9 +54,11 @@ const Chair3 = forwardRef(({ progress }, ref) => {
 
         if (p >= 0.1) {
             // More dramatic X and Z shifts
-            moveX = easeIn(0, (p - 0.1) * moveSpeed * -2.5, p * 1.2);   // Farther left
+            moveX = easeIn(0, (p - 0.1) * moveSpeed * -1.5, p * 1.2);   // Farther left
             moveY = easeIn(0, (p - 0.1) * moveSpeed * -1.5, p * 1.3);    // Upward
-            moveZ = easeIn(0, (p - 0.1) * moveSpeed * 4, p * 1.6);       // Toward viewer
+           moveZ = easeIn(0, 4, p * 1.3);
+        } else if (p >= 0.7) {
+            moveY = easeIn(0, 1.5, p); 
         }
 
         localRef.current.position.x = position[0] + moveX;
