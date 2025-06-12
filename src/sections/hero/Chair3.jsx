@@ -16,18 +16,17 @@ const Chair3 = forwardRef((props, ref) => {
     const scale = isMobile ? 0.05 : 0.05; // Adjust the size
 
     const position = useMemo(() => {
-            const x = isMobile
-            ? -aspect * 5
-            : -aspect * 3.5;
-    
-    
-           const y = isMobile
-                ? 2.2 
-                : 4;
-            const z = isMobile ? -8 : -9;
-    
-            return [x, y, z];
-            }, [isMobile, aspect]);
+        const x = isMobile
+        ? -aspect * 5
+        : -aspect * 3.5;
+
+        const y = isMobile
+            ? 2.2 
+            : 4;
+        const z = isMobile ? -8 : -9;
+
+        return [x, y, z];
+        }, [isMobile, aspect]);
   
     // Add animation for rotation along the Y-axis
     useFrame(({ clock }) => {

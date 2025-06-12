@@ -45,9 +45,9 @@ const App = () => {
 
  
   
-  // useMotionValueEvent(scrollYProgress, "change", (latest) => {
-  //   console.log("scrollYProgress changed:", latest);
-  // });
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    console.log("scrollYProgress changed:", latest);
+  });
   
   // custom hook for mob/laptop window size
   const useMediaQuery = (query) => {

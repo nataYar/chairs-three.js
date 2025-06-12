@@ -1,7 +1,7 @@
 import React, { Suspense, useRef, useEffect, useState } from "react";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { Plane} from '@react-three/drei';
-import { motion, useTransform, useSpring, useMotionValueEvent } from "framer-motion";
+import { motion, useTransform, useSpring, useMotionValueEvent, useMotionValue } from "framer-motion";
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from 'gsap';
@@ -47,7 +47,7 @@ const Hero = ({ afterOfficeRef, progress, heroRange, heroTransitionRange, office
   const heroTransition = useTransform(progress, heroTransitionRange, [0, 1]);
 
   const canvasTranslateY = useTransform(heroTransition, [0, 0.7, 1], ["0vh", "0vh", "-100vh"]);
-  const blackOverlayOpacityRaw = useTransform(heroTransition, [0.65, 1], [0, 1]);
+  const blackOverlayOpacityRaw = useTransform(heroTransition, [0.4, 4], [0, 1]);
 
 const blackOverlayOpacity = useSpring(blackOverlayOpacityRaw, {
   duration: 1,
@@ -100,14 +100,17 @@ const AspectProvider = ({ setAspect }) => {
   const { size } = useThree();
   useEffect(() => {
     const aspect = size.width / size.height;
-    // const safeAspect = Math.min(Math.max(aspect, 1), 2);
-    // const roundedAspect = Math.floor(safeAspect * 10) / 10;
     const rounded = Math.floor(aspect * 10) / 10;
     setAspect(rounded);
   }, [size, setAspect]);
 
   return null;
 };
+
+
+
+
+
 
   return (
     <motion.div className="hero-section_container"
@@ -142,7 +145,7 @@ const AspectProvider = ({ setAspect }) => {
           camera={{
             position: [0, 0, 5],
             fov: 75,
-            near: 0.1,
+            near: 0.5,
             far: 100,
           }}
           style={{ 
@@ -155,9 +158,10 @@ const AspectProvider = ({ setAspect }) => {
           pointerEvents: 'auto',
           }}>
           <AspectProvider setAspect={setAspect} />
-          <CameraAnimation progress={progress} 
-          heroRange={heroRange} 
-          isMobile={isMobile} />
+          <CameraAnimation 
+            progress={progress}
+            heroRange={heroRange} 
+            isMobile={isMobile} />
     
 
           <Lighting 
@@ -196,7 +200,7 @@ const AspectProvider = ({ setAspect }) => {
         </Canvas>
       </motion.div> 
     </Suspense>
-    {/* <motion.div
+    <motion.div
     style={{
       position: 'fixed',
       top: 0,
@@ -208,7 +212,7 @@ const AspectProvider = ({ setAspect }) => {
       pointerEvents: 'none',
       zIndex: 999, // make sure it's on top
     }}
-  /> */}
+  />
 
 </motion.div>
   );
@@ -219,8 +223,29 @@ const AspectProvider = ({ setAspect }) => {
 
 
 const CameraAnimation = ({ progress, heroRange }) => {
+
+  const mouse = useRef({ x: 0, y: 0 });
   const { camera, size } = useThree();
   const aspect = size.width / size.height;
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const smoothX = useSpring(mouseX, { stiffness: 40, damping: 20 });
+  const smoothY = useSpring(mouseY, { stiffness: 40, damping: 20 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const x = (e.clientX / size.width - 0.5) * 2;  // -1 to 1
+      const y = (e.clientY / size.height - 0.5) * 2;
+      mouseX.set(x);
+      mouseY.set(y);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [size, mouseX, mouseY]);
+
 
   const clampedProgress = useTransform(progress, heroRange, [0, 1], { clamp: true });
   const smoothProgress = useSpring(clampedProgress, {
@@ -237,14 +262,29 @@ const CameraAnimation = ({ progress, heroRange }) => {
   const zValue = useTransform(smoothProgress, [0, 1], [baseZ, zoomZ]);
 
   useFrame(() => {
-    const y = yValue.get();
-    const z = zValue.get();
+  const y = yValue.get();
+  const z = zValue.get();
+  const p = progress.get();
 
-    if (typeof y !== 'number' || typeof z !== 'number') return;
+  if (typeof y !== 'number' || typeof z !== 'number') return;
+
+  if (p === 0) {
+    const maxRotation = 0.015; // adjust for effect intensity
+
+    const xRot = smoothY.get() * maxRotation;
+    const yRot = smoothX.get() * maxRotation;
+
+    camera.rotation.x = xRot;
+    camera.rotation.y = yRot;
+  } else {
+    // Reset to default center position on scroll
     camera.position.set(0, y, z);
-    camera.updateProjectionMatrix();
     camera.lookAt(0, y, z - 1);
-  });
+  }
+
+  camera.updateProjectionMatrix();
+});
+
 
   return null;
 };

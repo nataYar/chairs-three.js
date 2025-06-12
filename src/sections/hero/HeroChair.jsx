@@ -34,7 +34,7 @@ const HeroChair = forwardRef((props, ref) => {
   
           const y = isMobile
               ? 23 
-              : 28
+              : 32
           const z = isMobile ?  -25 : -35;
   
           return [x, y, z];
@@ -54,7 +54,7 @@ const HeroChair = forwardRef((props, ref) => {
   const rotationStart = rotation[1];
   const rotationEnd = rotation[1] + Math.PI;
   const posYStart = initialPosition[1];
-  const posYEnd = -10;
+  const posYEnd = -5;
 
   useFrame((state, delta) => {
   if (!localRef.current) return;
@@ -62,9 +62,9 @@ const HeroChair = forwardRef((props, ref) => {
   const t = heroTransitionRef.current;
 
   const obj = localRef.current;
-  const bigScale = 1.1;
+  const bigScale = 0.7;
 
-  // ROTATION PHASE (0 to ~0.474)
+  // Rotation and drop
   if (t >= 0 && t < 0.474) {
     const p = t / 0.474;
 
@@ -79,15 +79,15 @@ const HeroChair = forwardRef((props, ref) => {
   }
 
   // SCALE-UP PHASE (~0.474 to 0.7)
-  else if (t >= 0.474 && t < 0.7) {
+  else if (t >= 0.474 && t < 0.6) {
     const start = 0.474;
-    const end = 0.7;
+    const end = 0.6;
     const p = (t - start) / (end - start);
     const eased = p * p;
 
     const scale = initialScale + (bigScale - initialScale) * eased;
     const targetZ = initialPosition[2] - (scale - initialScale); // compensation
-    const targetY = posYEnd - 50 * eased;
+    const targetY = posYEnd - 45 * eased;
 
     damp(obj.scale, "x", scale, 0.1, delta);
     damp(obj.scale, "y", scale, 0.1, delta);
@@ -95,6 +95,11 @@ const HeroChair = forwardRef((props, ref) => {
 
     damp(obj.position, "y", targetY, 0.3, delta);
     damp(obj.position, "z", targetZ, 0.3, delta);
+
+    // Dampen rotation to zero (no tilt)
+    damp(obj.rotation, "x", 0, 0.3, delta);
+    // damp(obj.rotation, "y", 0, 0.3, delta);
+    damp(obj.rotation, "z", 0, 0.3, delta);
   }
 });
 

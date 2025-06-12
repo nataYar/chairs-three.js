@@ -38,25 +38,25 @@ const Chair4 = forwardRef((props, ref) => {
 
 const position = useMemo(() => {
   const x = isMobile
-    ? -aspect * 3.2
+    ? -aspect * 4.8
     : -aspect * 1.7;
 
     // Y hardcoded for stability
   const y = isMobile
     ? -3.2 
-    : -2.6;
+    :  -3.5;;
   const z = -3;
   return [x, y, z];
 }, [isMobile, aspect]);
 
 
-useEffect(() => {
-  console.log("aspect", aspect);
-}, [aspect]);
+// useEffect(() => {
+//   console.log("aspect", aspect);
+// }, [aspect]);
 
-useEffect(() => {
-    console.log(`chair4 ${position}`);
-}, [position]);
+// useEffect(() => {
+//     console.log(`chair4 ${position}`);
+// }, [position]);
 
     // State to control shaking
     const [isShaking, setIsShaking] = useState(false);

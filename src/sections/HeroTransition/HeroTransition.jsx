@@ -28,7 +28,7 @@ useGSAP(() => {
   const trigger = ScrollTrigger.create({
     trigger: wrapperRef.current,
     start: "top top",         // when wrapper's top hits viewport top
-    end: "+=100%",            // pin for 200vh scroll
+    end: "+=200%",            // pin for 200vh scroll
     scrub: 1,
     pin: wrapperRef.current,
     // markers: true,

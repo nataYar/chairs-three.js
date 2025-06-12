@@ -21,12 +21,12 @@ const Chair1 = forwardRef((props, ref) => {
     const position = useMemo(() => {
         const x = isMobile
         ? aspect * 1.5
-        : aspect * 0.8;
+        : aspect * 1.5;
 
 
        const y = isMobile
             ? -4.2 
-            : -3;
+            : -3.7;
         const z = isMobile ? 0 : -0.3;
 
         return [x, y, z];
