@@ -68,7 +68,7 @@ const Chair2 = forwardRef((props, ref) => {
                 localRef.current = node;
                 if (ref) ref.current = node;
             }}
-            modelPath="/assets/chairs/chair_round.glb"
+            modelPath="src/assets/chairs/chair_round.glb"
             scale={scale}
             position={position}
             rotation={rotation}

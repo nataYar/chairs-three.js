@@ -25,7 +25,7 @@ const Chair5 = forwardRef((props, ref) => {
     const rotation = [0, isMobile ? 25 * Math.PI / 19 : Math.PI/12, 0];
   
 
-    return <Chair ref={ref}  modelPath="/assets/chairs/chair_round.glb" scale={scale} position={position} rotation={rotation}/>;
+    return <Chair ref={ref}  modelPath="src/assets/chairs/chair_round.glb" scale={scale} position={position} rotation={rotation}/>;
 })
 
 export default Chair5

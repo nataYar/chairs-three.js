@@ -58,7 +58,7 @@ const Chair6 = forwardRef((props, ref) => {
 });
 
 
-    return <Chair ref={(node) => { localRef.current = node; if (ref) ref.current = node; }} modelPath="/assets/chairs/victorian_chair.glb" scale={scale} position={initialPosition} rotation={rotation} />;
+    return <Chair ref={(node) => { localRef.current = node; if (ref) ref.current = node; }} modelPath="src/assets/chairs/victorian_chair.glb" scale={scale} position={initialPosition} rotation={rotation} />;
 });
 
 export default Chair6;
