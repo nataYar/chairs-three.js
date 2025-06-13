@@ -13,34 +13,34 @@ const Carousel = ({ radius }) => {
   const [currentAngle, setCurrentAngle] = useState(0);
   const chairConfigs = [
     {
-      url: 'src/assets/chairs/throne_of_iron__stone.glb',
+      url: '/assets/chairs/throne_of_iron__stone.glb',
       scale: 7,
       label: 'This is for ruling kingdoms.',
-      backgroundUrl: 'src/assets/carousel/stone_wall.jpg'
+      backgroundUrl: '/assets/carousel/stone_wall.jpg'
     },
     {
-      url: 'src/assets/chairs/zig_zag.glb',
+      url: '/assets/chairs/zig_zag.glb',
       scale: 13,
       label: 'This is for bold choices and sharper angles.',
-      backgroundUrl: 'src/assets/carousel/glass.jpg'
+      backgroundUrl: '/assets/carousel/glass.jpg'
     },
     {
-      url: 'src/assets/chairs/bar_stool.glb',
+      url: '/assets/chairs/bar_stool.glb',
       scale: 13,
       label: 'This is for late-night chats over cocktails.',
-      backgroundUrl: 'src/assets/carousel/dark_wood.jpg'
+      backgroundUrl: '/assets/carousel/dark_wood.jpg'
     },
     {
-      url: 'src/assets/chairs/medieval_chair.glb',
+      url: '/assets/chairs/medieval_chair.glb',
       scale: 13,
       label: 'This is for commanding respect.',
-      backgroundUrl: 'src/assets/carousel/castle.jpg'
+      backgroundUrl: '/assets/carousel/castle.jpg'
     },
     {
-      url: 'src/assets/chairs/red_armchair_new-v1.glb',
+      url: '/assets/chairs/red_armchair_new-v1.glb',
       scale: 9,
       label: 'This is for cozy evening reads.',
-      backgroundUrl: 'src/assets/carousel/vintage.jpg'
+      backgroundUrl: '/assets/carousel/vintage.jpg'
     }
    
   ]

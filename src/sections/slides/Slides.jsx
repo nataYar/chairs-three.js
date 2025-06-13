@@ -70,112 +70,112 @@ const [hasSnappedToslides, setHasSnappedToslides] = useState(false);
 
 const backgrounds = [
   {
-    src: "src/assets/slides/office.webp",
-    srcMob: "src/assets/slides/mob/office-mob.webp",
+    src: "/assets/slides/office.webp",
+    srcMob: "/assets/slides/mob/office-mob.webp",
     overlays: [
       {
-        src: "src/assets/slides/office-top.png",
-        srcMob: "src/assets/slides/mob/office-cropped.webp",
+        src: "/assets/slides/office-top.png",
+        srcMob: "/assets/slides/mob/office-cropped.webp",
         zIndex: 3,
         className: ""
       },
     ],
   },
   {
-    src: "src/assets/slides/art-studio.webp",
-    srcMob: "src/assets/slides/mob/art-studio-min.webp",
+    src: "/assets/slides/art-studio.webp",
+    srcMob: "/assets/slides/mob/art-studio-min.webp",
     overlays: []
   },
   {
-    src: "src/assets/slides/underwater.webp",
-    srcMob: "src/assets/slides/mob/underwater-min.webp",
+    src: "/assets/slides/underwater.webp",
+    srcMob: "/assets/slides/mob/underwater-min.webp",
     overlays: [
       {
-        src: "src/assets/slides/underwater-bush.png",
-        srcMob: "src/assets/slides/mob/underwater-bush-min.webp",
+        src: "/assets/slides/underwater-bush.png",
+        srcMob: "/assets/slides/mob/underwater-bush-min.webp",
         zIndex: 5,
         className: ""
       },
       {
-        src: "src/assets/slides/fish-single.png",
-        srcMob: "src/assets/slides/mob/fish-single-min.png",
+        src: "/assets/slides/fish-single.png",
+        srcMob: "/assets/slides/mob/fish-single-min.png",
         zIndex: 4,
         className: "fish-single"
       },
       {
-        src: "src/assets/slides/fish-right.png",
-        srcMob: "src/assets/slides/mob/fish-right-min.png",
+        src: "/assets/slides/fish-right.png",
+        srcMob: "/assets/slides/mob/fish-right-min.png",
         zIndex: 20,
         className: "fish-right"
       },
       {
-        src: "src/assets/slides/fish-left.png",
-        srcMob: "src/assets/slides/mob/fish-left-min.png",
+        src: "/assets/slides/fish-left.png",
+        srcMob: "/assets/slides/mob/fish-left-min.png",
         zIndex: 2,
         className: "fish-left"
       },
     ],
   },
   {
-    src: "src/assets/slides/photo-studio.webp",
-    srcMob: "src/assets/slides/mob/photo-studio-min.webp",
+    src: "/assets/slides/photo-studio.webp",
+    srcMob: "/assets/slides/mob/photo-studio-min.webp",
     overlays: [
       {
-        src: "src/assets/slides/photo-studio-overlay.png",
-        srcMob: "src/assets/slides/mob/photo-studio-overlay-min.png",
+        src: "/assets/slides/photo-studio-overlay.png",
+        srcMob: "/assets/slides/mob/photo-studio-overlay-min.png",
         zIndex: 10,
         className: null
       },
     ],
   },
   {
-    src: "src/assets/slides/car.webp",
-    srcMob: "src/assets/slides/mob/car-min.webp",
+    src: "/assets/slides/car.webp",
+    srcMob: "/assets/slides/mob/car-min.webp",
     overlays: []
   },
   {
-    src: "src/assets/slides/jungle.webp",
-    srcMob: "src/assets/slides/mob/jungle-min.webp",
+    src: "/assets/slides/jungle.webp",
+    srcMob: "/assets/slides/mob/jungle-min.webp",
     overlays: [
       {
-        src: "src/assets/slides/jungle-overlay.png",
-        srcMob: "src/assets/slides/mob/jungle-overlay-min.webp",
+        src: "/assets/slides/jungle-overlay.png",
+        srcMob: "/assets/slides/mob/jungle-overlay-min.webp",
         zIndex: 4,
         className: "shake"
       },
     ],
   },
   {
-    src: "src/assets/slides/library.webp",
-    srcMob: "src/assets/slides/mob/library-min.webp",
+    src: "/assets/slides/library.webp",
+    srcMob: "/assets/slides/mob/library-min.webp",
     overlays: [
       {
-        src: "src/assets/slides/library-gates.png",
-        srcMob: "src/assets/slides/mob/library-gates-min.webp",
+        src: "/assets/slides/library-gates.png",
+        srcMob: "/assets/slides/mob/library-gates-min.webp",
         zIndex: 3,
         className: ""
       },
       {
-        src: "src/assets/slides/books-back-layer.png",
-        srcMob: "src/assets/slides/mob/books-back-layer-min.webp",
+        src: "/assets/slides/books-back-layer.png",
+        srcMob: "/assets/slides/mob/books-back-layer-min.webp",
         zIndex: 2,
         className: "books-back"
       },
       {
-        src: "src/assets/slides/books-front.png",
-        srcMob: "src/assets/slides/mob/books-front-min.webp",
+        src: "/assets/slides/books-front.png",
+        srcMob: "/assets/slides/mob/books-front-min.webp",
         zIndex: 4,
         className: "books-front"
       },
     ],
   },
   {
-    src: "src/assets/slides/space-red.webp",
-    srcMob: "src/assets/slides/mob/space-red-min.webp",
+    src: "/assets/slides/space-red.webp",
+    srcMob: "/assets/slides/mob/space-red-min.webp",
     overlays: [
       {
-        src: "src/assets/slides/sparks-bottom.png",
-        srcMob: "src/assets/slides/mob/sparks-bottom-min.webp",
+        src: "/assets/slides/sparks-bottom.png",
+        srcMob: "/assets/slides/mob/sparks-bottom-min.webp",
         zIndex: 2,
         className: "stars-move"
       },
@@ -223,7 +223,7 @@ const backgrounds = [
             ))}
           </motion.div>
         </AnimatePresence>
-        <img src="src/assets/slides/chair.png" alt="Hero Chair" className="chair" />
+        <img src="/assets/slides/chair.png" alt="Hero Chair" className="chair" />
       </div>
     </div>
   );

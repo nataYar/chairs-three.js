@@ -6,8 +6,8 @@ import { useGSAP } from "@gsap/react";
 
 const Office = React.forwardRef((props, officeWrapperRef) => {
   const { progress, officeRange } = props;
-  const [leftVideoSrc, setLeftVideoSrc] = useState("src/assets/office/office party.mp4");
-  const [rightVideoSrc, setRightVideoSrc] = useState("src/assets/office/cat.mp4");
+  const [leftVideoSrc, setLeftVideoSrc] = useState("/assets/office/office party.mp4");
+  const [rightVideoSrc, setRightVideoSrc] = useState("/assets/office/cat.mp4");
   const mainRef = useRef(null);
   const textContainerRef = useRef(null);
   const officeProgress = useTransform(progress, officeRange, [0, 1]);
@@ -30,11 +30,11 @@ const Office = React.forwardRef((props, officeWrapperRef) => {
       const value = officeProgress.get();
      
       if (value <= 0.05 || value > 0.6) {
-        setLeftVideoSrc("src/assets/office/office party.mp4");
-        setRightVideoSrc("src/assets/office/cat.mp4");
+        setLeftVideoSrc("/assets/office/office party.mp4");
+        setRightVideoSrc("/assets/office/cat.mp4");
       } else if (value > 0.3 && value <= 0.6) {
-        setLeftVideoSrc("src/assets/office/glitch.mp4");
-        setRightVideoSrc("src/assets/office/glitch.mp4");
+        setLeftVideoSrc("/assets/office/glitch.mp4");
+        setRightVideoSrc("/assets/office/glitch.mp4");
         
       }
     };
