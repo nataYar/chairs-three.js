@@ -11,12 +11,12 @@ const Chair5 = forwardRef((props, ref) => {
  const position = useMemo(() => {
         const x = isMobile
         ? aspect * -2.2
-        : aspect * -3.5;
+        : aspect * -2.9;
 
        const y = isMobile
             ? -4.2 
-            :  -3.5;;
-        const z = isMobile ? 2.3 : 0.5;
+            :  -3;
+        const z = isMobile ? 2.3 : -1;
 
         return [x, y, z];
         }, [isMobile, aspect]);
@@ -25,7 +25,7 @@ const Chair5 = forwardRef((props, ref) => {
     const rotation = [0, isMobile ? 25 * Math.PI / 19 : Math.PI/12, 0];
   
 
-    return <Chair ref={ref}  modelPath="src/assets/chairs/chair_round.glb" scale={scale} position={position} rotation={rotation}/>;
+    return <Chair ref={ref}  modelPath="public/assets/chairs/chair_round.glb" scale={scale} position={position} rotation={rotation}/>;
 })
 
 export default Chair5

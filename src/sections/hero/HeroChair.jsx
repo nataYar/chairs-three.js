@@ -62,7 +62,7 @@ const HeroChair = forwardRef((props, ref) => {
   const t = heroTransitionRef.current;
 
   const obj = localRef.current;
-  const bigScale = 0.7;
+  const bigScale = 0.8;
 
   // Rotation and drop
   if (t >= 0 && t < 0.474) {
@@ -87,7 +87,7 @@ const HeroChair = forwardRef((props, ref) => {
 
     const scale = initialScale + (bigScale - initialScale) * eased;
     const targetZ = initialPosition[2] - (scale - initialScale); // compensation
-    const targetY = posYEnd - 45 * eased;
+    const targetY = posYEnd - 50 * eased;
 
     damp(obj.scale, "x", scale, 0.1, delta);
     damp(obj.scale, "y", scale, 0.1, delta);
@@ -110,7 +110,7 @@ const HeroChair = forwardRef((props, ref) => {
         localRef.current = node; 
         if (ref) ref.current = node; 
       }}
-      modelPath="src/assets/chairs/office_chair.glb"
+      modelPath="public/assets/chairs/office_chair.glb"
       scale={initialScale} 
       position={initialPosition}
       rotation={rotation}

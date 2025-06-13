@@ -1,19 +1,20 @@
 .main_section {
   position: relative;
-  height: 200vh;
+  height: 100vh;
   width: 100vw;
   background-color: #4451b5;
-  .black_filler{
-    height: 100vh;
-    width: 100vw;
-    background-color: #ce31dc;
-  }
+  border: 5px solid #d41d1d; /* Optional: Add a border for visibility */
+  // .black_filler{
+  //   height: 100vh;
+  //   width: 100vw;
+  //   background-color: #ce31dc;
+  // }
 }
 
 /* Container for videos */
 .pc_container {
   position: absolute; /* Positioned relative to .main-section */
-  top: 0vh;
+  top: 0;
   left: 0;
   height: 100%;
   width: 100%;
@@ -49,9 +50,9 @@
 /* Office Content (background layer) */
 .office_content {
   position: absolute;
-  top:100vh;
+  top: 0vh;
   left: 0;
-  z-index: 2; /* Ensure it's above the videos */
+  z-index: 2;
   height: 100vh;
   width: 100%;
   background-image: url('src/assets/office/office_cutout.png');

@@ -15,18 +15,18 @@ const Chair1 = forwardRef((props, ref) => {
 
     // Device-specific position and scale
    
-      const scale = useMemo(() => (isMobile ? 3 : 2.5), [isMobile]);
+      const scale = useMemo(() => (isMobile ? 3 : 2.2), [isMobile]);
     
 
     const position = useMemo(() => {
         const x = isMobile
         ? aspect * 1.5
-        : aspect * 1.5;
+        : aspect * 0.8;
 
 
        const y = isMobile
             ? -4.2 
-            : -3.7;
+            : -2.7;
         const z = isMobile ? 0 : -0.3;
 
         return [x, y, z];
@@ -72,7 +72,7 @@ const Chair1 = forwardRef((props, ref) => {
                 localRef.current = node; // Assign local ref
                 if (ref) ref.current = node; // Pass to parent ref if provided
             }}
-            modelPath="src/assets/chairs/rocking_chair.glb"
+            modelPath="public/assets/chairs/rocking_chair.glb"
             scale={scale}
             position={position}
             rotation={initialRotation} // Initial rotation as baseline

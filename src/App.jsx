@@ -76,15 +76,15 @@ const App = () => {
 
   
  
-// useEffect(()=> {
-//     console.log("heroRange " + heroRange)
-//     console.log(" heroTransitionRange "+  heroTransitionRange)
-//     console.log("officeRange "+ officeRange)
-//     console.log("afterOfficeRange "+ afterOfficeRange)
-//     console.log("slidesRange "+ slidesRange)
-//     console.log("carouselRange"+ carouselRange)
+useEffect(()=> {
+    console.log("heroRange " + heroRange)
+    console.log(" heroTransitionRange "+  heroTransitionRange)
+    console.log("officeRange "+ officeRange)
+    console.log("afterOfficeRange "+ afterOfficeRange)
+    console.log("slidesRange "+ slidesRange)
+    console.log("carouselRange"+ carouselRange)
 
-//   }, [heroRange, heroTransitionRange, afterOfficeRange, officeRange, slidesRange, carouselRange])
+  }, [heroRange, heroTransitionRange, afterOfficeRange, officeRange, slidesRange, carouselRange])
 
   // useEffect(() => {
   //   const handleResize = () => {
@@ -179,7 +179,7 @@ const App = () => {
 
  
       <div className="office" ref={officeRef} >
-        <Office progress={scrollYProgress} officeRange={officeRange} />
+        <Office progress={scrollYProgress} officeRange={officeRange} ref={officeRef}/>
       </div>
 
       <div ref={afterOfficeRef}>

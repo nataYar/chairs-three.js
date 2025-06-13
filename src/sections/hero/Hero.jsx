@@ -2,7 +2,6 @@ import React, { Suspense, useRef, useEffect, useState } from "react";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { Plane} from '@react-three/drei';
 import { motion, useTransform, useSpring, useMotionValueEvent, useMotionValue } from "framer-motion";
-import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from 'gsap';
 import * as THREE from 'three';
@@ -46,15 +45,21 @@ const Hero = ({ afterOfficeRef, progress, heroRange, heroTransitionRange, office
   const heroProgress = useTransform(progress, heroRange, [0, 1]); 
   const heroTransition = useTransform(progress, heroTransitionRange, [0, 1]);
 
-  const canvasTranslateY = useTransform(heroTransition, [0, 0.7, 1], ["0vh", "0vh", "-100vh"]);
-  const blackOverlayOpacityRaw = useTransform(heroTransition, [0.4, 4], [0, 1]);
+   const blackOverlayOpacityRaw = useTransform(progress, [
+    0.44, 0.452,
+    officeRange[0]+0.01, officeRange[0]+0.02], 
+    [0, 1, 1, 0]);
+  
+  const blackOverlayOpacity = useSpring(blackOverlayOpacityRaw, {
+    duration: 0.2,
+    // ease: [0.25, 0.1, 0.25, 1], 
+  });
 
-const blackOverlayOpacity = useSpring(blackOverlayOpacityRaw, {
-  duration: 1,
-  ease: [0.25, 0.1, 0.25, 1], // easeInOut
-});
+  const canvasAnimation = useTransform(progress, [officeRange[0]-0.05, officeRange[0]], [1, 0]);
 
-  const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 0;
+  useMotionValueEvent(heroTransition, "change", (latest) => {
+      console.log("hero transition Progress changed:", latest);
+    });
 
   // const canvasAnimationVariants = {
   //   moveCanvas: {
@@ -66,7 +71,7 @@ const blackOverlayOpacity = useSpring(blackOverlayOpacityRaw, {
   //   },
   // };
 
- const officeHalfWay = officeRange[0] + (officeRange[1] - officeRange[0]) * 0.5;
+const officeHalfWay = officeRange[0] + (officeRange[1] - officeRange[0]) * 0.5;
 const pinEnd = window.innerHeight * 4;
 
 // useGSAP(() => {
@@ -107,11 +112,6 @@ const AspectProvider = ({ setAspect }) => {
   return null;
 };
 
-
-
-
-
-
   return (
     <motion.div className="hero-section_container"
       ref={containerHeroRef}
@@ -136,7 +136,7 @@ const AspectProvider = ({ setAspect }) => {
             width: "100vw",
             height: "100vh",
             pointerEvents: "auto",
-            y: canvasTranslateY, // ← Magic happens here
+            opacity: canvasAnimation,
           }}
         >
         <Canvas 
@@ -148,6 +148,7 @@ const AspectProvider = ({ setAspect }) => {
             near: 0.5,
             far: 100,
           }}
+         
           style={{ 
           position: 'fixed',
           top: 0,
@@ -156,14 +157,14 @@ const AspectProvider = ({ setAspect }) => {
           height: '100%',
           zIndex: 100, 
           pointerEvents: 'auto',
+          // backgroundColor: 'green', 
+          // opacity: 0.5
           }}>
           <AspectProvider setAspect={setAspect} />
           <CameraAnimation 
             progress={progress}
             heroRange={heroRange} 
             isMobile={isMobile} />
-    
-
           <Lighting 
             isMobile={isMobile}
             progress={progress} 
@@ -196,23 +197,23 @@ const AspectProvider = ({ setAspect }) => {
             isMobile={isMobile} 
             aspect={aspect}
             />
-          <ShadowPlane />
+          {/* <ShadowPlane /> */}
         </Canvas>
       </motion.div> 
     </Suspense>
-    <motion.div
-    style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100vw',
-      height: '100vh',
-      backgroundColor: 'green',
-      opacity: blackOverlayOpacity,
-      pointerEvents: 'none',
-      zIndex: 999, // make sure it's on top
-    }}
-  />
+       <motion.div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'black',
+            opacity: blackOverlayOpacity,
+            pointerEvents: 'none',
+            zIndex: 999, // make sure it's on top
+          }}
+        />
 
 </motion.div>
   );
@@ -269,17 +270,21 @@ const CameraAnimation = ({ progress, heroRange }) => {
   if (typeof y !== 'number' || typeof z !== 'number') return;
 
   if (p === 0) {
-    const maxRotation = 0.015; // adjust for effect intensity
+    camera.position.set(0, y, z);
+    camera.lookAt(0, y, z - 1);
+    const maxRotation = 0.02; // adjust for effect intensity
 
     const xRot = smoothY.get() * maxRotation;
     const yRot = smoothX.get() * maxRotation;
 
     camera.rotation.x = xRot;
     camera.rotation.y = yRot;
+    // camera.lookAt(0, y, z - 1);
   } else {
     // Reset to default center position on scroll
     camera.position.set(0, y, z);
     camera.lookAt(0, y, z - 1);
+   
   }
 
   camera.updateProjectionMatrix();
@@ -483,17 +488,36 @@ const Lighting = ({
 
 const ShadowPlane = () => {
   const { viewport } = useThree();
+  const width = viewport.width;
+  const height = viewport.height;
 
   return (
-    <Plane 
-      position={[0, -7, 0]} 
-      rotation={[-Math.PI / 2, 0, 0]} 
-      args={[viewport.width * 30, viewport.width * 10]}
+    <Plane
+      position={[0, -30, 0]} // lower edge + half of 25%
+      rotation={[-Math.PI / 2, 0, 0]}
+      args={[width * 100, height * 100]} // 100% width, 25% height
       receiveShadow
     >
-      <shadowMaterial transparent opacity={0.6} />
+      {/* <meshStandardMaterial color="hotpink" opacity={0.5} transparent /> */}
+      <shadowMaterial transparent opacity={1} />
     </Plane>
   );
 };
+
+
+// const ShadowPlane = () => {
+//   const { viewport } = useThree();
+
+//   return (
+//     <Plane 
+//       position={[0, -7, 0]} 
+//       rotation={[-Math.PI / 2, 0, 0]} 
+//       args={[viewport.width * 400, viewport.width * 500]}
+//       receiveShadow
+//     >
+//       <shadowMaterial transparent opacity={0.5} />
+//     </Plane>
+//   );
+// };
 
 export default Hero;

@@ -1,17 +1,30 @@
 import React, { useRef, useEffect, useState } from "react";
-import { motion, useSpring, useTransform, useAnimation, useVelocity  } from "framer-motion";
-
-
+import { motion, useSpring, useTransform, useAnimation, useVelocity,  useMotionValueEvent  } from "framer-motion";
 import "../../styles/Office.scss";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 
-const Office = ({ progress, officeRange }) => {
+const Office = React.forwardRef((props, officeWrapperRef) => {
+  const { progress, officeRange } = props;
   const [leftVideoSrc, setLeftVideoSrc] = useState("src/assets/office/office party.mp4");
   const [rightVideoSrc, setRightVideoSrc] = useState("src/assets/office/cat.mp4");
-  const containerRef = useRef(null);
+  const mainRef = useRef(null);
   const textContainerRef = useRef(null);
-
   const officeProgress = useTransform(progress, officeRange, [0, 1]);
-  
+
+  useGSAP(() => {
+    if (!officeWrapperRef.current || !mainRef.current ) return;
+
+    ScrollTrigger.create({
+      trigger: officeWrapperRef.current,
+      start: "top top",      // when Office hits top of viewport
+      end: "+=200%",         
+      pin: mainRef.current, // pin the main section
+      scrub: true,          
+      // markers: true          
+    });
+  }, []);
+
   useEffect(() => {
     const handleOfficeAnimation = () => {
       const value = officeProgress.get();
@@ -33,9 +46,9 @@ const Office = ({ progress, officeRange }) => {
     return () => unsubscribe();
   }, [officeProgress]);
 
-  //  useMotionValueEvent(officeProgress, "change", (latest) => {
-  //     console.log("office Progress changed:", latest);
-  //   });
+   useMotionValueEvent(officeProgress, "change", (latest) => {
+      console.log("office Progress changed:", latest);
+    });
 
   // useEffect(() => {
   //   const unsubscribe = officeProgress.on("change", (latest) => {
@@ -60,37 +73,37 @@ const Office = ({ progress, officeRange }) => {
   
 
   return (
-    <div 
-    ref={containerRef} 
-    className='main_section' 
-    >
-      {/* <div className="black_filler"></div> */}
-      <div>
-         <div className="pc_container">
-      <div className="pc pc_left">
-        <video src={leftVideoSrc} autoPlay muted loop></video>
-      </div>
-      <div className="pc pc_right">
-        <video src={rightVideoSrc} autoPlay muted loop></video>
-      </div>
-    </div>
+    <>
+      <div 
+        ref={mainRef} 
+        className='main_section' 
+        >
+        <div>
+          <div className="pc_container">
+              <div className="pc pc_left">
+                <video src={leftVideoSrc} autoPlay muted loop></video>
+              </div>
+              <div className="pc pc_right">
+                <video src={rightVideoSrc} autoPlay muted loop></video>
+              </div>
+          </div>
 
-    <div className='office_content'></div> 
-    <motion.div
-        ref={textContainerRef}
-        className="text_container"
-      >
-       
-      <motion.h2 style={{ x: xLine1, skewX }}>the backbone</motion.h2>
-      <motion.h2 style={{ x: xLine2, skewX }}>of productivity</motion.h2>
-      <motion.h2 style={{ x: xLine3, skewX }}>amidst chaos</motion.h2>
+          <div className='office_content'></div> 
+          <motion.div
+            ref={textContainerRef}
+            className="text_container"
+          >
+          <motion.h2 style={{ x: xLine1, skewX }}>the backbone</motion.h2>
+          <motion.h2 style={{ x: xLine2, skewX }}>of productivity</motion.h2>
+          <motion.h2 style={{ x: xLine3, skewX }}>amidst chaos</motion.h2>
 
-     
-      </motion.div>
+        
+          </motion.div>
+        </div>
       </div>
-  </div>
-  
+      {/* <div style={{ height: '100vh', backgroundColor: "green" }} />  */}
+    </>
   );
-};
+});
 
 export default Office;

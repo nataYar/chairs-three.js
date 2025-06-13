@@ -44,7 +44,7 @@ const position = useMemo(() => {
     // Y hardcoded for stability
   const y = isMobile
     ? -3.2 
-    :  -3.5;;
+    :  -3.3;;
   const z = -3;
   return [x, y, z];
 }, [isMobile, aspect]);
@@ -94,7 +94,7 @@ const position = useMemo(() => {
                 localRef.current = node; // Assign local ref
                 if (ref) ref.current = node; // Pass to parent ref if provided
             }}
-            modelPath="src/assets/chairs/chair_thin.glb"
+            modelPath="public/assets/chairs/chair_thin.glb"
             scale={scale}
             position={position}
             rotation={baseRotation} // Base rotation

@@ -15,12 +15,12 @@ const Chair6 = forwardRef((props, ref) => {
     const initialPosition = useMemo(() => {
       const x = isMobile
         ? aspect * 5.2
-        : aspect * 4.3
+        : aspect * 3.7
     
         // Y hardcoded for stability
       const y = isMobile
         ? -4.5 
-        : -4.7;
+        : -4.1;
 
       const z = isMobile
         ? -3.5 
@@ -58,7 +58,7 @@ const Chair6 = forwardRef((props, ref) => {
 });
 
 
-    return <Chair ref={(node) => { localRef.current = node; if (ref) ref.current = node; }} modelPath="src/assets/chairs/victorian_chair.glb" scale={scale} position={initialPosition} rotation={rotation} />;
+    return <Chair ref={(node) => { localRef.current = node; if (ref) ref.current = node; }} modelPath="public/assets/chairs/victorian_chair.glb" scale={scale} position={initialPosition} rotation={rotation} />;
 });
 
 export default Chair6;
