@@ -94,7 +94,7 @@ const position = useMemo(() => {
                 localRef.current = node; // Assign local ref
                 if (ref) ref.current = node; // Pass to parent ref if provided
             }}
-            modelPath="public/assets/chairs/chair_thin.glb"
+            modelPath="/assets/chairs/chair_thin.glb"
             scale={scale}
             position={position}
             rotation={baseRotation} // Base rotation

@@ -110,7 +110,7 @@ const HeroChair = forwardRef((props, ref) => {
         localRef.current = node; 
         if (ref) ref.current = node; 
       }}
-      modelPath="public/assets/chairs/office_chair.glb"
+      modelPath="/assets/chairs/office_chair.glb"
       scale={initialScale} 
       position={initialPosition}
       rotation={rotation}
