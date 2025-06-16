@@ -44,8 +44,8 @@ const HeroAnimation = ({
        start: "top top",
        end: "+=400%",    
        pin: heroRef.current,
-       scrub: true,
-       markers: true, 
+      //  scrub: true,
+      //  markers: true, 
      });
   });
 
