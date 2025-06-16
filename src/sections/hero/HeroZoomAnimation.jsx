@@ -34,6 +34,11 @@ const HeroAnimation = ({
   const heroRef = useRef(null);
   const textRef= useRef(null);
 
+useEffect(() => {
+  backgroundScale.set(1);        // force initial scale
+  backgroundTranslateY.set(0);   // force initial position
+  backgroundOpacity.set(1);      // make sure it's visible
+}, []);
 
  useGSAP(() => {
   // text animation
