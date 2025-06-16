@@ -68,7 +68,6 @@ useEffect(() => {
  useMotionValueEvent(progress, "change", (scrollProgress) => {
   const fadeStart = heroRange[1] - 0.04;
   const fadeEnd = heroRange[1] - 0.005;
-  const fiftyPercentIntoHero = heroRange[0] + (heroRange[1] - heroRange[0]) * 0.5;
 
   // Only scale on non-mobile
   if (scrollProgress >= heroRange[0] && scrollProgress < fadeStart && !isMobile) {
@@ -76,7 +75,7 @@ useEffect(() => {
   }
 
   // Fade logic
-  let mobileFadeStart = fiftyPercentIntoHero;
+  let mobileFadeStart = heroRange[0] + (heroRange[1] - heroRange[0]) * 0.4; // 40% into heroRange
   let mobileFadeEnd = heroRange[1];
 
   if (isMobile) {
