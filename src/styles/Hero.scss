@@ -44,8 +44,8 @@
     top: 0;
     left: 0;
     z-index: 1; 
-    transform: scale(1) translateY(0px); // fallback in case JS delays
-    opacity: 1;   
+    // transform: scale(1) translateY(0px); // fallback in case JS delays
+    // opacity: 1;   
     // background-attachment: fixed;
     
     transition: all 0.3s ease;
@@ -56,7 +56,7 @@
     background-repeat: no-repeat;
     background-size: cover;
     transform-origin: 50% 20%;
-    will-change: transform;
+    will-change: transform, opacity;
   }
 
   .hero-section::after {
