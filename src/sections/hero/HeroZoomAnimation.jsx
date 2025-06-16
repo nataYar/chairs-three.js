@@ -69,7 +69,7 @@ useEffect(() => {
     const fadeStart = heroRange[1] - 0.04;
     const fadeEnd = heroRange[1] - 0.005;
 
-      if(scrollProgress >= heroRange[0] && scrollProgress < fadeStart) {
+      if(scrollProgress >= heroRange[0] && scrollProgress < fadeStart && !isMobile) {
         backgroundScale.set(1 + scrollProgress * 2.2);
         // backgroundTranslateY.set(viewportHeight * scrollProgress * 0.2); // translate background down
     }

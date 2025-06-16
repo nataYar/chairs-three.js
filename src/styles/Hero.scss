@@ -56,7 +56,7 @@
     background-repeat: no-repeat;
     background-size: cover;
     transform-origin: 50% 20%;
-    will-change: scale
+    will-change: transform;
   }
 
   .hero-section::after {
