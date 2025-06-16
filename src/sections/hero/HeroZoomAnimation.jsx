@@ -30,42 +30,44 @@ const HeroAnimation = ({
   const [isAnimatingUp, setIsAnimatingUp] = useState(false); 
   const [isFixed, setIsFixed] = useState(true);
 
-  const animationControls = useAnimation();
+  // const animationControls = useAnimation();
   const heroRef = useRef(null);
   const textRef= useRef(null);
 
-const pinEnd = window.innerHeight * 5.5;
 
-//  useGSAP(() => {
-//   // text animation
-//   if(!textRef.current) return;
-//   if (!heroRef.current) return;
-//      ScrollTrigger.create({
-//        trigger: containerHeroRef.current,
-//        start: "top top",
-//        end: () => `${pinEnd}`, 
-//        pin: heroRef.current,
-//       //  pinSpacing: false,
-//        scrub: true,
-//        markers: true, 
-//      });
-//   });
-
-  useMotionValueEvent(progress, "change", (latest) => {
-    const maxScroll = heroRange[1];
-    const viewportHeight = window.innerHeight;
-  
-    if (latest < maxScroll) {
-      setIsFixed(true); 
-    } else if (latest >= maxScroll){
-      setIsFixed(false); 
-    }
+ useGSAP(() => {
+  // text animation
+  if(!textRef.current) return;
+  if (!heroRef.current) return;
+     ScrollTrigger.create({
+       trigger: containerHeroRef.current,
+       start: "top top",
+       end: "+=400%",    
+       pin: heroRef.current,
+       scrub: true,
+       markers: true, 
+     });
   });
 
-  useMotionValueEvent(progress, "change", (scrollProgress) => {
-    const fadeStart = heroRange[1] - 0.02;
-    const fadeEnd = heroRange[1];
+  // useMotionValueEvent(progress, "change", (latest) => {
+  //   const maxScroll = heroRange[1];
+  //   const viewportHeight = window.innerHeight;
+  
+  //   if (latest < maxScroll) {
+  //     setIsFixed(true); 
+  //   } else if (latest >= maxScroll){
+  //     setIsFixed(false); 
+  //   }
+  // });
 
+  useMotionValueEvent(progress, "change", (scrollProgress) => {
+    const fadeStart = heroRange[1] - 0.04;
+    const fadeEnd = heroRange[1] - 0.005;
+
+      if(scrollProgress >= heroRange[0] && scrollProgress < fadeStart) {
+        backgroundScale.set(1 + scrollProgress * 2.2);
+        backgroundTranslateY.set(viewportHeight * scrollProgress * 0.2); // translate background down
+    }
     if (scrollProgress >= fadeStart && scrollProgress <= fadeEnd) {
       const fadeProgress = (scrollProgress - fadeStart) / (fadeEnd - fadeStart);
       backgroundOpacity.set(1.2 - fadeProgress); 
@@ -77,27 +79,27 @@ const pinEnd = window.innerHeight * 5.5;
   });
 
     // Handle animations based on scroll progress
-    useEffect(() => {
-      const unsubscribe = heroProgress.on("change", (scrollProgress) => {
+    // useEffect(() => {
+    //   const unsubscribe = heroProgress.on("change", (scrollProgress) => {
 
-        if (!isCanvasLoaded) return;
-        const eightyPercentIntoHero = heroRange[0] + (heroRange[1] - heroRange[0]) * 0.8;
+    //     if (!isCanvasLoaded) return;
+    //     const eightyPercentIntoHero = heroRange[0] + (heroRange[1] - heroRange[0]) * 0.8;
 
-        if (scrollProgress >= 0.8 && scrollProgress < 0.95) {
-          setIntroTextVisible(true);
-        } else {
-          setIntroTextVisible(false);
-        }
-        let backgroundScaleValue = 1;
+    //     if (scrollProgress >= 0.8 && scrollProgress < 0.95) {
+    //       setIntroTextVisible(true);
+    //     } else {
+    //       setIntroTextVisible(false);
+    //     }
+    //     let backgroundScaleValue = 1;
 
-        if (scrollProgress > 0) {
-          backgroundScaleValue = 1 + scrollProgress * 1.5;    
-        }
-        backgroundScale.set(backgroundScaleValue);
-      });
+    //     if (scrollProgress > 0) {
+    //       backgroundScaleValue = 1 + scrollProgress * 1.5;    
+    //     }
+    //     backgroundScale.set(backgroundScaleValue);
+    //   });
 
-      return () => unsubscribe();
-    }, [heroProgress, isCanvasLoaded, backgroundScale, backgroundTranslateY, animationControls, viewportHeight, isJumping]);
+    //   return () => unsubscribe();
+    // }, [heroProgress, isCanvasLoaded, backgroundScale, backgroundTranslateY, animationControls, viewportHeight, isJumping]);
 
   return (
     <>
@@ -121,7 +123,7 @@ const pinEnd = window.innerHeight * 5.5;
           y: backgroundTranslateY,
           opacity: backgroundOpacity,
         }}
-        animate={animationControls}
+        // animate={animationControls}
       />
     </>
   );
