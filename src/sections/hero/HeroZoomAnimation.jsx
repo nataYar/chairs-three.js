@@ -65,23 +65,43 @@ useEffect(() => {
   //   }
   // });
 
-  useMotionValueEvent(progress, "change", (scrollProgress) => {
-    const fadeStart = heroRange[1] - 0.04;
-    const fadeEnd = heroRange[1] - 0.005;
+ useMotionValueEvent(progress, "change", (scrollProgress) => {
+  const fadeStart = heroRange[1] - 0.04;
+  const fadeEnd = heroRange[1] - 0.005;
+  const fiftyPercentIntoHero = heroRange[0] + (heroRange[1] - heroRange[0]) * 0.5;
 
-      if(scrollProgress >= heroRange[0] && scrollProgress < fadeStart && !isMobile) {
-        backgroundScale.set(1 + scrollProgress * 2.2);
-        // backgroundTranslateY.set(viewportHeight * scrollProgress * 0.2); // translate background down
+  // Only scale on non-mobile
+  if (scrollProgress >= heroRange[0] && scrollProgress < fadeStart && !isMobile) {
+    backgroundScale.set(1 + scrollProgress * 2.2);
+  }
+
+  // Fade logic
+  let mobileFadeStart = fiftyPercentIntoHero;
+  let mobileFadeEnd = heroRange[1];
+
+  if (isMobile) {
+    // Fade starts from 50% into heroRange on mobile
+    if (scrollProgress >= mobileFadeStart && scrollProgress <= mobileFadeEnd) {
+      const fadeProgress = (scrollProgress - mobileFadeStart) / (mobileFadeEnd - mobileFadeStart);
+      backgroundOpacity.set(1 - fadeProgress);
+    } else if (scrollProgress < mobileFadeStart) {
+      backgroundOpacity.set(1);
+    } else {
+      backgroundOpacity.set(0);
     }
+  } else {
+    // Default fade for non-mobile
     if (scrollProgress >= fadeStart && scrollProgress <= fadeEnd) {
       const fadeProgress = (scrollProgress - fadeStart) / (fadeEnd - fadeStart);
-      backgroundOpacity.set(1.2 - fadeProgress); 
+      backgroundOpacity.set(1.2 - fadeProgress);
     } else if (scrollProgress < fadeStart) {
-      backgroundOpacity.set(1); // fully visible before fade starts
+      backgroundOpacity.set(1);
     } else {
-      backgroundOpacity.set(0); // fully invisible past fade end
+      backgroundOpacity.set(0);
     }
-  });
+  }
+});
+
 
     // Handle animations based on scroll progress
     // useEffect(() => {
