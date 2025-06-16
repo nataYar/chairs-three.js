@@ -44,7 +44,7 @@ const HeroAnimation = ({
        start: "top top",
        end: "+=400%",    
        pin: heroRef.current,
-      //  scrub: true,
+       scrub: true,
       //  markers: true, 
      });
   });
@@ -66,7 +66,7 @@ const HeroAnimation = ({
 
       if(scrollProgress >= heroRange[0] && scrollProgress < fadeStart) {
         backgroundScale.set(1 + scrollProgress * 2.2);
-        backgroundTranslateY.set(viewportHeight * scrollProgress * 0.2); // translate background down
+        // backgroundTranslateY.set(viewportHeight * scrollProgress * 0.2); // translate background down
     }
     if (scrollProgress >= fadeStart && scrollProgress <= fadeEnd) {
       const fadeProgress = (scrollProgress - fadeStart) / (fadeEnd - fadeStart);
