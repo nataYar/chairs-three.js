@@ -81,10 +81,20 @@ const Office = React.forwardRef((props, officeWrapperRef) => {
         <div>
           <div className="pc_container">
               <div className="pc pc_left">
-                <video src={leftVideoSrc} autoPlay muted loop></video>
+                <video style={{ pointerEvents: 'none' }} src={leftVideoSrc}  
+                autoPlay 
+                muted 
+                loop 
+                playsInline 
+                disablePictureInPicture 
+                ></video>
               </div>
               <div className="pc pc_right">
-                <video src={rightVideoSrc} autoPlay muted loop></video>
+                <video style={{ pointerEvents: 'none' }} src={rightVideoSrc}  autoPlay 
+                muted 
+                loop 
+                playsInline 
+                disablePictureInPicture ></video>
               </div>
           </div>
 
