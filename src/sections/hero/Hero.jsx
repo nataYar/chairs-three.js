@@ -43,11 +43,15 @@ const Hero = ({ afterOfficeRef, progress, heroRange, heroTransitionRange, office
   ]);
 
   const heroProgress = useTransform(progress, heroRange, [0, 1]); 
-  const heroTransition = useTransform(progress, heroTransitionRange, [0, 1]);
+  const heroTransitionProgress = useTransform(progress, heroTransitionRange, [0, 1]);
+  const halfHero = heroTransitionRange[0] + (heroTransitionRange[1] - heroTransitionRange[0]) * 0.5;
+  const sixtyHero = heroTransitionRange[0] + (heroTransitionRange[1] - heroTransitionRange[0]) * 0.6;
+  const fiveOffice = officeRange[0] + (officeRange[1] - officeRange[0]) * 0.05;
 
-   const blackOverlayOpacityRaw = useTransform(progress, [
-    0.44, 0.452,
-    officeRange[0]+0.01, officeRange[0]+0.02], 
+
+
+   const blackOverlayOpacityRaw = useTransform(progress, 
+    [ halfHero, sixtyHero, officeRange[0], fiveOffice], 
     [0, 1, 1, 0]);
   
   const blackOverlayOpacity = useSpring(blackOverlayOpacityRaw, {
@@ -57,7 +61,7 @@ const Hero = ({ afterOfficeRef, progress, heroRange, heroTransitionRange, office
 
   const canvasAnimation = useTransform(progress, [officeRange[0]-0.05, officeRange[0]], [1, 0]);
 
-  useMotionValueEvent(heroTransition, "change", (latest) => {
+  useMotionValueEvent(heroTransitionProgress, "change", (latest) => {
       console.log("hero transition Progress changed:", latest);
     });
 
@@ -211,7 +215,7 @@ const AspectProvider = ({ setAspect }) => {
             backgroundColor: 'black',
             opacity: blackOverlayOpacity,
             pointerEvents: 'none',
-            zIndex: 999, // make sure it's on top
+            zIndex: 999, 
           }}
         />
 
@@ -338,7 +342,7 @@ const Lighting = ({
   const ambientLightRef = useRef();
 
   const hero = useTransform(progress, heroRange, [0, 1]);
-  const heroTransition = useTransform(progress, heroTransitionRange, [0, 1]);
+  const heroTransitionProgress = useTransform(progress, heroTransitionRange, [0, 1]);
   const afterOffice = useTransform(progress, afterOfficeRange, [0, 1]);
   const office = useTransform(progress, officeRange, [0, 1]);
   const slides = useTransform(progress, slidesRange, [0, 1]);
@@ -353,7 +357,7 @@ const Lighting = ({
 
   useFrame(() => {
     const heroVal = hero.get();
-    const heroT = heroTransition.get();
+    const heroT = heroTransitionProgress.get();
    
     const officeP = office.get();
     const afterO = afterOffice.get();

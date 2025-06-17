@@ -70,7 +70,9 @@ useEffect(() => {
   const fadeEnd = heroRange[1] - 0.005;
 
   // Only scale on non-mobile
-  if (scrollProgress >= heroRange[0] && scrollProgress < fadeStart && !isMobile) {
+  //  if (scrollProgress >= heroRange[0] && scrollProgress < fadeStart && !isMobile) 
+  if (scrollProgress >= heroRange[0] && scrollProgress < fadeStart) 
+    {
     backgroundScale.set(1 + scrollProgress * 2.2);
   }
 
