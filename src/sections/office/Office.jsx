@@ -21,7 +21,7 @@ const Office = React.forwardRef((props, officeWrapperRef) => {
       end: "+=200%",         
       pin: mainRef.current, // pin the main section
       scrub: true,          
-      // markers: true          
+      markers: true          
     });
   }, []);
 
