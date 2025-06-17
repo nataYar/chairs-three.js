@@ -33,7 +33,7 @@ const HeroChair = forwardRef((props, ref) => {
           : aspect * 1.5
   
           const y = isMobile
-              ? 23 
+              ? 25
               : 32
           const z = isMobile ?  -25 : -35;
   
