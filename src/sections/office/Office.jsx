@@ -3,6 +3,7 @@ import { motion, useSpring, useTransform, useAnimation, useVelocity,  useMotionV
 import "../../styles/Office.scss";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 const Office = React.forwardRef((props, officeWrapperRef) => {
   const { progress, officeRange } = props;
@@ -21,7 +22,7 @@ const Office = React.forwardRef((props, officeWrapperRef) => {
       end: "+=200%",         
       pin: mainRef.current, // pin the main section
       scrub: true,          
-      markers: true          
+      // markers: true          
     });
   }, []);
 

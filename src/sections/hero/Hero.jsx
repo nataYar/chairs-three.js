@@ -8,7 +8,7 @@ import * as THREE from 'three';
 
 
 gsap.registerPlugin(ScrollTrigger);
-
+ScrollTrigger.config({ ignoreMobileResize: true });
 // Import Components
 import Chair1 from "./Chair1";
 import Chair2 from "./Chair2";

@@ -15,6 +15,8 @@ import CarouselSection from "./sections/CarouselSection/CarouselSection";
 
 
 
+
+
 const App = () => { 
   const containerRef = useRef(null);
   const heroRef = useRef(null)

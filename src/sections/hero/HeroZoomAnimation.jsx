@@ -5,8 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 
-gsap.registerPlugin(ScrollTrigger);
-
+// gsap.registerPlugin(ScrollTrigger);
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 import "../../styles/Hero.scss";
 import "../../styles/IntroText.scss";

@@ -20,6 +20,7 @@ const HeroChair = forwardRef((props, ref) => {
     aspect,
     ...otherProps } = props;
   const localRef = useRef();
+  const lastTRef = useRef(0); 
 
   // Define rotation
   const rotation = isMobile ?  [0.4, 0.3, 0.1] : [0.2, 0.3, 0];
@@ -59,10 +60,15 @@ const HeroChair = forwardRef((props, ref) => {
   useFrame((state, delta) => {
   if (!localRef.current) return;
 
+   const obj = localRef.current;
+  const bigScale = 0.8;
   const t = heroTransitionRef.current;
 
-  const obj = localRef.current;
-  const bigScale = 0.8;
+  // Prevent sudden jumps in scroll progress (like mobile scroll up/down or resize)
+  if (Math.abs(t - lastTRef.current) > 0.2) {
+    return; // skip this frame
+  }
+  lastTRef.current = t;
 
   // Rotation and drop
   if (t >= 0 && t < 0.474) {
