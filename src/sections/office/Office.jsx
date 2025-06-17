@@ -21,7 +21,8 @@ const Office = React.forwardRef((props, officeWrapperRef) => {
       start: "top top",      // when Office hits top of viewport
       end: "+=200%",         
       pin: mainRef.current, // pin the main section
-      scrub: true,          
+      scrub: true,    
+      pinType: "fixed",      
       // markers: true          
     });
   }, []);
