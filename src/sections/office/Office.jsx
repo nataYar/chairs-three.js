@@ -22,7 +22,7 @@ const Office = React.forwardRef((props, officeWrapperRef) => {
       end: "+=200%",         
       pin: mainRef.current, // pin the main section
       scrub: true,    
-      pinType: "fixed",      
+      // pinType: "fixed",      
       // markers: true          
     });
   }, []);
